@@ -9,8 +9,14 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="소스 파일\Component">
+    <Filter Include="소스 파일\Managers">
+      <UniqueIdentifier>{0fb43b92-e165-4c17-bbaf-0dbac4f15631}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Components">
       <UniqueIdentifier>{cae3c021-bfed-42bf-a52b-2ffe3746172f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Base">
+      <UniqueIdentifier>{38c76e24-3188-4c16-84c5-1bac02255939}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -23,17 +29,11 @@
     <ClInclude Include="TimeManager.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentPool.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
     <ClInclude Include="TypeDefines.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
-    <ClInclude Include="PoolManager.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Transform.h">
-      <Filter>소스 파일\Component</Filter>
+      <Filter>소스 파일\Components</Filter>
     </ClInclude>
     <ClInclude Include="System.h">
       <Filter>소스 파일</Filter>
@@ -42,10 +42,19 @@
       <Filter>소스 파일</Filter>
     </ClInclude>
     <ClInclude Include="EntityManager.h">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Managers</Filter>
     </ClInclude>
     <ClInclude Include="EventManager.h">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="PoolManager.h">
+      <Filter>소스 파일\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentPool.h">
+      <Filter>소스 파일\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="EventListener.h">
+      <Filter>소스 파일\Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -65,10 +74,10 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="EntityManager.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Managers</Filter>
     </ClCompile>
     <ClCompile Include="EventManager.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Managers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
