@@ -1,9 +1,18 @@
 ﻿#include "pch.h"
 #include "MainProcess.h"
 
+#include "PoolManager.h"
+#include "Transform.h"
+#include "EntityManager.h"
+
+// test
+core::PoolManager pm;
+core::EntityManager em;
+size_t id = 0;
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-CORE_EXPORT MainProcess::MainProcess(HINSTANCE hInst, std::string_view title, uint32_t width, uint32_t height, bool isLauncher)
+CORE_EXPORT core::MainProcess::MainProcess(HINSTANCE hInst, std::string_view title, uint32_t width, uint32_t height, bool isLauncher)
 	: title_(title), width_(width), height_(height)
 {
 	auto wTitle = std::wstring(title.begin(), title.end());
@@ -24,7 +33,7 @@ CORE_EXPORT MainProcess::MainProcess(HINSTANCE hInst, std::string_view title, ui
 
 	RECT rcClient = { 0, 0, static_cast<LONG>(width_), static_cast<LONG>(height_) };
 
-	// Launcher mode
+	// Launcher mode ( no title bar )
 	if (isLauncher)
 	{
 		AdjustWindowRect(&rcClient, WS_OVERLAPPEDWINDOW, FALSE);
@@ -49,8 +58,10 @@ CORE_EXPORT MainProcess::MainProcess(HINSTANCE hInst, std::string_view title, ui
 			NULL, NULL, hInst, NULL);
 	}
 
-	int screenWidth = GetSystemMetrics(SM_CXSCREEN);
-	int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+	assert(hwnd_);
+
+	const int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+	const int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
 	// Set window to center of screen
 	SetWindowPos(hwnd_, nullptr,
@@ -58,21 +69,19 @@ CORE_EXPORT MainProcess::MainProcess(HINSTANCE hInst, std::string_view title, ui
 		screenHeight / 2 - static_cast<int>(height_ / 2),
 		static_cast<int>(width_), static_cast<int>(height_), 0
 	);
-
-	assert(hwnd_);
 }
 
-CORE_EXPORT MainProcess::~MainProcess()
+CORE_EXPORT core::MainProcess::~MainProcess()
 {
 }
 
-void CORE_EXPORT MainProcess::Initialize()
+void CORE_EXPORT core::MainProcess::Initialize()
 {
 	ShowWindow(hwnd_, SW_SHOWNORMAL);
 	UpdateWindow(hwnd_);
 }
 
-void CORE_EXPORT MainProcess::Loop()
+void CORE_EXPORT core::MainProcess::Loop()
 {
 	MSG msg;
 
@@ -93,11 +102,11 @@ void CORE_EXPORT MainProcess::Loop()
 	}
 }
 
-void CORE_EXPORT MainProcess::Update()
+void CORE_EXPORT core::MainProcess::Update()
 {
 }
 
-void CORE_EXPORT MainProcess::Render()
+void CORE_EXPORT core::MainProcess::Render()
 {
 }
 
