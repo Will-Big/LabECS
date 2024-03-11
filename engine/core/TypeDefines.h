@@ -3,7 +3,7 @@
 namespace core
 {
     using EntityId = size_t;        // Entity 개별 Id 값
-    using ComponentId = uint64_t;   // Component 클래스의 Hash Id
+    using ComponentId = uint64_t;   // Component 클래스의 HashId
 
     using EventType = std::string;
     using EventCallback = std::function<void(std::any)>;

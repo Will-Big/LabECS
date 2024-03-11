@@ -24,20 +24,20 @@ void core::EventManager::Update(float deltaTime)
 
 	// 지연 이벤트 실행
 	for (auto& event : eventsToExecute)
-		event.event_();
+		event.eventFunc_();
 }
 
-void core::EventManager::Subscribe(const EventType& type, const ListenerInfo& listenerInfo)
+void CORE_EXPORT core::EventManager::Subscribe(const EventType& type, const ListenerInfo& listenerInfo)
 {
 	listeners_[type].push_back(listenerInfo);
 }
 
-void core::EventManager::ScheduleEvent(const EventType& type, std::any data, float delay)
+void CORE_EXPORT core::EventManager::ScheduleEvent(const EventType& type, std::any data, float delay)
 {
 	delayedEvents_.emplace_back(delay, [=]() { PublishImmediate(type, data); });
 }
 
-void core::EventManager::PublishImmediate(const EventType& type, std::any data)
+void CORE_EXPORT core::EventManager::PublishImmediate(const EventType& type, std::any data)
 {
 	if (listeners_.find(type) != listeners_.end())
 		for (auto& listener : listeners_[type])

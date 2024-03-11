@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include <typeindex>
+
 #include "ComponentPool.h"
 
 namespace core
@@ -17,9 +19,12 @@ namespace core
         template<typename Component>
         size_t AddComponent(EntityId entityId, Component&& component = {});
 
-        // Entity에 Component 를 제거합니다.
+        // Entity 에 Component 를 제거합니다.
         template<typename Component>
         void RemoveComponent(EntityId entityId);
+
+        // Entity 에 Component 를 제거합니다.
+        void RemoveComponent(ComponentId componentId, EntityId entityId);
 
         // Entity 에 쓰기 전용 Component 를 가져옵니다.
         template<typename Component>
@@ -36,10 +41,12 @@ namespace core
     private:
         // ComponentId 를 키로 하여 해당 타입의 ComponentPool 을 저장하는 맵
         std::unordered_map<ComponentId, std::shared_ptr<void>> pools_;
+
+        friend class EntityManager;
     };
 
     template <typename Component>
-    ComponentPool<Component>& PoolManager::GetPool()
+    ComponentPool<Component>& CORE_EXPORT PoolManager::GetPool()
     {
 	    constexpr ComponentId componentId = TYPEID(Component);
 
@@ -53,31 +60,38 @@ namespace core
     }
 
     template <typename Component>
-    size_t PoolManager::AddComponent(EntityId entityId, Component&& component)
+    size_t CORE_EXPORT PoolManager::AddComponent(EntityId entityId, Component&& component)
     {
 	    return GetPool<Component>().AddComponent(entityId, std::forward<Component>(component));
     }
 
     template <typename Component>
-    void PoolManager::RemoveComponent(EntityId entityId)
+    void CORE_EXPORT PoolManager::RemoveComponent(EntityId entityId)
     {
 	    GetPool<Component>().RemoveComponent(entityId);
     }
 
+    inline void PoolManager::RemoveComponent(ComponentId componentId, EntityId entityId)
+    {
+        if (!pools_.contains(componentId))
+            return;
+
+    }
+
     template <typename Component>
-    Component& PoolManager::GetComponent(EntityId entityId)
+    Component& CORE_EXPORT PoolManager::GetComponent(EntityId entityId)
     {
 	    return GetPool<Component>().GetComponent(entityId);
     }
 
     template <typename Component>
-    const Component& PoolManager::GetSnapShot(EntityId entityId)
+    const Component& CORE_EXPORT PoolManager::GetSnapShot(EntityId entityId)
     {
 	    return GetPool<Component>().GetSnapShot(entityId);
     }
 
     template <typename Component>
-    bool PoolManager::HasComponent(EntityId entityId)
+    bool CORE_EXPORT PoolManager::HasComponent(EntityId entityId)
     {
 	    return GetPool<Component>().HasComponent(entityId);
     }

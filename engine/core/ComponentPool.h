@@ -2,6 +2,21 @@
 
 namespace core
 {
+    class ComponentPoolBase
+    {
+    public:
+        virtual ~ComponentPoolBase() = default;
+
+        // 주어진 EntityId 의 Component 를 추가합니다.
+        virtual void AddComponent(EntityId entityId) = 0;
+
+        // 주어진 EntityId 의 Component 를 제거합니다.
+        virtual void RemoveComponent(EntityId entityId) = 0;
+
+        // ComponentPool 을 초기화합니다.
+        virtual void Clear() = 0;
+    };
+
     // Component 객체를 소유하고 있는 클래스
     template<typename Component>
     class ComponentPool
@@ -34,7 +49,7 @@ namespace core
     };
 
     template <typename Component>
-    size_t ComponentPool<Component>::AddComponent(EntityId entityId, Component&& component)
+    size_t CORE_EXPORT ComponentPool<Component>::AddComponent(EntityId entityId, Component&& component)
     {
 	    std::unique_lock lock(mutex_); // 쓰기 작업을 위한 독점 락
 
@@ -55,11 +70,12 @@ namespace core
     }
 
     template <typename Component>
-    void ComponentPool<Component>::RemoveComponent(EntityId entityId)
+    void CORE_EXPORT ComponentPool<Component>::RemoveComponent(EntityId entityId)
     {
-	    std::unique_lock lock(mutex_); // 쓰기 작업을 위한 독점 락
+        if (!entityToIndex_.contains(entityId))
+            return;
 
-	    assert(entityToIndex_.find(entityId) != entityToIndex_.end());
+	    std::unique_lock lock(mutex_); // 쓰기 작업을 위한 독점 락
 
 	    // 마지막 Component 와 삭제할 Component 의 위치를 교환
 	    size_t indexOfRemoved = entityToIndex_[entityId];
@@ -78,7 +94,7 @@ namespace core
     }
 
     template <typename Component>
-    Component& ComponentPool<Component>::GetComponent(EntityId entityId)
+    Component& CORE_EXPORT ComponentPool<Component>::GetComponent(EntityId entityId)
     {
 	    assert(!entityToIndex_.contains(entityId));
 
@@ -86,7 +102,7 @@ namespace core
     }
 
     template <typename Component>
-    const Component& ComponentPool<Component>::GetSnapShot(EntityId entityId)
+    const Component& CORE_EXPORT ComponentPool<Component>::GetSnapShot(EntityId entityId)
     {
 	    assert(!entityToIndex_.contains(entityId));
 
@@ -94,13 +110,13 @@ namespace core
     }
 
     template <typename Component>
-    bool ComponentPool<Component>::HasComponent(EntityId entityId) const
+    bool CORE_EXPORT ComponentPool<Component>::HasComponent(EntityId entityId) const
     {
 	    return entityToIndex_.find(entityId) != entityToIndex_.end();
     }
 
     template <typename Component>
-    void ComponentPool<Component>::Clear()
+    void CORE_EXPORT ComponentPool<Component>::Clear()
     {
 	    std::unique_lock lock(mutex_); // 쓰기 작업을 위한 독점 락
 

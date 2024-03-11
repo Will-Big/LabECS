@@ -5,10 +5,10 @@ namespace core
 	class EventListener;
 
 	// 이벤트를 관리하는 클래스
-	class EventManager
+	class CORE_EXPORT EventManager
 	{
 		// EventListener 와 실행할 콜백 함수
-		struct ListenerInfo
+		struct CORE_EXPORT ListenerInfo
 		{
 			EventListener* listener_;
 			EventCallback callback_;
@@ -21,16 +21,13 @@ namespace core
 		struct DelayedEvent
 		{
 			float remainingTime_; // 이벤트 실행까지 남은 시간
-			std::function<void()> event_;
-
-			DelayedEvent(float delay, std::function<void()> event)
-				: remainingTime_(delay), event_(std::move(event)) {}
+			std::function<void()> eventFunc_;
+			
+			DelayedEvent(float delay, std::function<void()> eventFunc)
+				: remainingTime_(delay), eventFunc_(std::move(eventFunc)) {}
 		};
 
 	public:
-		// 예약된 이벤트를 실행합니다.
-		void Update(float deltaTime);
-
 		// 이벤트를 구독합니다.
 		void Subscribe(const EventType& type, const ListenerInfo& listenerInfo);
 
@@ -42,14 +39,20 @@ namespace core
 		// 발행된 이벤트는 호출 시점에 실행됩니다.
 		void PublishImmediate(const EventType& type, std::any data = std::any{});
 
+	private:
+		// 예약된 이벤트를 실행합니다.
+		void Update(float deltaTime);
+
 		// listeners_ 에 저장된 EventListener 를 삭제합니다.
 		// EventListener 의 소멸자에서 자동으로 호출됩니다.
 		void RemoveListener(EventListener* handler);
+
 
 	private:
 		std::unordered_map<EventType, std::vector<ListenerInfo>> listeners_;
 		std::vector<DelayedEvent> delayedEvents_;
 
+		friend class MainProcess;
 		friend class EventListener;
 	};
 }
