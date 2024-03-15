@@ -3,7 +3,7 @@
 
 #include "PoolManager.h"
 
-core::EntityId CORE_EXPORT core::EntityManager::AddEntity()
+core::EntityId core::EntityManager::AddEntity()
 {
 	return entities_.emplace_back(++lastId_);
 }
@@ -25,7 +25,7 @@ void core::EntityManager::RemoveEntity(EntityId entityId, PoolManager* poolManag
 	}
 }
 
-void CORE_EXPORT core::EntityManager::Clear()
+void core::EntityManager::Clear()
 {
 	entities_.clear();
 	lastId_ = 0;

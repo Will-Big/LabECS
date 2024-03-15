@@ -8,7 +8,7 @@ namespace core
 {
     // ComponentPool 을 관리하는 클래스
     // 사용자는 ComponentPool 에 직접 접근하지 않으며 PoolManager 를 통해 관리
-    class PoolManager
+    class CORE_EXPORT PoolManager
 	{
     public:
         // ComponentPool 을 가져옵니다.
@@ -46,7 +46,7 @@ namespace core
     };
 
     template <typename Component>
-    ComponentPool<Component>& CORE_EXPORT PoolManager::GetPool()
+    ComponentPool<Component>& PoolManager::GetPool()
     {
 	    constexpr ComponentId componentId = TYPEID(Component);
 
@@ -60,38 +60,31 @@ namespace core
     }
 
     template <typename Component>
-    size_t CORE_EXPORT PoolManager::AddComponent(EntityId entityId, Component&& component)
+    size_t PoolManager::AddComponent(EntityId entityId, Component&& component)
     {
 	    return GetPool<Component>().AddComponent(entityId, std::forward<Component>(component));
     }
 
     template <typename Component>
-    void CORE_EXPORT PoolManager::RemoveComponent(EntityId entityId)
+    void PoolManager::RemoveComponent(EntityId entityId)
     {
 	    GetPool<Component>().RemoveComponent(entityId);
     }
 
-    inline void PoolManager::RemoveComponent(ComponentId componentId, EntityId entityId)
-    {
-        if (!pools_.contains(componentId))
-            return;
-
-    }
-
     template <typename Component>
-    Component& CORE_EXPORT PoolManager::GetComponent(EntityId entityId)
+    Component& PoolManager::GetComponent(EntityId entityId)
     {
 	    return GetPool<Component>().GetComponent(entityId);
     }
 
     template <typename Component>
-    const Component& CORE_EXPORT PoolManager::GetSnapShot(EntityId entityId)
+    const Component& PoolManager::GetSnapShot(EntityId entityId)
     {
 	    return GetPool<Component>().GetSnapShot(entityId);
     }
 
     template <typename Component>
-    bool CORE_EXPORT PoolManager::HasComponent(EntityId entityId)
+    bool PoolManager::HasComponent(EntityId entityId)
     {
 	    return GetPool<Component>().HasComponent(entityId);
     }

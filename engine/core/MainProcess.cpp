@@ -1,18 +1,9 @@
 ﻿#include "pch.h"
 #include "MainProcess.h"
 
-#include "PoolManager.h"
-#include "Transform.h"
-#include "EntityManager.h"
-
-// test
-core::PoolManager pm;
-core::EntityManager em;
-size_t id = 0;
-
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-CORE_EXPORT core::MainProcess::MainProcess(HINSTANCE hInst, std::string_view title, uint32_t width, uint32_t height, bool isLauncher)
+core::MainProcess::MainProcess(HINSTANCE hInst, std::string_view title, uint32_t width, uint32_t height, bool isLauncher)
 	: title_(title), width_(width), height_(height)
 {
 	auto wTitle = std::wstring(title.begin(), title.end());
@@ -71,17 +62,17 @@ CORE_EXPORT core::MainProcess::MainProcess(HINSTANCE hInst, std::string_view tit
 	);
 }
 
-CORE_EXPORT core::MainProcess::~MainProcess()
+core::MainProcess::~MainProcess()
 {
 }
 
-void CORE_EXPORT core::MainProcess::Initialize()
+void core::MainProcess::Initialize()
 {
 	ShowWindow(hwnd_, SW_SHOWNORMAL);
 	UpdateWindow(hwnd_);
 }
 
-void CORE_EXPORT core::MainProcess::Loop()
+void core::MainProcess::Loop()
 {
 	MSG msg;
 
@@ -102,11 +93,11 @@ void CORE_EXPORT core::MainProcess::Loop()
 	}
 }
 
-void CORE_EXPORT core::MainProcess::Update()
+void core::MainProcess::Update()
 {
 }
 
-void CORE_EXPORT core::MainProcess::Render()
+void core::MainProcess::Render()
 {
 }
 
