@@ -33,6 +33,6 @@
 #include <windows.h>
 
 // USER
-#include "TypeDefines.h"
+#include "Defines.h"
 
 #endif //PCH_H

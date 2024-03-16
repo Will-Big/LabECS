@@ -17,7 +17,7 @@ namespace core
 
         // Entity 에 Component 를 추가하고 인덱스를 반환합니다.
         template<typename Component>
-        size_t AddComponent(EntityId entityId, Component&& component = {});
+        void AddComponent(EntityId entityId);
 
         // Entity 에 Component 를 제거합니다.
         template<typename Component>
@@ -40,7 +40,7 @@ namespace core
 
     private:
         // ComponentId 를 키로 하여 해당 타입의 ComponentPool 을 저장하는 맵
-        std::unordered_map<ComponentId, std::shared_ptr<void>> pools_;
+        std::unordered_map<ComponentId, std::shared_ptr<IComponentPoolBase>> pools_;
 
         friend class EntityManager;
     };
@@ -48,7 +48,7 @@ namespace core
     template <typename Component>
     ComponentPool<Component>& PoolManager::GetPool()
     {
-	    constexpr ComponentId componentId = TYPEID(Component);
+        constexpr ComponentId componentId = Component::componentId;
 
 	    if (!pools_.contains(componentId)) 
 	    {
@@ -56,13 +56,14 @@ namespace core
 		    auto pool = std::make_shared<ComponentPool<Component>>();
 		    pools_[componentId] = pool;
 	    }
+
 	    return *std::static_pointer_cast<ComponentPool<Component>>(pools_[componentId]);
     }
 
     template <typename Component>
-    size_t PoolManager::AddComponent(EntityId entityId, Component&& component)
+    void PoolManager::AddComponent(EntityId entityId)
     {
-	    return GetPool<Component>().AddComponent(entityId, std::forward<Component>(component));
+	    GetPool<Component>().AddComponent(entityId);
     }
 
     template <typename Component>

@@ -118,6 +118,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalOptions>/D DLL_BUILD %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -137,6 +138,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalOptions>/DDLL_BUILD %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -155,10 +157,10 @@
     <ClInclude Include="MainProcess.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="System.h" />
-    <ClInclude Include="SystemCycle.h" />
+    <ClInclude Include="ISystemCycle.h" />
     <ClInclude Include="TimeManager.h" />
     <ClInclude Include="Transform.h" />
-    <ClInclude Include="TypeDefines.h" />
+    <ClInclude Include="Defines.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />

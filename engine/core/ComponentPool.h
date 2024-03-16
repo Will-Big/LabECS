@@ -2,10 +2,10 @@
 
 namespace core
 {
-    class ComponentPoolBase
+    class IComponentPoolBase
     {
     public:
-        virtual ~ComponentPoolBase() = default;
+        virtual ~IComponentPoolBase() = default;
 
         // 주어진 EntityId 의 Component 를 추가합니다.
         virtual void AddComponent(EntityId entityId) = 0;
@@ -19,14 +19,19 @@ namespace core
 
     // Component 객체를 소유하고 있는 클래스
     template<typename Component>
-    class ComponentPool
+    class ComponentPool : public IComponentPoolBase
 	{
     public:
+        ~ComponentPool() override = default;
+
         // Component 를 추가하고 그 인덱스를 반환합니다.
-        size_t AddComponent(EntityId entityId, Component&& component = {});
+        void AddComponent(EntityId entityId) override;
 
         // 주어진 EntityId 의 Component 를 제거합니다.
-        void RemoveComponent(EntityId entityId);
+        void RemoveComponent(EntityId entityId) override;
+
+        // ComponentPool 을 초기화합니다.
+        void Clear() override;
 
         // 주어진 EntityId 에 해당하는 Component 를 반환합니다. (쓰기 전용)
         // 개별 스레드에서 동시에 Component 를 수정할 경우 문제가 야기될 수 있음.
@@ -38,9 +43,6 @@ namespace core
         // EntityId 로 Component 의 존재 여부를 확인합니다.
         bool HasComponent(EntityId entityId) const;
 
-        // ComponentPool 을 초기화합니다.
-        void Clear();
-
     private:
         std::shared_mutex mutex_;
         std::vector<Component> components_;
@@ -49,7 +51,7 @@ namespace core
     };
 
     template <typename Component>
-    size_t ComponentPool<Component>::AddComponent(EntityId entityId, Component&& component)
+    void ComponentPool<Component>::AddComponent(EntityId entityId)
     {
 	    std::unique_lock lock(mutex_); // 쓰기 작업을 위한 독점 락
 
@@ -57,16 +59,14 @@ namespace core
 	    if (entityToIndex_.contains(entityId)) {
 		    // 이미 존재하면 기존 Component 를 업데이트
 		    size_t index = entityToIndex_[entityId];
-		    components_[index] = std::forward<Component>(component);
-		    return index;
+		    components_[index] = Component {};
 	    }
 
 	    // 새 Component 를 추가
 	    const size_t newIndex = components_.size();
-	    components_.push_back(std::forward<Component>(component));
+	    components_.emplace_back();
 	    entityToIndex_[entityId] = newIndex;
 	    indexToEntity_[newIndex] = entityId;
-	    return newIndex;
     }
 
     template <typename Component>

@@ -29,7 +29,7 @@
     <ClInclude Include="TimeManager.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
-    <ClInclude Include="TypeDefines.h">
+    <ClInclude Include="Defines.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
     <ClInclude Include="Transform.h">
@@ -38,7 +38,7 @@
     <ClInclude Include="System.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
-    <ClInclude Include="SystemCycle.h">
+    <ClInclude Include="ISystemCycle.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
     <ClInclude Include="EntityManager.h">
