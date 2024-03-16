@@ -1,6 +1,11 @@
 ﻿#include "pch.h"
 #include "MainProcess.h"
 
+#include "CoreManagers.h"
+#include "EntityManager.h"
+#include "EventManager.h"
+#include "PoolManager.h"
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 core::MainProcess::MainProcess(HINSTANCE hInst, std::string_view title, uint32_t width, uint32_t height, bool isLauncher)
@@ -25,7 +30,7 @@ core::MainProcess::MainProcess(HINSTANCE hInst, std::string_view title, uint32_t
 	RECT rcClient = { 0, 0, static_cast<LONG>(width_), static_cast<LONG>(height_) };
 
 	// Launcher mode ( no title bar )
-	if (isLauncher)
+	if (!isLauncher)
 	{
 		AdjustWindowRect(&rcClient, WS_OVERLAPPEDWINDOW, FALSE);
 
@@ -68,6 +73,10 @@ core::MainProcess::~MainProcess()
 
 void core::MainProcess::Initialize()
 {
+	// core Managers 초기화
+	cores_.entity = std::make_shared<EntityManager>();
+	cores_.pool = std::make_shared<PoolManager>();
+
 	ShowWindow(hwnd_, SW_SHOWNORMAL);
 	UpdateWindow(hwnd_);
 }
@@ -88,6 +97,9 @@ void core::MainProcess::Loop()
 		else
 		{
 			Update();
+
+			EventManager::GetInstance()->Update(time_);
+
 			Render();
 		}
 	}

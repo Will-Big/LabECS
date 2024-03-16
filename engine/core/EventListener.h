@@ -7,11 +7,9 @@ namespace core
 	class EventListener
 	{
 	public:
-		EventListener(EventManager* eventManager) : eventManager_(eventManager) {}
-
 		virtual ~EventListener()
 		{
-			eventManager_->RemoveListener(this);
+			EventManager::GetInstance()->RemoveListener(this);
 		}
 
 	protected:
@@ -22,9 +20,6 @@ namespace core
 		{
 			return ListenerInfo(this, [this, func](std::any data) { (static_cast<T*>(this)->*func)(data); });
 		}
-
-	private:
-		EventManager* eventManager_;
 	};
 }
 

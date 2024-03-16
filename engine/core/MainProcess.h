@@ -1,7 +1,9 @@
 ﻿#pragma once
+#include "CoreManagers.h"
 
 namespace core
 {
+
 	// 게임의 사이클을 관장하는 메인 클래스
 	class CORE_EXPORT MainProcess
 	{
@@ -16,6 +18,7 @@ namespace core
 		virtual void Update();
 		virtual void Render();
 
+		CoreManagers cores_;
 		float time_ = 0.f;
 
 	private:

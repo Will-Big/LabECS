@@ -27,6 +27,12 @@ void core::EventManager::Update(float deltaTime)
 		event.eventFunc_();
 }
 
+core::EventManager* core::EventManager::GetInstance()
+{
+	static EventManager instance;
+	return &instance;
+}
+
 void core::EventManager::Subscribe(const EventType& type, const ListenerInfo& listenerInfo)
 {
 	listeners_[type].push_back(listenerInfo);

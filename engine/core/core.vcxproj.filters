@@ -18,28 +18,16 @@
     <Filter Include="소스 파일\Base">
       <UniqueIdentifier>{38c76e24-3188-4c16-84c5-1bac02255939}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\pch">
+      <UniqueIdentifier>{61c1442f-0305-4ef6-8e84-c629f31e839f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainProcess.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
-    <ClInclude Include="pch.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="TimeManager.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Defines.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Transform.h">
       <Filter>소스 파일\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="System.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="ISystemCycle.h">
-      <Filter>소스 파일</Filter>
     </ClInclude>
     <ClInclude Include="EntityManager.h">
       <Filter>소스 파일\Managers</Filter>
@@ -56,27 +44,51 @@
     <ClInclude Include="EventListener.h">
       <Filter>소스 파일\Base</Filter>
     </ClInclude>
+    <ClInclude Include="Parent.h">
+      <Filter>소스 파일\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>소스 파일\pch</Filter>
+    </ClInclude>
+    <ClInclude Include="System.h">
+      <Filter>소스 파일\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="ISystemCycle.h">
+      <Filter>소스 파일\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeManager.h">
+      <Filter>소스 파일\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Defines.h">
+      <Filter>소스 파일\pch</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreManagers.h">
+      <Filter>소스 파일\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemManager.h">
+      <Filter>소스 파일\Managers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dllmain.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="pch.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="MainProcess.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="TimeManager.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="System.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="EntityManager.cpp">
       <Filter>소스 파일\Managers</Filter>
     </ClCompile>
     <ClCompile Include="EventManager.cpp">
+      <Filter>소스 파일\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>소스 파일\pch</Filter>
+    </ClCompile>
+    <ClCompile Include="System.cpp">
+      <Filter>소스 파일\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeManager.cpp">
+      <Filter>소스 파일\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemManager.cpp">
       <Filter>소스 파일\Managers</Filter>
     </ClCompile>
   </ItemGroup>

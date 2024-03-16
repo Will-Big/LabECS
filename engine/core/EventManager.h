@@ -28,6 +28,9 @@ namespace core
 		};
 
 	public:
+		// 싱글톤 인스턴스를 획득합니다.
+		inline static EventManager* GetInstance();
+
 		// 이벤트를 구독합니다.
 		void Subscribe(const EventType& type, const ListenerInfo& listenerInfo);
 

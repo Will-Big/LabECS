@@ -152,18 +152,20 @@
     <ClInclude Include="EntityManager.h" />
     <ClInclude Include="EventListener.h" />
     <ClInclude Include="EventManager.h" />
+    <ClInclude Include="CoreManagers.h" />
+    <ClInclude Include="Parent.h" />
     <ClInclude Include="PoolManager.h" />
     <ClInclude Include="ComponentPool.h" />
     <ClInclude Include="MainProcess.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="System.h" />
     <ClInclude Include="ISystemCycle.h" />
+    <ClInclude Include="SystemManager.h" />
     <ClInclude Include="TimeManager.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Defines.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="EntityManager.cpp" />
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="MainProcess.cpp" />
@@ -174,6 +176,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="System.cpp" />
+    <ClCompile Include="SystemManager.cpp" />
     <ClCompile Include="TimeManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

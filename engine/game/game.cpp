@@ -9,7 +9,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_ LPWSTR    lpCmdLine,
                      _In_ int       nCmdShow)
 {
-	demo::DemoProcess demo{ hInstance, "Test Main", 1920, 1080, true };
+	demo::DemoProcess demo{ hInstance, "Test Main", 1920, 1080, false };
     demo.Initialize();
     demo.Loop();
 }
