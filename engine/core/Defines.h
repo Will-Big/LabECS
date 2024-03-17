@@ -2,7 +2,9 @@
 
 namespace core
 {
-    using EntityId = size_t;        // Entity 개별 Id 값
+	class ISystem;
+
+	using EntityId = size_t;        // Entity 개별 Id 값
     using ComponentId = uint32_t;   // Component 클래스의 HashId
 
     using EventType = std::string;
@@ -26,11 +28,14 @@ namespace core
         return id;
     }
 
-    template<typename T>
+    template <typename T>
     concept IsComponent = requires
 	{
         { T::componentId } -> std::convertible_to<ComponentId>;
     };
+
+    template <typename T>
+    concept IsSystem = std::is_base_of_v<ISystem, T>;
 }
 
 // 컴파일 타임 타입 ID

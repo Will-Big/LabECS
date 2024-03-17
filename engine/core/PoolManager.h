@@ -6,6 +6,7 @@ namespace core
 {
     // ComponentPool 을 관리하는 클래스
     // 사용자는 ComponentPool 에 직접 접근하지 않으며 PoolManager 를 통해 관리
+    // Component 의 추가, 삭제, 읽기/쓰기, 순회를 담당
     class CORE_EXPORT PoolManager
 	{
     public:
@@ -19,6 +20,9 @@ namespace core
 
         // Entity 에 속한 모든 Component 를 제거합니다.
         void RemoveEntityComponents(EntityId entityId);
+
+        // 모든 ComponentPool 을 Clear 합니다.
+        void Clear();
 
         // Entity 에 쓰기 전용(참조) Component 를 가져옵니다.
         template<IsComponent Component>
@@ -73,6 +77,14 @@ namespace core
         for(const auto& poolBase : std::views::values(pools_))
         {
             poolBase->RemoveComponent(entityId);
+        }
+    }
+
+    inline void PoolManager::Clear()
+    {
+        for (const auto& poolBase : std::views::values(pools_))
+        {
+            poolBase->Clear();
         }
     }
 

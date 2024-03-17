@@ -19,7 +19,7 @@ namespace core
 	};
 
 	// Component 객체를 소유하고 있는 클래스
-	template<typename Component>
+	template<IsComponent Component>
 	class ComponentPool : public IComponentPoolBase
 	{
 	public:
@@ -81,17 +81,17 @@ namespace core
 		std::unordered_map<size_t, EntityId> indexToEntity_;
 	};
 
-	template <typename Component>
+	template <IsComponent Component>
 	void* ComponentPool<Component>::AddComponent(EntityId entityId)
 	{
-		std::unique_lock lock(mutex_); // 쓰기 작업을 위한 독점 락
-
 		// EntityId 에 해당하는 Component 가 이미 존재하는지 확인
-		if (entityToIndex_.contains(entityId)) {
-			// 이미 존재하면 기존 Component 를 업데이트
+		if (entityToIndex_.contains(entityId)) 
+		{
 			size_t index = entityToIndex_[entityId];
-			components_[index] = Component{};
+			return &components_[index]; // 기존 인스턴스 반환
 		}
+
+		std::unique_lock lock(mutex_); // 쓰기 작업을 위한 독점 락
 
 		// 새 Component 를 추가
 		const size_t newIndex = components_.size();
@@ -102,9 +102,10 @@ namespace core
 		return &components_.emplace_back();
 	}
 
-	template <typename Component>
+	template <IsComponent Component>
 	void ComponentPool<Component>::RemoveComponent(EntityId entityId)
 	{
+		// EntityId 에 해당하는 Component 가 존재하는지 확인
 		if (!entityToIndex_.contains(entityId))
 			return;
 
@@ -126,7 +127,7 @@ namespace core
 		indexToEntity_.erase(indexOfLast);
 	}
 
-	template <typename Component>
+	template <IsComponent Component>
 	Component& ComponentPool<Component>::GetComponent(EntityId entityId)
 	{
 		assert(entityToIndex_.contains(entityId));
@@ -134,7 +135,7 @@ namespace core
 		return components_[entityToIndex_[entityId]];
 	}
 
-	template <typename Component>
+	template <IsComponent Component>
 	const Component& ComponentPool<Component>::GetSnapShot(EntityId entityId)
 	{
 		assert(entityToIndex_.contains(entityId));
@@ -142,13 +143,13 @@ namespace core
 		return components_[entityToIndex_[entityId]];
 	}
 
-	template <typename Component>
+	template <IsComponent Component>
 	bool ComponentPool<Component>::HasComponent(EntityId entityId) const
 	{
 		return entityToIndex_.contains(entityId);
 	}
 
-	template <typename Component>
+	template <IsComponent Component>
 	EntityId ComponentPool<Component>::GetEntityId(const Iterator& iterator)
 	{
 		// Iterator 가 가리키는 컴포넌트의 포인터를 얻습니다.
@@ -167,7 +168,7 @@ namespace core
 
 
 
-	template <typename Component>
+	template <IsComponent Component>
 	void ComponentPool<Component>::Clear()
 	{
 		std::unique_lock lock(mutex_); // 쓰기 작업을 위한 독점 락

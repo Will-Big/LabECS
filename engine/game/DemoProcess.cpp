@@ -32,6 +32,9 @@ void demo::DemoProcess::Initialize()
 	auto e3 = cores_.entity->AddEntity();
 	auto e4 = cores_.entity->AddEntity();
 
+	auto tra1 = cores_.pool->AddComponent<Transform>(e1).a = 100;
+	auto tra2 = cores_.pool->AddComponent<core::Transform>(e1).a;
+
 	cores_.pool->AddComponent<Tester>(e1).a1 = 10;
 	cores_.pool->AddComponent<Tester>(e2).a1 = 100;
 	cores_.pool->AddComponent<Tester>(e3).a1 = 1000;

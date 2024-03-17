@@ -5,7 +5,7 @@ namespace core
 	class PoolManager;
 
 	// Entity 를 관리하는 클래스
-	// todo: PoolManager 와의 결합도 낮추기
+	// Entity 의 추가, 삭제, 계층 구조를 담당
 	class CORE_EXPORT EntityManager
 	{
 	public:

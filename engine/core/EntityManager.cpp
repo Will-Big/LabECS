@@ -36,7 +36,8 @@ void core::EntityManager::RemoveEntity(EntityId entityId, PoolManager* poolManag
 	}
 
 	// 모든 엔티티를 삭제
-	for (auto& id : toRemove) {
+	for (const auto& id : toRemove) 
+	{
 		// 해당 Entity 와 관련된 모든 컴포넌트를 삭제합니다.
 		poolManager->RemoveEntityComponents(id);
 	}

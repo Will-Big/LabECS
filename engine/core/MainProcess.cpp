@@ -5,6 +5,8 @@
 #include "EntityManager.h"
 #include "EventManager.h"
 #include "PoolManager.h"
+#include "SystemManager.h"
+#include "TimeManager.h"
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -73,10 +75,14 @@ core::MainProcess::~MainProcess()
 
 void core::MainProcess::Initialize()
 {
-	// core Managers 초기화
+	// Managers 초기화
 	cores_.entity = std::make_shared<EntityManager>();
 	cores_.pool = std::make_shared<PoolManager>();
 
+	time_ = std::make_shared<TimeManager>();
+	system_ = std::make_shared<SystemManager>(cores_);
+
+	// 윈도우 생성
 	ShowWindow(hwnd_, SW_SHOWNORMAL);
 	UpdateWindow(hwnd_);
 }
@@ -98,8 +104,6 @@ void core::MainProcess::Loop()
 		{
 			Update();
 
-			EventManager::GetInstance()->Update(time_);
-
 			Render();
 		}
 	}
@@ -107,10 +111,17 @@ void core::MainProcess::Loop()
 
 void core::MainProcess::Update()
 {
+	time_->Update();
+	delta_ = time_->GetDeltaTime();
+
+	system_->Update(delta_);
+
+	EventManager::GetInstance()->Update(delta_);
 }
 
 void core::MainProcess::Render()
 {
+	system_->Render();
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)

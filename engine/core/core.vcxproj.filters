@@ -50,7 +50,7 @@
     <ClInclude Include="pch.h">
       <Filter>소스 파일\pch</Filter>
     </ClInclude>
-    <ClInclude Include="System.h">
+    <ClInclude Include="ISystem.h">
       <Filter>소스 파일\Base</Filter>
     </ClInclude>
     <ClInclude Include="ISystemCycle.h">
@@ -68,6 +68,9 @@
     <ClInclude Include="SystemManager.h">
       <Filter>소스 파일\Managers</Filter>
     </ClInclude>
+    <ClInclude Include="InputSystem.h">
+      <Filter>소스 파일\Managers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainProcess.cpp">
@@ -82,10 +85,10 @@
     <ClCompile Include="pch.cpp">
       <Filter>소스 파일\pch</Filter>
     </ClCompile>
-    <ClCompile Include="System.cpp">
-      <Filter>소스 파일\Base</Filter>
-    </ClCompile>
     <ClCompile Include="TimeManager.cpp">
+      <Filter>소스 파일\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="InputSystem.cpp">
       <Filter>소스 파일\Managers</Filter>
     </ClCompile>
     <ClCompile Include="SystemManager.cpp">
