@@ -5,10 +5,10 @@ namespace core
 	class EventListener;
 
 	// 이벤트를 관리하는 클래스
-	class CORE_EXPORT EventManager
+	class EventManager
 	{
 		// EventListener 와 실행할 콜백 함수
-		struct CORE_EXPORT ListenerInfo
+		struct ListenerInfo
 		{
 			EventListener* listener_;
 			EventCallback callback_;
@@ -29,7 +29,7 @@ namespace core
 
 	public:
 		// 싱글톤 인스턴스를 획득합니다.
-		inline static EventManager* GetInstance();
+		static EventManager* GetInstance();
 
 		// 이벤트를 구독합니다.
 		void Subscribe(const EventType& type, const ListenerInfo& listenerInfo);

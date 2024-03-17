@@ -1,14 +1,20 @@
 ﻿#pragma once
-#include "ISystemCycle.h"
+
+#include <BS_thread_pool.hpp>
+
+#define CORE_THREAD
 
 namespace core
 {
+	class IUpdatable;
+	class IFixedUpdatable;
+	class IRenderable;
 	struct CoreManagers;
 
-	class CORE_EXPORT SystemManager
+	class SystemManager
 	{
 	public:
-		SystemManager(CoreManagers& coreManager) : cores_(coreManager) {}
+		SystemManager(CoreManagers& coreManager);
 
 		template <IsSystem System>
 		void AddSystem();
@@ -16,20 +22,24 @@ namespace core
 		template <IsSystem System>
 		void RemoveSystem();
 
-		void Update(float delta) const;
-		void FixedUpdate(float delta) const;
-		void Render() const;
-
 		void Clear();
 
 	private:
+		void Update(float delta);
+		void FixedUpdate(float delta);
+		void Render();
+
+	private:
 		CoreManagers& cores_;
+		BS::thread_pool threadPool_;
 
 		std::vector<std::shared_ptr<ISystem>> systems_;
 
 		std::vector<IUpdatable*> updates_;
 		std::vector<IFixedUpdatable*> fixes_;
 		std::vector<IRenderable*> renders_;
+
+		friend class MainProcess;
 	};
 
 	template <IsSystem System>

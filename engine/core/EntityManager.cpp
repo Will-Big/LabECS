@@ -1,7 +1,7 @@
 ﻿#include "pch.h"
 #include "EntityManager.h"
 
-#include "PoolManager.h"
+#include "ComponentManager.h"
 #include "Parent.h"
 
 core::EntityId core::EntityManager::AddEntity()
@@ -9,7 +9,7 @@ core::EntityId core::EntityManager::AddEntity()
 	return entities_.emplace_back(++lastId_);
 }
 
-void core::EntityManager::RemoveEntity(EntityId entityId, PoolManager* poolManager)
+void core::EntityManager::RemoveEntity(EntityId entityId, ComponentManager* poolManager)
 {
 	std::lock_guard lock(mutex_);
 
@@ -49,12 +49,12 @@ void core::EntityManager::RemoveEntity(EntityId entityId, PoolManager* poolManag
 		});
 }
 
-core::EntityId core::EntityManager::GetParent(EntityId childId, PoolManager* poolManager)
+core::EntityId core::EntityManager::GetParent(EntityId childId, ComponentManager* poolManager)
 {
 	return poolManager->GetPool<Parent>().GetSnapShot(childId).parentId;
 }
 
-std::vector<core::EntityId> core::EntityManager::GetChildren(EntityId parentId, PoolManager* poolManager)
+std::vector<core::EntityId> core::EntityManager::GetChildren(EntityId parentId, ComponentManager* poolManager)
 {
 	auto& parentPool = poolManager->GetPool<Parent>();
 	std::vector<core::EntityId> children;

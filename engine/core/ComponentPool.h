@@ -2,7 +2,7 @@
 
 namespace core
 {
-	// PoolManager 에서 관리하기 위한 인터페이스
+	// ComponentManager 에서 관리하기 위한 인터페이스
 	class IComponentPoolBase
 	{
 	public:
@@ -23,7 +23,7 @@ namespace core
 	class ComponentPool : public IComponentPoolBase
 	{
 	public:
-		class CORE_EXPORT Iterator
+		class  Iterator
 		{
 		public:
 			using pointer = Component*;

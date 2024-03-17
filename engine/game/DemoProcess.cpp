@@ -1,13 +1,15 @@
 ﻿#include "pch.h"
 #include "DemoProcess.h"
 
-#include "PoolManager.h"
+#include "ComponentManager.h"
 #include "EntityManager.h"
 #include "ComponentPool.h"
 #include "CoreManagers.h"
 #include "EventManager.h"
 #include "Transform.h"
 #include "Parent.h"
+#include "SystemManager.h"
+#include "TestSystem.h"
 
 using namespace core;
 
@@ -27,27 +29,15 @@ void demo::DemoProcess::Initialize()
 {
 	MainProcess::Initialize();
 
-	auto e1 = cores_.entity->AddEntity();
-	auto e2 = cores_.entity->AddEntity();
-	auto e3 = cores_.entity->AddEntity();
-	auto e4 = cores_.entity->AddEntity();
+	cores_.component->AddComponent<Transform>(1);
 
-	auto tra1 = cores_.pool->AddComponent<Transform>(e1).a = 100;
-	auto tra2 = cores_.pool->AddComponent<core::Transform>(e1).a;
-
-	cores_.pool->AddComponent<Tester>(e1).a1 = 10;
-	cores_.pool->AddComponent<Tester>(e2).a1 = 100;
-	cores_.pool->AddComponent<Tester>(e3).a1 = 1000;
-	cores_.pool->AddComponent<Tester>(e4).a1 = 10000;
-
-	cores_.pool->AddComponent<Parent>(e2).parentId = e1;
-	cores_.pool->AddComponent<Parent>(e3).parentId = e2;
-	cores_.pool->AddComponent<Parent>(e4).parentId = e3;
-
-	auto c1 = cores_.entity->GetChildren(e1, cores_.pool.get());
-	auto p1 = cores_.entity->GetParent(e3, cores_.pool.get());
-
-	cores_.entity->RemoveEntity(e1, cores_.pool.get());
+	system_->AddSystem<TestSystem1>();
+	system_->AddSystem<TestSystem2>();
+	system_->AddSystem<TestSystem3>();
+	system_->AddSystem<TestSystem4>();
+	system_->AddSystem<TestSystem5>();
+	system_->AddSystem<TestSystem6>();
+	system_->AddSystem<TestSystem7>();
 }
 
 void demo::DemoProcess::Update()

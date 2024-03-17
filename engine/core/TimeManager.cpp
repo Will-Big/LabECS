@@ -15,7 +15,7 @@ void core::TimeManager::Update()
 	QueryPerformanceCounter(&curCount_);
 	delta_ = static_cast<double>(curCount_.QuadPart - prevCount_.QuadPart) / static_cast<double>(frequency_.QuadPart);
 	prevCount_ = curCount_;
-
+	elapsed_ += delta_;
 	++Fps_;
 
 	if (elapsed_ > 1.0) 
@@ -23,5 +23,8 @@ void core::TimeManager::Update()
 		elapsed_ -= 1.0;
 		lastFps_ = Fps_;
 		Fps_ = 0;
+
+		OutputDebugStringA(std::to_string(lastFps_).c_str());
+		OutputDebugStringA("\n");
 	}
 }

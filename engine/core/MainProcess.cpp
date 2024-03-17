@@ -4,7 +4,7 @@
 #include "CoreManagers.h"
 #include "EntityManager.h"
 #include "EventManager.h"
-#include "PoolManager.h"
+#include "ComponentManager.h"
 #include "SystemManager.h"
 #include "TimeManager.h"
 
@@ -77,7 +77,7 @@ void core::MainProcess::Initialize()
 {
 	// Managers 초기화
 	cores_.entity = std::make_shared<EntityManager>();
-	cores_.pool = std::make_shared<PoolManager>();
+	cores_.component = std::make_shared<ComponentManager>();
 
 	time_ = std::make_shared<TimeManager>();
 	system_ = std::make_shared<SystemManager>(cores_);
