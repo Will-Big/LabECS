@@ -40,7 +40,7 @@ namespace core
 
 // 컴파일 타임 타입 ID
 // using, typedef, nested, namespace 을 지원하지 않으므로 유일성이 보장되지 않을 수 있음
-#define TYPEID( T ) typeid_helper< Hash32_CT( #T, sizeof( #T ) - 1 ) >()
+#define TYPEID( T ) core::typeid_helper< core::Hash32_CT( #T, sizeof( #T ) - 1 ) >()
 
 // 컴포넌트 compile-time-type-id 생성
-#define COMPONENT_INFO( T ) static constexpr ComponentId componentId = TYPEID( T );
+#define COMPONENT_INFO( T ) static constexpr core::ComponentId componentId = TYPEID( T );

@@ -79,6 +79,8 @@ namespace core
 		std::vector<Component> components_;
 		std::unordered_map<EntityId, size_t> entityToIndex_;
 		std::unordered_map<size_t, EntityId> indexToEntity_;
+
+		friend class ComponentManager;
 	};
 
 	template <IsComponent Component>

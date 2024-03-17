@@ -9,17 +9,10 @@
 #include "Transform.h"
 #include "Parent.h"
 #include "SystemManager.h"
+#include "Tester.h"
 #include "TestSystem.h"
 
 using namespace core;
-
-struct Tester
-{
-	COMPONENT_INFO(Tester)
-
-	int a1 = 0;
-	int a2 = 0;
-};
 
 demo::DemoProcess::~DemoProcess()
 {
@@ -30,6 +23,10 @@ void demo::DemoProcess::Initialize()
 	MainProcess::Initialize();
 
 	cores_.component->AddComponent<Transform>(1);
+	cores_.component->AddComponent<Tester>(1);
+
+	cores_.component->AddComponent<Transform>(2);
+	cores_.component->AddComponent<Tester>(2);
 
 	system_->AddSystem<TestSystem1>();
 	system_->AddSystem<TestSystem2>();

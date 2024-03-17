@@ -2,6 +2,7 @@
 #include "TestSystem.h"
 
 #include "ComponentManager.h"
+#include "Tester.h"
 #include "Transform.h"
 
 using namespace core;
@@ -25,6 +26,14 @@ void demo::TestSystem1::Update(float deltaTime)
 		auto eid = cores_.component->GetEntityId<Transform>(it);
 		int i = 0;
 	}
+
+	cores_.component->ForEachCommonComponent<Transform, Tester>([](Transform& transform, Tester& tester)
+		{
+			transform.a = 100;
+			transform.b = -100;
+			tester.a1 = 100;
+			tester.a2 = -100;
+		});
 }
 
 void demo::TestSystem1::FixedUpdate(float deltaTime)

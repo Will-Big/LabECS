@@ -50,6 +50,44 @@ namespace core
 		template<typename Component, typename Func>
 		void ForEachComponent(Func&& func);
 
+		template<typename... Components>
+		std::vector<EntityId> FindCommonEntities(ComponentPool<Components>&... pools)
+		{
+			// 각 컴포넌트 풀의 entityToIndex_ 맵에서 EntityId 집합을 추출합니다.
+			std::vector<std::unordered_set<EntityId>> entitySets;
+			(entitySets.emplace_back([&pools] 
+				{
+				std::unordered_set<EntityId> keys;
+
+				for (const auto& [key, _] : pools.entityToIndex_)
+					keys.insert(key);
+
+				return keys;
+				}()), ...);
+
+			// 첫 번째 컴포넌트 풀의 EntityId 집합으로 시작하여 공통 EntityId를 찾습니다.
+			std::unordered_set<EntityId> commonEntities = entitySets.front();
+			for (size_t i = 1; i < entitySets.size(); ++i) {
+				std::unordered_set<EntityId> temp;
+				std::ranges::set_intersection(commonEntities, entitySets[i],
+				                              std::inserter(temp, temp.begin()));
+				commonEntities = std::move(temp);
+			}
+
+			return std::vector<EntityId>(commonEntities.begin(), commonEntities.end());
+		}
+
+		template<typename... Components, typename Func>
+		void ForEachCommonComponent(Func&& func)
+		{
+			auto commonEntityIds = FindCommonEntities(GetPool<Components>()...);
+
+			for (auto entityId : commonEntityIds) {
+				func(GetPool<Components>().GetComponent(entityId)...);
+			}
+		}
+
+
 	private:
 		// ComponentPool 을 가져옵니다.
 		template<IsComponent Component>

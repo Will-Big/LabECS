@@ -157,6 +157,7 @@
   <ItemGroup>
     <ClInclude Include="DemoProcess.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Tester.h" />
     <ClInclude Include="TestSystem.h" />
   </ItemGroup>
   <ItemGroup>
