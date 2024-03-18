@@ -5,7 +5,7 @@ namespace core
 	class EventListener;
 
 	// 이벤트를 관리하는 클래스
-	class EventManager
+	class CORE_API EventManager
 	{
 		// EventListener 와 실행할 콜백 함수
 		struct ListenerInfo
@@ -49,7 +49,6 @@ namespace core
 		// listeners_ 에 저장된 EventListener 를 삭제합니다.
 		// EventListener 의 소멸자에서 자동으로 호출됩니다.
 		void RemoveListener(EventListener* handler);
-
 
 	private:
 		std::unordered_map<EventType, std::vector<ListenerInfo>> listeners_;

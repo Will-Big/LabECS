@@ -6,7 +6,7 @@ namespace core
 
 	// Entity 를 관리하는 클래스
 	// Entity 의 추가, 삭제, 계층 구조를 담당
-	class EntityManager
+	class CORE_API EntityManager
 	{
 	public:
 		// Entity 를 추가하고 EntityId 를 반환합니다.

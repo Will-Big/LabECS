@@ -23,7 +23,7 @@ namespace core
 	class ComponentPool : public IComponentPoolBase
 	{
 	public:
-		class  Iterator
+		class Iterator
 		{
 		public:
 			using pointer = Component*;

@@ -11,7 +11,7 @@ namespace core
 	class IRenderable;
 	struct CoreManagers;
 
-	class SystemManager
+	class CORE_API SystemManager
 	{
 	public:
 		SystemManager(CoreManagers& coreManager);

@@ -3,14 +3,12 @@
 
 #define WIN32_LEAN_AND_MEAN
 
-//#ifndef CORE_EXPORT
-//	#elif DLL_BUILD
-//		#define CORE_EXPORT __declspec(dllexport)
-//	#else
-//		#pragma comment(lib, "core.lib")
-//		#define CORE_EXPORT __declspec(dllimport)
-//	#endif
-//#endif
+#ifdef CORE_EXPORT
+	#define CORE_API __declspec(dllexport)
+#else
+	#pragma comment(lib, "core.lib")
+	#define CORE_API __declspec(dllimport)
+#endif
 
 // STL
 #include <any>

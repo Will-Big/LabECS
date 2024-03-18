@@ -7,7 +7,7 @@ namespace core
 	// ComponentPool 을 관리하는 클래스
 	// 사용자는 ComponentPool 에 직접 접근하지 않으며 ComponentManager 를 통해 관리
 	// Component 의 추가, 삭제, 읽기/쓰기, 순회를 담당
-	class ComponentManager
+	class CORE_API ComponentManager
 	{
 	public:
 		// Entity 에 Component 를 추가하고 참조를 반환합니다.
