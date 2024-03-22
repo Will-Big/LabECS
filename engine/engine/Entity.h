@@ -14,21 +14,27 @@ namespace engine
 		T& Get() const;
 
 		template<typename... Args>
-		bool AllOf() const;
+		bool HasAllOf() const;
 
 		template<typename... Args>
-		bool AnyOf() const;
+		bool HasAnyOf() const;
 
 		template<typename... Args>
 		void Remove() const;
 
 		void SetParent(Entity entity);
+		std::vector<Entity> GetChildren();
 
-		bool IsAncestorOf(Entity entity);
+		bool IsAncestorOf(Entity entity) const;
+		bool IsDescendantOf(Entity entity) const;
 
 		operator uint32_t () const { return static_cast<uint32_t>(_handle); }
 		operator entt::entity() const { return _handle; }
 		operator bool() const { return (_handle != entt::null) && _registry.valid(_handle); }
+
+		Entity operator=(const Entity& other) const { return { other._handle, other._registry }; }
+		bool operator==(const Entity& other) const { return _handle == other._handle && &_registry == &other._registry; }
+		bool operator!=(const Entity& other) const { return !(*this == other); }
 
 	private:
 		entt::entity _handle = entt::null;
@@ -48,21 +54,21 @@ namespace engine
 	}
 
 	template <typename... Args>
-	bool Entity::AllOf() const
+	bool Entity::HasAllOf() const
 	{
-		return _registry.all_of<Args>(_handle);
+		return _registry.all_of<Args...>(_handle);
 	}
 
 	template <typename ... Args>
-	bool Entity::AnyOf() const
+	bool Entity::HasAnyOf() const
 	{
-		return _registry.any_of<Args>(_handle);
+		return _registry.any_of<Args...>(_handle);
 	}
 
 	template <typename... Args>
 	void Entity::Remove() const
 	{
-		_registry.remove<Args>(_handle);
+		_registry.remove<Args...>(_handle);
 	}
 }
 

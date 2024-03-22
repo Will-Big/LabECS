@@ -24,6 +24,9 @@ void demo::TestSystem1::Update(float deltaTime)
 	for(auto it = cores_.component->begin<Transform>(); it != cores_.component->end<Transform>(); ++it)
 	{
 		auto eid = cores_.component->GetEntityId<Transform>(it);
+
+		if(!cores_.component->HasComponent<Tester>(eid))
+
 		int i = 0;
 	}
 
@@ -31,8 +34,8 @@ void demo::TestSystem1::Update(float deltaTime)
 		{
 			transform.a = 100;
 			transform.b = -100;
-			tester.a1 = 100;
-			tester.a2 = -100;
+			int a = tester.a1;
+			int i = 0;
 		});
 }
 

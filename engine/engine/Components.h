@@ -13,8 +13,8 @@ namespace engine
 
 	struct Parent
 	{
-		entt::entity parentHandle;
+		entt::entity handle;
 
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Parent, parentHandle)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Parent, handle)
 	};
 }

@@ -23,9 +23,9 @@ void demo::DemoProcess::Initialize()
 	MainProcess::Initialize();
 
 	cores_.component->AddComponent<Transform>(1);
-	cores_.component->AddComponent<Tester>(1);
+	cores_.component->AddComponent<Tester>(1).a1 = -1000;
 
-	cores_.component->AddComponent<Transform>(2);
+	//cores_.component->AddComponent<Transform>(2);
 	cores_.component->AddComponent<Tester>(2);
 
 	system_->AddSystem<TestSystem1>();
