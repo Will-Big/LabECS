@@ -13,17 +13,21 @@ int main()
 	auto e3 = scene.AddEntity();
 	auto e4 = scene.AddEntity();
 
-	e1.Emplace<engine::Parent>().handle = e2;
-	e2.Emplace<engine::Parent>().handle = e3;
-	e3.Emplace<engine::Parent>().handle = e4;
+	e1.SetParent(e2);
+	e2.SetParent(e3);
+	e3.SetParent(e4);
 
-	e2.Remove<engine::Parent>();
+	e1.Emplace<engine::Transform>();
+	e2.Emplace<engine::Transform>();
+	e3.Emplace<engine::Transform>();
 
 	scene.RegisterSystem<engine::TransformSystem>();
 	scene.RemoveSystem<engine::TransformSystem>();
 
 	auto b1 = e4.IsAncestorOf(e1);
 	auto b2 = e1.IsDescendantOf(e4);
+
+	scene.Serialize();
 
 	while (true)
 		scene.Run();

@@ -30,6 +30,6 @@
 #include "nlohmann/json.hpp"
 
 // USER
-
+#include "Globals.h"
 
 #endif //PCH_H

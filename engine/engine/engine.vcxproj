@@ -145,6 +145,8 @@
   <ItemGroup>
     <ClInclude Include="Components.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="Globals.h" />
+    <ClInclude Include="JsonInputArchive.h" />
     <ClInclude Include="JsonOutputArchive.h" />
     <ClInclude Include="MainProcess.h" />
     <ClInclude Include="pch.h" />
@@ -155,6 +157,7 @@
   <ItemGroup>
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
+    <ClCompile Include="JsonInputArchive.cpp" />
     <ClCompile Include="JsonOutputArchive.cpp" />
     <ClCompile Include="MainProcess.cpp" />
     <ClCompile Include="pch.cpp">
@@ -165,6 +168,9 @@
     </ClCompile>
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Systems.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

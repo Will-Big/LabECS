@@ -22,6 +22,8 @@ namespace engine
 		template<typename... Args>
 		void Remove() const;
 
+		void Destroy() const { _registry.destroy(_handle); }
+
 		void SetParent(Entity entity);
 		std::vector<Entity> GetChildren();
 

@@ -4,26 +4,26 @@
 
 void engine::Entity::SetParent(Entity entity)
 {
-	if (!entity.HasAnyOf<Parent>())
+	if (!entity.HasAnyOf<Relationship>())
 	{
-		Parent& parent = this->Emplace<Parent>();
-		parent.handle = entity;
+		Relationship& parent = this->Emplace<Relationship>();
+		parent.parent = entity;
 	}
 	else
 	{
-		Parent& parent = this->Get<Parent>();
-		parent.handle = entity;
+		Relationship& parent = this->Get<Relationship>();
+		parent.parent = entity;
 	}
 }
 
 std::vector<engine::Entity> engine::Entity::GetChildren()
 {
-	auto view = _registry.view<Parent>();
+	auto view = _registry.view<Relationship>();
 	std::vector<Entity> children;
 
-	view.each([&](const auto entity, const Parent& parent)
+	view.each([&](const auto entity, const Relationship& parent)
 		{
-			if (*this == parent.handle)
+			if (*this == parent.parent)
 				children.emplace_back(entity, _registry);
 		});
 
@@ -32,14 +32,14 @@ std::vector<engine::Entity> engine::Entity::GetChildren()
 
 bool engine::Entity::IsAncestorOf(Entity entity) const
 {
-	while (_registry.any_of<Parent>(entity))
+	while (_registry.any_of<Relationship>(entity))
 	{
-		auto parent = _registry.get<Parent>(entity);
+		auto parent = _registry.get<Relationship>(entity);
 
-		if (parent.handle == *this)
+		if (parent.parent == *this)
 			return true;
 
-		entity._handle = parent.handle;
+		entity._handle = parent.parent;
 	}
 
 	return false;

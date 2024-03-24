@@ -19,14 +19,14 @@ namespace engine
 	public:
 		Entity AddEntity();
 
-		template <typename T> requires IsSystemCallable<T>
+		template <typename T> requires IsCallableSystem<T>
 		void RegisterSystem();
 
-		template <typename T> requires IsSystemCallable<T>
+		template <typename T> requires IsCallableSystem<T>
 		void RemoveSystem();
 
 		// todo: Serialize, Deserialize
-		bool Serialize(std::filesystem::path& path);
+		bool Serialize();
 		bool Deserialize(std::filesystem::path& path);
 
 		void Run();
@@ -41,7 +41,7 @@ namespace engine
 		std::vector<SystemCallback> _renderSystems;
 	};
 
-	template <typename T> requires IsSystemCallable<T>
+	template <typename T> requires IsCallableSystem<T>
 	void Scene::RegisterSystem()
 	{
 		// 시스템의 메타데이터 가져오기
@@ -64,7 +64,7 @@ namespace engine
 		_systemMap[name] = { type, systemContainer.size() - 1 };
 	}
 
-	template <typename T> requires IsSystemCallable<T>
+	template <typename T> requires IsCallableSystem<T>
 	void Scene::RemoveSystem()
 	{
 		// 시스템의 메타데이터 가져오기

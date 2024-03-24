@@ -1,0 +1,4 @@
+// 힌트 파일은 Visual Studio IDE에서 함수 및 매크로 이름과 같은 Visual C++ 식별자를
+// 해석하는 데 도움이 됩니다.
+// 자세한 내용은 다음을 참조하세요. https://go.microsoft.com/fwlink/?linkid=865984
+#define NLOHMANN_DEFINE_TYPE_INTRUSIVE(Type, __VA_ARGS__) friend void to_json(nlohmann::json& nlohmann_json_j, const Type& nlohmann_json_t) { NLOHMANN_JSON_EXPAND(NLOHMANN_JSON_PASTE(NLOHMANN_JSON_TO, __VA_ARGS__)) } friend void from_json(const nlohmann::json& nlohmann_json_j, Type& nlohmann_json_t) { NLOHMANN_JSON_EXPAND(NLOHMANN_JSON_PASTE(NLOHMANN_JSON_FROM, __VA_ARGS__)) }

@@ -8,7 +8,7 @@ namespace engine
 	class JsonOutputArchive {
 	public:
 		JsonOutputArchive() {
-			root = nlohmann::json::array();
+			root = nlohmann::json::array(); 
 		}
 
 		// new element for serialization. giving you the amount of elements that is going to be
@@ -19,7 +19,7 @@ namespace engine
 				root.push_back(current);
 			}
 			current = nlohmann::json::array();
-			current.push_back(size); // first element of each array keeps the amount of elements. 
+			current.push_back(size); // first element of each array keeps the amount of elements.
 		}
 
 		// persist entity ids
@@ -27,6 +27,30 @@ namespace engine
 			// Here it is assumed that no custom entt-type is chosen
 			current.push_back((uint32_t)entity);
 		}
+
+		//template<typename... Args>
+		//void operator()(Args&&... args){
+		//	// Handle each argument - for simplicity, just forwarding to nlohmann::json
+		//	(current.push_back(nlohmann::json{ std::forward<Args>(args) }), ...);
+		//}
+
+		template<typename T>
+		void operator()(const T& component)
+		{
+			entt::type_info info = entt::type_id<T>();
+			std::string_view typeName = info.name();
+
+			nlohmann::json componentJson = component; // T 타입을 JSON으로 자동 변환
+
+			// 컴포넌트 데이터와 타입 이름을 JSON 객체로 만듭니다.
+			nlohmann::json entityComponentData;
+			entityComponentData["component"] = typeName;
+			entityComponentData["data"] = componentJson;
+
+			// 현재 직렬화 중인 컴포넌트 리스트에 추가합니다.
+			current.push_back(entityComponentData);
+		}
+
 
 		// persist components
 		// ent is the entity and t a component that is attached to it
@@ -63,7 +87,7 @@ namespace engine
 		// create a json as string
 		std::string AsString()
 		{
-			std::string output = root.dump();
+			std::string output = root.dump(2);
 			return output;
 		}
 
