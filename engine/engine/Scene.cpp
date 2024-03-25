@@ -23,11 +23,12 @@ bool engine::Scene::Serialize()
 	// registry Serialize/Deserialize
 	{
 		std::stringstream ss;
+		nlohmann::json json;
 
 		// Serialize
 		{
-			cereal::JSONOutputArchive output{ ss };
-			//JsonOutputArchive output;
+			//cereal::JSONOutputArchive output{ ss };
+			JsonOutputArchive output;
 
 			auto view = _registry.view<Transform>();
 
@@ -57,8 +58,9 @@ bool engine::Scene::Serialize()
 			snapshot.get<engine::Relationship>(output, view.begin(), view.end());
 			snapshot.get<engine::Transform>(output, view.begin(), view.end());
 
-			//output.Close();
+			output.Close();
 			//auto str = output.AsString();
+			json = output.AsString();
 		}
 
 
@@ -66,13 +68,14 @@ bool engine::Scene::Serialize()
 
 		// Deserialize
 		{
-			cereal::JSONInputArchive input{ ss };
+			//cereal::JSONInputArchive input{ ss };
+			JsonInputArchive input{ json };
 
 			entt::registry dest;
-			entt::continuous_loader loader(dest);
+			entt::snapshot_loader loader(dest);
 
-			loader.get<Relationship>(input);
 			loader.get<Transform>(input);
+			loader.get<Relationship>(input);
 
 			auto v1 = dest.view<Transform>();
 			auto size1 = v1.size();

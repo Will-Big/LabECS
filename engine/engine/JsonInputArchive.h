@@ -2,63 +2,53 @@
 
 namespace engine
 {
-    class JsonInputArchive {
-    private:
-        nlohmann::json root;
-        nlohmann::json current;
+	class JsonInputArchive
+	{
+	public:
+		JsonInputArchive(const std::string& json_string) {
+			root = nlohmann::json::parse(json_string);
+		}
 
-        int root_idx = -1;
-        int current_idx = 0;
+		~JsonInputArchive() {}
 
-    public:
-        JsonInputArchive(const std::string& json_string)
-        {
-            root = nlohmann::json::parse(json_string);
-        }
+		void next_type_group() {
+			if (root_idx >= root.size()) {
+				// 모든 타입 그룹을 처리했음을 나타내는 처리
+				throw std::out_of_range("No more component types to process.");
+			}
+			currentComponents = root[root_idx]["components"];
+			component_idx = 0;
+			root_idx++;
+		}
 
-        ~JsonInputArchive() {
-        }
+		void operator()(std::underlying_type_t<entt::entity>& s) {
+			// 이 함수는 현재 구현에서 사용되지 않습니다.
+			// `JsonOutputArchive`에서 엔티티의 사이즈를 별도로 저장하지 않기 때문입니다.
+		}
 
-        void next_root() {
-            root_idx++;
-            if (root_idx >= root.size()) {
-                // ERROR
-                return;
-            }
-            current = root[root_idx];
-            current_idx = 0;
-        }
+		void operator()(entt::entity& entity) {
+			if (component_idx >= currentComponents.size()) {
+				next_type_group(); // 다음 타입 그룹으로 이동
+			}
+			entity = static_cast<entt::entity>(currentComponents[component_idx]["entity"].get<uint32_t>());
+			component_idx++;
+		}
 
-        void operator()(std::underlying_type_t<entt::entity>& s) {
-            next_root();
-            int size = current[0].get<int>();
-            current_idx++;
-            s = (std::underlying_type_t<entt::entity>)size; // pass amount to entt
-        }
+		template<typename T>
+		void operator()(T& value) {
+			if (component_idx >= currentComponents.size()) {
+				next_type_group(); // 다음 타입 그룹으로 이동
+			}
+			auto& componentData = currentComponents[component_idx]["data"];
+			value = componentData.get<T>();
+			component_idx++; // 다음 컴포넌트로 이동
+		}
 
-        void operator()(entt::entity& entity) {
-            uint32_t ent = current[current_idx].get<uint32_t>();
-            entity = entt::entity(ent);
-            current_idx++;
-        }
 
-        template<typename T>
-        void operator()(entt::entity& ent, T& t) {
-            nlohmann::json component_data = current[current_idx * 2];
-
-            auto comp = component_data.get<T>();
-            t = comp;
-
-            uint32_t _ent = current[current_idx * 2 - 1];
-            ent = entt::entity(_ent); // last element is the entity-id
-            current_idx++;
-        }
-
-        template<typename T>
-        void operator()(T& value) {
-            // 현재 처리 중인 JSON 요소에서 값을 추출하여 value에 할당
-            value = current[current_idx].get<T>();
-            current_idx++; // 다음 요소로 이동
-        }
-    };
+	private:
+		nlohmann::json root;
+		nlohmann::json currentComponents;
+		size_t root_idx = 0;
+		size_t component_idx = 0;
+	};
 }
