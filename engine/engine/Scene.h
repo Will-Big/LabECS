@@ -45,10 +45,10 @@ namespace engine
 	void Scene::RegisterSystem()
 	{
 		// 시스템의 메타데이터 가져오기
-		std::string name = SystemTraits<T>::name;
-		SystemType type = SystemTraits<T>::type;
+		std::string sysName = SystemTraits<T>::name;
+		SystemType sysType = SystemTraits<T>::type;
 
-		if (_systemMap.contains(name))
+		if (_systemMap.contains(sysName))
 			return;
 
 		// 시스템의 실행 로직을 래핑
@@ -57,21 +57,21 @@ namespace engine
 			};
 
 		// 시스템 유형에 따라 적절한 컨테이너 선택 및 시스템 추가
-		auto& systemContainer = GetSystemContainer(type);
+		auto& systemContainer = GetSystemContainer(sysType);
 		systemContainer.push_back(systemFunc);
 
 		// 시스템 이름과 인덱스를 맵에 저장
-		_systemMap[name] = { type, systemContainer.size() - 1 };
+		_systemMap[sysName] = { sysType, systemContainer.size() - 1 };
 	}
 
 	template <typename T> requires IsCallableSystem<T>
 	void Scene::RemoveSystem()
 	{
 		// 시스템의 메타데이터 가져오기
-		std::string systemName = SystemTraits<T>::name;
-		SystemType systemType = SystemTraits<T>::type;
+		std::string sysName = SystemTraits<T>::name;
+		SystemType sysType = SystemTraits<T>::type;
 
-		auto it = _systemMap.find(systemName);
+		auto it = _systemMap.find(sysName);
 
 		if (it == _systemMap.end())
 			return;

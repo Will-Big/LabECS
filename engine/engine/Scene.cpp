@@ -55,16 +55,16 @@ bool engine::Scene::Serialize()
 			}
 
 			entt::snapshot snapshot(_registry);
-			snapshot.get<engine::Relationship>(output, view.begin(), view.end());
-			snapshot.get<engine::Transform>(output, view.begin(), view.end());
+			snapshot.get<entt::entity>(output);
+			snapshot.get<engine::Relationship>(output);
+			snapshot.get<engine::Transform>(output);
 
-			output.Close();
-			//auto str = output.AsString();
-			json = output.AsString();
+			auto str = output.ToString();
+			json = output.ToString();
 		}
 
 
-		auto str = ss.str();
+		//auto str = ss.str();
 
 		// Deserialize
 		{
@@ -74,8 +74,9 @@ bool engine::Scene::Serialize()
 			entt::registry dest;
 			entt::snapshot_loader loader(dest);
 
-			loader.get<Transform>(input);
+			loader.get<entt::entity>(input);
 			loader.get<Relationship>(input);
+			loader.get<Transform>(input);
 
 			auto v1 = dest.view<Transform>();
 			auto size1 = v1.size();

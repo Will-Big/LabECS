@@ -10,4 +10,5 @@ namespace engine
 		void operator()(entt::registry& registry, float tick);
 	};
 	DEFINE_SYSTEM_TRAITS(TransformSystem, SystemType::Update)
+
 }

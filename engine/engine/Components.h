@@ -33,12 +33,12 @@ namespace engine
 
 	template<typename Archive>
 	void serialize(Archive& archive, engine::Transform& transform) {
-		archive(cereal::make_nvp("x", transform.x), cereal::make_nvp("y", transform.y), cereal::make_nvp("z", transform.z));
+		archive(CEREAL_NVP(transform.x), CEREAL_NVP(transform.y), CEREAL_NVP(transform.z));
 	}
 
 	template<typename Archive>
 	void serialize(Archive& archive, engine::Relationship& relationship) {
-		archive(cereal::make_nvp("parent", relationship.parent));
+		archive(CEREAL_NVP(relationship.parent));
 	}
 }
 
