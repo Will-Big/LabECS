@@ -26,8 +26,9 @@
 #include <windows.h>
 
 // INCLUDE
-#include "entt/entt.hpp"
-#include "nlohmann/json.hpp"
+#include <entt/entt.hpp>
+#include <cereal/cereal.hpp>
+#include <cereal/archives/json.hpp>
 
 // USER
 #include "Globals.h"

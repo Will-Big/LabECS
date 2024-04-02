@@ -14,7 +14,7 @@ namespace engine
     struct SystemTraits;
 
     template <typename T>
-    concept IsCallableSystem = requires(T t, entt::registry & registry, float tick)
+    concept IsCallableSystem = requires(T t, entt::registry& registry, float tick)
     {
         { t(registry, tick) } -> std::same_as<void>;
     };

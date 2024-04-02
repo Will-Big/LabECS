@@ -2,160 +2,90 @@
 #include "Scene.h"
 
 #include "Components.h"
-#include <cereal/archives/json.hpp>
+#include "ComponentTemplates.h"
 
-#include "JsonOutputArchive.h"
-#include "JsonInputArchive.h"
-
-
-struct Tester
-{
-
-};
+#include <fstream>
 
 engine::Entity engine::Scene::AddEntity()
 {
 	return { _registry.create(), this->_registry };
 }
 
-bool engine::Scene::Serialize()
+bool engine::Scene::Serialize(const std::string& path)
 {
-	// registry Serialize/Deserialize
+	std::stringstream ss;
+
 	{
-		std::stringstream ss;
-		nlohmann::json json;
+		entt::snapshot snapshot(_registry);
+		cereal::JSONOutputArchive archive(ss);
 
-		// Serialize
+		snapshot.get<entt::entity>(archive);
+
+		for (auto&& [id, type] : entt::resolve())
 		{
-			//cereal::JSONOutputArchive output{ ss };
-			JsonOutputArchive output;
-
-			auto view = _registry.view<Transform>();
-
-			for (auto&& [entity, transform] : view.each())
-			{
-				if (static_cast<uint32_t>(entity) == 0)
-				{
-					transform.x = 0;
-					transform.y = 1;
-					transform.z = 2;
-				}
-				else if (static_cast<uint32_t>(entity) == 1)
-				{
-					transform.x = 1;
-					transform.y = 2;
-					transform.z = 3;
-				}
-				else if (static_cast<uint32_t>(entity) == 2)
-				{
-					transform.x = 2;
-					transform.y = 3;
-					transform.z = 4;
-				}
-			}
-
-			entt::snapshot snapshot(_registry);
-			snapshot.get<entt::entity>(output);
-			snapshot.get<engine::Relationship>(output);
-			snapshot.get<engine::Transform>(output);
-
-			auto str = output.ToString();
-			json = output.ToString();
-		}
-
-
-		//auto str = ss.str();
-
-		// Deserialize
-		{
-			//cereal::JSONInputArchive input{ ss };
-			JsonInputArchive input{ json };
-
-			entt::registry dest;
-			entt::snapshot_loader loader(dest);
-
-			loader.get<entt::entity>(input);
-			loader.get<Relationship>(input);
-			loader.get<Transform>(input);
-
-			auto v1 = dest.view<Transform>();
-			auto size1 = v1.size();
-
-			for(auto&& [entity, transform] : v1.each())
-			{
-				int i = 0;
-			}
-
-			auto v2 = dest.view<Relationship>();
-			auto size2 = v2.size();
-
-			for (auto&& [entity, relationship] : v2.each())
-			{
-				int i = 0;
-			}
+			if (auto save = type.func("SetSnapshot"_hs))
+				save.invoke({}, &snapshot, &archive);
 		}
 	}
 
-	auto factory = entt::meta<Relationship>();
-	auto factory2 = entt::meta<Transform>();
-	auto factory3 = entt::meta<Tester>();
+	std::ofstream outFile(path, std::ios::out | std::ios::trunc);
 
-
-
-	auto m1 = entt::meta<Transform>()
-		.type(entt::type_hash<Transform>::value())
-		.data<&Transform::x>("x"_hs)
-		.data<&Transform::y>("y"_hs)
-		.data<&Transform::z>("z"_hs)
-		.func<&Transform::Deserialize>("Deserialize"_hs);
-
-	for (auto&& [id, type] : entt::resolve())
+	if (outFile)
 	{
-		auto n1 = type.info().name();
-		auto any = type.construct();
-
-		auto d1 = type.data("x"_hs);
-		auto d2 = type.data("y"_hs);
-		auto d3 = type.data("z"_hs);
-
-		if (d1)
-		{
-			d1.set(any, 19);
-			d2.set(any, 20);
-			d3.set(any, 21);
-
-			auto func = type.func("Deserialize"_hs);
-			auto meta = func.invoke(any, &_registry);
-		}
+		outFile << ss.str();
+		outFile.close();
+	}
+	else
+	{
+		return false;
 	}
 
-	return false;
+	return true;
 }
 
-bool engine::Scene::Deserialize(std::filesystem::path& path)
+bool engine::Scene::Deserialize(const std::string& path)
 {
-	// 시스템 메타데이터 역직렬화
+	std::ifstream file(path);
 
-	// 시스템 추가
+	if (!file.is_open())
+	{
+		return false;
+	}
 
-	return false;
+	std::stringstream ss;
+	ss << file.rdbuf();
+	file.close();
+
+	{
+		cereal::JSONInputArchive archive(ss);
+		entt::snapshot_loader loader(_registry);
+		loader.get<entt::entity>(archive);
+
+		for (auto&& [id, type] : entt::resolve())
+		{
+			if (auto load = type.func("LoadSnapshot"_hs))
+				load.invoke({}, &loader, &archive);
+		}
+
+		loader.orphans();
+	}
+
+	return true;
 }
 
 void engine::Scene::Run()
 {
 }
 
-std::vector<engine::Scene::SystemCallback>& engine::Scene::GetSystemContainer(SystemType type)
+void engine::Scene::UpdateSystemMapIndex(SystemType type, size_t oldIndex, size_t newIndex)
 {
-	switch (type)
+	// 시스템 맵에서 스왑된 시스템의 이름을 찾아 인덱스를 업데이트
+	for (auto& pair : _systemMap | std::views::values) 
 	{
-	case SystemType::Update:
-		return _updateSystems;
-	case SystemType::FixedUpdate:
-		return _fixedUpdateSystems;
-	case SystemType::Render:
-		return _renderSystems;
-	default:
-		throw std::runtime_error("Invalid system type");
+		if (pair.first == type && pair.second == oldIndex) 
+		{
+			pair.second = newIndex;
+			break;
+		}
 	}
 }

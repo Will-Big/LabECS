@@ -11,4 +11,12 @@ namespace engine
 	};
 	DEFINE_SYSTEM_TRAITS(TransformSystem, SystemType::Update)
 
+
+	class Graphics;
+
+	class AnimationRenderSystem
+	{
+	public:
+		void operator()(entt::registry& registry, Graphics& graphics, float tick);
+	};
 }

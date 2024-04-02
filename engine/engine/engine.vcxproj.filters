@@ -17,9 +17,6 @@
     <Filter Include="소스 파일\Core\Built-in\Components">
       <UniqueIdentifier>{8945e21b-291b-4546-9e95-af6be06b98e5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Core\Serialize">
-      <UniqueIdentifier>{44c00e7d-80ae-4fcd-912e-fa1d7d8c0d5a}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainProcess.h">
@@ -40,17 +37,14 @@
     <ClInclude Include="Components.h">
       <Filter>소스 파일\Core\Built-in\Components</Filter>
     </ClInclude>
-    <ClInclude Include="JsonOutputArchive.h">
-      <Filter>소스 파일\Core\Serialize</Filter>
-    </ClInclude>
     <ClInclude Include="SystemTraits.h">
       <Filter>소스 파일\Core\Built-in\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Globals.h">
       <Filter>소스 파일\Core</Filter>
     </ClInclude>
-    <ClInclude Include="JsonInputArchive.h">
-      <Filter>소스 파일\Core\Serialize</Filter>
+    <ClInclude Include="ComponentTemplates.h">
+      <Filter>소스 파일\Core\Built-in\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -69,12 +63,6 @@
     </ClCompile>
     <ClCompile Include="Systems.cpp">
       <Filter>소스 파일\Core\Built-in\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="JsonOutputArchive.cpp">
-      <Filter>소스 파일\Core\Serialize</Filter>
-    </ClCompile>
-    <ClCompile Include="JsonInputArchive.cpp">
-      <Filter>소스 파일\Core\Serialize</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
