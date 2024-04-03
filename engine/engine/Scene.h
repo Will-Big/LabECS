@@ -28,15 +28,17 @@ namespace engine
 		template <typename T> requires HasSystemTraits<T>
 		void RemoveSystem();
 
-		bool Serialize(std::string_view path);
-		bool Deserialize(std::string_view path);
+		bool Serialize(const std::string& path);
+		bool Deserialize(const std::string& path);
 
-		bool SavePrefab(std::string_view path, engine::Entity& entity);
-		bool LoadPrefab(std::string_view path);
+		bool SavePrefab(const std::string& path, engine::Entity& entity);
+		bool LoadPrefab(const std::string& path);
 
 		void Run();
 
 	private:
+		bool SerializeSystem(const std::string& path);
+		bool DeserializeSystem(const std::string& path);
 		void UpdateSystemMapIndex(SystemType type, size_t oldIndex, size_t newIndex);
 
 		entt::registry _registry;

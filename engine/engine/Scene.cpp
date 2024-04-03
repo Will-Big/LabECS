@@ -11,7 +11,7 @@ engine::Entity engine::Scene::AddEntity()
 	return { _registry.create(), this->_registry };
 }
 
-bool engine::Scene::Serialize(std::string_view path)
+bool engine::Scene::Serialize(const std::string& path)
 {
 	std::stringstream ss;
 
@@ -29,7 +29,7 @@ bool engine::Scene::Serialize(std::string_view path)
 		}
 	}
 
-	std::ofstream outFile(path.data(), std::ios::out | std::ios::trunc);
+	std::ofstream outFile(path + ".sceneData", std::ios::out | std::ios::trunc);
 
 	// 씬 스냅샷 파일 저장
 	if (outFile)
@@ -45,9 +45,9 @@ bool engine::Scene::Serialize(std::string_view path)
 	return true;
 }
 
-bool engine::Scene::Deserialize(std::string_view path)
+bool engine::Scene::Deserialize(const std::string& path)
 {
-	std::ifstream file(path.data());
+	std::ifstream file(path + ".sceneData");
 
 	if (!file.is_open())
 	{
@@ -70,20 +70,20 @@ bool engine::Scene::Deserialize(std::string_view path)
 				load.invoke({}, &loader, &archive);
 		}
 
-		// 불필요 Entity 제거
+		// 불필요 엔터티 제거
 		loader.orphans();
 	}
 
 	return true;
 }
 
-bool engine::Scene::SavePrefab(std::string_view path, engine::Entity& entity)
+bool engine::Scene::SavePrefab(const std::string& path, engine::Entity& entity)
 {
 	// 계층구조 저장용 벡터
 	std::vector<entt::entity> descendents;
 	descendents.push_back(entity);
 
-	// 하위 Entity 저장
+	// 하위 엔터티 저장
 	auto entities = _registry.view<entt::entity>();
 	for (auto& element : entities)
 	{
@@ -126,7 +126,7 @@ bool engine::Scene::SavePrefab(std::string_view path, engine::Entity& entity)
 		}
 	}
 	
-	std::ofstream outFile(path.data(), std::ios::out | std::ios::trunc);
+	std::ofstream outFile(path + ".prefab", std::ios::out | std::ios::trunc);
 
 	// 프리팹 파일 저장
 	if (outFile)
@@ -142,9 +142,9 @@ bool engine::Scene::SavePrefab(std::string_view path, engine::Entity& entity)
 	return true;
 }
 
-bool engine::Scene::LoadPrefab(std::string_view path)
+bool engine::Scene::LoadPrefab(const std::string& path)
 {
-	std::ifstream file(path.data());
+	std::ifstream file(path + ".prefab");
 
 	if (!file.is_open())
 	{
@@ -167,17 +167,45 @@ bool engine::Scene::LoadPrefab(std::string_view path)
 				load.invoke({}, &loader, &archive);
 		}
 
-		// 불필요 Entity 제거
+		// 불필요 엔터티 제거
 		loader.orphans();
 	}
-
-	auto v1 = _registry.view<entt::entity>();
 
 	return true;
 }
 
 void engine::Scene::Run()
 {
+}
+
+bool engine::Scene::SerializeSystem(const std::string& path)
+{
+	std::stringstream ss;
+
+	for(auto& [name, sysIndex] : _systemMap)
+	{
+		
+	}
+
+	std::ofstream outFile(path + ".systemData", std::ios::out | std::ios::trunc);
+
+	// 프리팹 파일 저장
+	if (outFile)
+	{
+		outFile << ss.str();
+		outFile.close();
+	}
+	else
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool engine::Scene::DeserializeSystem(const std::string& path)
+{
+	return false;
 }
 
 void engine::Scene::UpdateSystemMapIndex(SystemType type, size_t oldIndex, size_t newIndex)

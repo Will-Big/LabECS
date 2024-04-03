@@ -11,7 +11,13 @@ int main()
 {
 	using namespace engine;
 
-	// register meta data
+	// register system meta data
+	{
+		entt::meta<TransformSystem>()
+			.type(entt::type_hash<TransformSystem>::value());
+	}
+
+	// register component meta data
 	{
 		entt::meta<Transform>()
 			.type(entt::type_hash<Transform>::value())

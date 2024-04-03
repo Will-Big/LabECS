@@ -46,6 +46,9 @@
     <ClInclude Include="ComponentTemplates.h">
       <Filter>소스 파일\Core\Built-in\Components</Filter>
     </ClInclude>
+    <ClInclude Include="SystemTemplates.h">
+      <Filter>소스 파일\Core\Built-in\Systems</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

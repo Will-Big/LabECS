@@ -146,6 +146,7 @@
     <ClInclude Include="Components.h" />
     <ClInclude Include="ComponentTemplates.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="SystemTemplates.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="MainProcess.h" />
     <ClInclude Include="pch.h" />
