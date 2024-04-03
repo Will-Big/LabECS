@@ -40,7 +40,7 @@
     <ClInclude Include="SystemTraits.h">
       <Filter>소스 파일\Core\Built-in\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="Globals.h">
+    <ClInclude Include="Utils.h">
       <Filter>소스 파일\Core</Filter>
     </ClInclude>
     <ClInclude Include="ComponentTemplates.h">
@@ -64,8 +64,5 @@
     <ClCompile Include="Systems.cpp">
       <Filter>소스 파일\Core\Built-in\Systems</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

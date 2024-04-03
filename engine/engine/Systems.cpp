@@ -6,6 +6,8 @@
 void engine::TransformSystem::operator()(entt::registry& registry, float tick)
 {
 	auto view = registry.view<Transform>();
+
+
 }
 
 void engine::TestUpdateSystem1::operator()(entt::registry& registry, float tick)

@@ -13,8 +13,5 @@
         "transform.z": 0.0
     },
     "value9": 1,
-    "value10": 0,
-    "value11": {
-        "relationship.parent": 1
-    }
+    "value10": 4294967295
 }

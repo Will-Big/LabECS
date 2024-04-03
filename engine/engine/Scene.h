@@ -22,16 +22,16 @@ namespace engine
 	public:
 		Entity AddEntity();
 
-		template <typename T>
+		template <typename T> requires HasSystemTraits<T>
 		void RegisterSystem();
 
-		template <typename T>
+		template <typename T> requires HasSystemTraits<T>
 		void RemoveSystem();
 
 		bool Serialize(std::string_view path);
 		bool Deserialize(std::string_view path);
 
-		bool SavePrefab(std::string_view path, const engine::Entity& entity);
+		bool SavePrefab(std::string_view path, engine::Entity& entity);
 		bool LoadPrefab(std::string_view path);
 
 		void Run();
@@ -46,7 +46,7 @@ namespace engine
 		std::vector<RenderSystemCallback> _renderSystems;
 	};
 
-	template <typename T>
+	template <typename T> requires HasSystemTraits<T>
 	void Scene::RegisterSystem()
 	{
 		// 시스템 메타 데이터
@@ -91,7 +91,7 @@ namespace engine
 
 	}
 
-	template <typename T>
+	template <typename T> requires HasSystemTraits<T>
 	void Scene::RemoveSystem()
 	{
 		// 시스템 메타 데이터
@@ -109,26 +109,29 @@ namespace engine
 		// 시스템 타입에 따라 적절한 컨테이너에서 시스템 삭제
 		switch (sysType)
 		{
-		case SystemType::Render:
-			if (index < _renderSystems.size() - 1) {
-				std::swap(_renderSystems[index], _renderSystems.back());
-				UpdateSystemMapIndex(sysType, _renderSystems.size() - 1, index);
-			}
-			_renderSystems.pop_back();
-			break;
 		case SystemType::Update:
-			if (index < _updateSystems.size() - 1) {
+			if (index < _updateSystems.size() - 1)
+			{
 				std::swap(_updateSystems[index], _updateSystems.back());
 				UpdateSystemMapIndex(sysType, _updateSystems.size() - 1, index);
 			}
 			_updateSystems.pop_back();
 			break;
 		case SystemType::FixedUpdate:
-			if (index < _fixedUpdateSystems.size() - 1) {
+			if (index < _fixedUpdateSystems.size() - 1) 
+			{
 				std::swap(_fixedUpdateSystems[index], _fixedUpdateSystems.back());
 				UpdateSystemMapIndex(sysType, _fixedUpdateSystems.size() - 1, index);
 			}
 			_fixedUpdateSystems.pop_back();
+			break;
+		case SystemType::Render:
+			if (index < _renderSystems.size() - 1)
+			{
+				std::swap(_renderSystems[index], _renderSystems.back());
+				UpdateSystemMapIndex(sysType, _renderSystems.size() - 1, index);
+			}
+			_renderSystems.pop_back();
 			break;
 		}
 

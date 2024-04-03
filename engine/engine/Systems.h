@@ -4,6 +4,8 @@
 
 namespace engine
 {
+	class Graphics;
+
 	class TransformSystem
 	{
 	public:
@@ -26,8 +28,6 @@ namespace engine
 		void operator()(entt::registry& registry, float tick);
 	};
 	DEFINE_SYSTEM_TRAITS(TestUpdateSystem2, SystemType::Update)
-
-	class Graphics;
 
 	class AnimationRenderSystem
 	{

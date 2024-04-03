@@ -27,10 +27,11 @@
 
 // INCLUDE
 #include <entt/entt.hpp>
+using namespace entt::literals;
+
 #include <cereal/cereal.hpp>
 #include <cereal/archives/json.hpp>
 
 // USER
-#include "Globals.h"
 
 #endif //PCH_H
