@@ -91,6 +91,7 @@ namespace engine
 	template <typename T>
 	void Scene::RemoveSystem()
 	{
+		// 시스템 메타 데이터
 		constexpr auto name = SystemTraits<T>::name;
 		constexpr auto type = SystemTraits<T>::type;
 

@@ -79,7 +79,7 @@ void engine::Scene::Run()
 
 void engine::Scene::UpdateSystemMapIndex(SystemType type, size_t oldIndex, size_t newIndex)
 {
-	// 시스템 맵에서 스왑된 시스템의 이름을 찾아 인덱스를 업데이트
+	// 시스템 맵에서 스왑된 시스템을 찾아 인덱스를 업데이트
 	for (auto& pair : _systemMap | std::views::values) 
 	{
 		if (pair.first == type && pair.second == oldIndex) 
