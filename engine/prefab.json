@@ -1,0 +1,20 @@
+{
+    "value0": 4,
+    "value1": 4,
+    "value2": 0,
+    "value3": 1,
+    "value4": 2,
+    "value5": 3,
+    "value6": 1,
+    "value7": 0,
+    "value8": {
+        "transform.x": 0.0,
+        "transform.y": 0.0,
+        "transform.z": 0.0
+    },
+    "value9": 1,
+    "value10": 0,
+    "value11": {
+        "relationship.parent": 1
+    }
+}

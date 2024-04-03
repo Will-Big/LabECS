@@ -18,15 +18,19 @@ int main()
 			.data<&Transform::x>("x"_hs)
 			.data<&Transform::y>("y"_hs)
 			.data<&Transform::z>("z"_hs)
-			.func<&engine::SetSnapshot<Transform>>("SetSnapshot"_hs)
-			.func<&engine::LoadSnapshot<Transform>>("LoadSnapshot"_hs);
+			.func<&engine::SaveSnapshot<Transform>>("SaveSnapshot"_hs)
+			.func<&engine::LoadSnapshot<Transform>>("LoadSnapshot"_hs)
+			.func<&engine::SavePrefabSnapshot<Transform>>("SavePrefabSnapshot"_hs)
+			.func<&engine::LoadPrefabSnapshot<Transform>>("LoadPrefabSnapshot"_hs);
 
 
 		entt::meta<Relationship>()
 			.type(entt::type_hash<Relationship>::value())
 			.data<&Relationship::parent>("parent"_hs)
-			.func<&engine::SetSnapshot<Relationship>>("SetSnapshot"_hs)
-			.func<&engine::LoadSnapshot<Relationship>>("LoadSnapshot"_hs);
+			.func<&engine::SaveSnapshot<Relationship>>("SaveSnapshot"_hs)
+			.func<&engine::LoadSnapshot<Relationship>>("LoadSnapshot"_hs)
+			.func<&engine::SavePrefabSnapshot<Relationship>>("SavePrefabSnapshot"_hs)
+			.func<&engine::LoadPrefabSnapshot<Relationship>>("LoadPrefabSnapshot"_hs);
 	}
 
 	engine::Scene scene1;
@@ -51,6 +55,9 @@ int main()
 
 	scene1.Serialize("../test.json");
 	//scene.Deserialize("../test.json");
+
+	scene1.SavePrefab("../prefab.json", e1);
+	scene1.LoadPrefab("../prefab.json");
 
 	while (true)
 		scene1.Run();

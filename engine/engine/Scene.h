@@ -28,8 +28,11 @@ namespace engine
 		template <typename T>
 		void RemoveSystem();
 
-		bool Serialize(const std::string& path);
-		bool Deserialize(const std::string& path);
+		bool Serialize(std::string_view path);
+		bool Deserialize(std::string_view path);
+
+		bool SavePrefab(std::string_view path, const engine::Entity& entity);
+		bool LoadPrefab(std::string_view path);
 
 		void Run();
 

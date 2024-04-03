@@ -11,7 +11,7 @@ engine::Entity engine::Scene::AddEntity()
 	return { _registry.create(), this->_registry };
 }
 
-bool engine::Scene::Serialize(const std::string& path)
+bool engine::Scene::Serialize(std::string_view path)
 {
 	std::stringstream ss;
 
@@ -28,7 +28,7 @@ bool engine::Scene::Serialize(const std::string& path)
 		}
 	}
 
-	std::ofstream outFile(path, std::ios::out | std::ios::trunc);
+	std::ofstream outFile(path.data(), std::ios::out | std::ios::trunc);
 
 	if (outFile)
 	{
@@ -43,9 +43,9 @@ bool engine::Scene::Serialize(const std::string& path)
 	return true;
 }
 
-bool engine::Scene::Deserialize(const std::string& path)
+bool engine::Scene::Deserialize(std::string_view path)
 {
-	std::ifstream file(path);
+	std::ifstream file(path.data());
 
 	if (!file.is_open())
 	{
@@ -64,6 +64,80 @@ bool engine::Scene::Deserialize(const std::string& path)
 		for (auto&& [id, type] : entt::resolve())
 		{
 			if (auto load = type.func("LoadSnapshot"_hs))
+				load.invoke({}, &loader, &archive);
+		}
+
+		loader.orphans();
+	}
+
+	return true;
+}
+
+bool engine::Scene::SavePrefab(std::string_view path, const engine::Entity& entity)
+{
+	// 계층구조 저장용 벡터
+	std::vector<entt::entity> descendents;
+	descendents.push_back(entity);
+
+	auto entities = _registry.view<entt::entity>();
+	for(auto& element : entities)
+	{
+		auto tempEntity = Entity{ element, _registry };
+
+		if (entity.IsAncestorOf(tempEntity))
+			descendents.push_back(tempEntity);
+	}
+
+	std::stringstream ss;
+	{
+		entt::snapshot snapshot(_registry);
+		cereal::JSONOutputArchive archive(ss);
+
+		snapshot.get<entt::entity>(archive);
+
+		for (auto&& [id, type] : entt::resolve())
+		{
+			if (auto save = type.func("SavePrefabSnapshot"_hs))
+				save.invoke({}, &snapshot, &archive, descendents.begin(), descendents.end());
+		}
+	}
+
+	std::ofstream outFile(path.data(), std::ios::out | std::ios::trunc);
+
+	if (outFile)
+	{
+		outFile << ss.str();
+		outFile.close();
+	}
+	else
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool engine::Scene::LoadPrefab(std::string_view path)
+{
+	std::ifstream file(path.data());
+
+	if (!file.is_open())
+	{
+		return false;
+	}
+
+	std::stringstream ss;
+	ss << file.rdbuf();
+	file.close();
+
+	{
+		cereal::JSONInputArchive archive(ss);
+		entt::continuous_loader loader(_registry);
+		loader.get<entt::entity>(archive);
+
+		for (auto&& [id, type] : entt::resolve())
+		{
+			if (auto load = type.func("LoadPrefabSnapshot"_hs))
 				load.invoke({}, &loader, &archive);
 		}
 

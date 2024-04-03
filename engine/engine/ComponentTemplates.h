@@ -17,16 +17,27 @@ namespace engine
 	}
 
 	template <typename T>
+	void SaveSnapshot(entt::snapshot* snapshot, cereal::JSONOutputArchive* archive)
+	{
+		snapshot->get<T>(*archive);
+	}
+
+	template <typename T>
 	void LoadSnapshot(entt::snapshot_loader* loader, cereal::JSONInputArchive* archive)
 	{
-		std::cout << "LoadSnapshot" << '\n';
 		loader->get<T>(*archive);
 	}
 
 	template <typename T>
-	void SetSnapshot(entt::snapshot* snapshot, cereal::JSONOutputArchive* archive)
+	void SavePrefabSnapshot(entt::snapshot* snapshot, cereal::JSONOutputArchive* archive, std::vector<entt::entity>::iterator first, std::vector<entt::entity>::iterator last)
 	{
-		std::cout << "SetSnapshot" << '\n';
-		snapshot->get<T>(*archive);
+		snapshot->get<T>(*archive, first, last);
 	}
+
+	template <typename T>
+	void LoadPrefabSnapshot(entt::continuous_loader* loader, cereal::JSONInputArchive* archive)
+	{
+		loader->get<T>(*archive);
+	}
+
 }
