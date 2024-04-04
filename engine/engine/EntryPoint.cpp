@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 
+#include "PhysicsScene.h"
 #include "Scene.h"
 #include "Utils.h"
 
@@ -10,6 +11,8 @@ int main()
 	RegisterMetaData();
 
 	core::Scene scene1;
+
+	core::PhysicsScene physicsScene1;
 
 	/*auto e1 = scene1.AddEntity();
 	auto e2 = scene1.AddEntity();
@@ -37,7 +40,10 @@ int main()
 	scene1.LoadPrefab("../prefabTest");*/
 
 	while (true)
+	{
 		scene1.Run();
+		physicsScene1.Update(0.016f);
+	}
 
 	return 0;
 }

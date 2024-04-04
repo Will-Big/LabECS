@@ -34,7 +34,7 @@ namespace core
 		operator entt::entity() const { return _handle; }
 		operator bool() const { return (_handle != entt::null) && _registry.valid(_handle); }
 
-		Entity operator=(const Entity& other) const { return { other._handle, other._registry }; }
+		Entity& operator=(const Entity& other) { if (this == &other) { return *this; } _handle = other._handle; return *this; }
 		bool operator==(const Entity& other) const { return _handle == other._handle && &_registry == &other._registry; }
 		bool operator!=(const Entity& other) const { return !(*this == other); }
 

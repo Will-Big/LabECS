@@ -146,6 +146,7 @@
     <ClInclude Include="Components.h" />
     <ClInclude Include="ComponentTemplates.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="PhysicsScene.h" />
     <ClInclude Include="SystemInterface.h" />
     <ClInclude Include="SystemTemplates.h" />
     <ClInclude Include="Utils.h" />
@@ -165,6 +166,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="PhysicsScene.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Systems.cpp" />
   </ItemGroup>
