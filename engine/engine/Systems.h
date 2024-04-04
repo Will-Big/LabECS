@@ -1,34 +1,10 @@
 ﻿#pragma once
 #include "Scene.h"
 #include "SystemTraits.h"
-#include "SystemTemplates.h"
+#include "SystemInterface.h"
 
-namespace engine
+namespace core
 {
-	class IUpdateSystem
-	{
-	public:
-		virtual ~IUpdateSystem() = default;
-		virtual void operator()(entt::registry& registry, float tick) = 0;
-	};
-
-	class IFixedSystem
-	{
-	public:
-		virtual ~IFixedSystem() = default;
-		virtual void operator()(entt::registry& registry, float tick) = 0;
-	};
-
-	class IRenderSystem
-	{
-	public:
-		virtual ~IRenderSystem() = default;
-		virtual void operator()(entt::registry& registry, Graphics& graphics, float tick) = 0;
-	};
-
-
-	class Graphics;
-
 	class TransformSystem : public IUpdateSystem
 	{
 	public:
@@ -43,11 +19,11 @@ namespace engine
 	};
 	DEFINE_SYSTEM_TRAITS(PhysicsSystem, SystemType::FixedUpdate);
 
-	class AnimationRenderSystem : public IUpdateSystem, public IRenderSystem
+	class AnimationSystem : public IUpdateSystem, public IRenderSystem
 	{
 	public:
 		void operator()(entt::registry& registry, float tick) override;
 		void operator()(entt::registry& registry, Graphics& graphics, float tick) override;
 	};
-	DEFINE_SYSTEM_TRAITS(AnimationRenderSystem, SystemType::Update | SystemType::Render)
+	DEFINE_SYSTEM_TRAITS(AnimationSystem, SystemType::Update | SystemType::Render)
 }

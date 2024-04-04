@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <iostream>
 
-namespace engine
+namespace core
 {
 	struct Transform
 	{

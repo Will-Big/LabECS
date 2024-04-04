@@ -1,18 +1,18 @@
 ﻿#pragma once
 #include "Components.h"
 
-namespace engine
+namespace core
 {
 	class cereal::JSONOutputArchive;
 	class cereal::JSONInputArchive;
 
 	template<typename Archive>
-	void serialize(Archive& archive, engine::Transform& transform) {
+	void serialize(Archive& archive, core::Transform& transform) {
 		archive(CEREAL_NVP(transform.x), CEREAL_NVP(transform.y), CEREAL_NVP(transform.z));
 	}
 
 	template<typename Archive>
-	void serialize(Archive& archive, engine::Relationship& relationship) {
+	void serialize(Archive& archive, core::Relationship& relationship) {
 		archive(CEREAL_NVP(relationship.parent));
 	}
 

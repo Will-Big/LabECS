@@ -2,7 +2,7 @@
 #include "Entity.h"
 #include "Components.h"
 
-void engine::Entity::SetParent(Entity entity)
+void core::Entity::SetParent(Entity entity)
 {
 	if (!entity.HasAnyOf<Relationship>())
 	{
@@ -16,7 +16,7 @@ void engine::Entity::SetParent(Entity entity)
 	}
 }
 
-std::vector<engine::Entity> engine::Entity::GetChildren()
+std::vector<core::Entity> core::Entity::GetChildren()
 {
 	auto view = _registry.view<Relationship>();
 	std::vector<Entity> children;
@@ -30,7 +30,7 @@ std::vector<engine::Entity> engine::Entity::GetChildren()
 	return children;
 }
 
-bool engine::Entity::IsAncestorOf(Entity entity) const
+bool core::Entity::IsAncestorOf(Entity entity) const
 {
 	while (_registry.any_of<Relationship>(entity))
 	{
@@ -45,7 +45,7 @@ bool engine::Entity::IsAncestorOf(Entity entity) const
 	return false;
 }
 
-bool engine::Entity::IsDescendantOf(Entity entity) const
+bool core::Entity::IsDescendantOf(Entity entity) const
 {
 	auto children = entity.GetChildren();
 

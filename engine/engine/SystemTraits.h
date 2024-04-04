@@ -2,14 +2,14 @@
 
 #define DEFINE_SYSTEM_TRAITS(SystemClass, SystemTypeValue) \
     template<> \
-    struct engine::SystemTraits<SystemClass> \
+    struct core::SystemTraits<SystemClass> \
     { \
-        static constexpr engine::SystemType type = SystemTypeValue; \
+        static constexpr core::SystemType type = SystemTypeValue; \
         static constexpr auto name = #SystemClass; \
     };
 
 
-namespace engine
+namespace core
 {
 	enum class SystemType;
 	template <typename T>

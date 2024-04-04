@@ -49,6 +49,9 @@
     <ClInclude Include="SystemTemplates.h">
       <Filter>소스 파일\Core\Built-in\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="SystemInterface.h">
+      <Filter>소스 파일\Core\Built-in\Systems</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

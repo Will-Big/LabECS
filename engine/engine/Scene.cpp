@@ -7,13 +7,12 @@
 #include <fstream>
 #include <cereal/types/vector.hpp>
 
-
-engine::Entity engine::Scene::AddEntity()
+core::Entity core::Scene::AddEntity()
 {
 	return { _registry.create(), this->_registry };
 }
 
-bool engine::Scene::SaveScene(const std::string& path)
+bool core::Scene::SaveScene(const std::string& path)
 {
 	std::stringstream ss;
 
@@ -60,7 +59,7 @@ bool engine::Scene::SaveScene(const std::string& path)
 	return true;
 }
 
-bool engine::Scene::LoadScene(const std::string& path)
+bool core::Scene::LoadScene(const std::string& path)
 {
 	std::ifstream file(path + ".scene");
 
@@ -102,7 +101,7 @@ bool engine::Scene::LoadScene(const std::string& path)
 	return true;
 }
 
-bool engine::Scene::SavePrefab(const std::string& path, engine::Entity& entity)
+bool core::Scene::SavePrefab(const std::string& path, core::Entity& entity)
 {
 	// 계층구조 저장용 벡터
 	std::vector<entt::entity> descendents;
@@ -167,7 +166,7 @@ bool engine::Scene::SavePrefab(const std::string& path, engine::Entity& entity)
 	return true;
 }
 
-bool engine::Scene::LoadPrefab(const std::string& path)
+bool core::Scene::LoadPrefab(const std::string& path)
 {
 	std::ifstream file(path + ".prefab");
 
@@ -199,7 +198,7 @@ bool engine::Scene::LoadPrefab(const std::string& path)
 	return true;
 }
 
-void engine::Scene::Run()
+void core::Scene::Run()
 {
 	for (auto& update : _updates)
 	{
@@ -212,7 +211,7 @@ void engine::Scene::Run()
 	}
 }
 
-void engine::Scene::UpdateSystemMapIndex(SystemType type, size_t oldIndex, size_t newIndex)
+void core::Scene::UpdateSystemMapIndex(SystemType type, size_t oldIndex, size_t newIndex)
 {
 	// 시스템 맵에서 스왑된 시스템을 찾아 인덱스를 업데이트
 	for (auto& pair : _systemMap | std::views::values)

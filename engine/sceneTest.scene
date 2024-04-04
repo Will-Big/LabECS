@@ -34,7 +34,7 @@
         "relationship.parent": 2
     },
     "systems": [
-        "AnimationRenderSystem",
+        "AnimationSystem",
         "TransformSystem"
     ]
 }

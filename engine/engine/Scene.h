@@ -2,12 +2,12 @@
 #include "Entity.h"
 #include "SystemTraits.h"
 
-namespace engine
+namespace core
 {
 	class IFixedSystem;
 }
 
-namespace engine
+namespace core
 {
 	class IUpdateSystem;
 	class IRenderSystem;
@@ -29,7 +29,7 @@ namespace engine
 		bool SaveScene(const std::string& path);
 		bool LoadScene(const std::string& path);
 
-		bool SavePrefab(const std::string& path, engine::Entity& entity);
+		bool SavePrefab(const std::string& path, core::Entity& entity);
 		bool LoadPrefab(const std::string& path);
 
 		void Run();
