@@ -14,7 +14,8 @@ int main()
 	// register system meta data
 	{
 		entt::meta<TransformSystem>()
-			.type(entt::type_hash<TransformSystem>::value());
+			.type(entt::hashed_string(engine::SystemTraits<TransformSystem>::name))
+			.func<&engine::LoadSystem<TransformSystem>>("LoadSystem"_hs);
 	}
 
 	// register component meta data
@@ -54,16 +55,17 @@ int main()
 	e3.Emplace<engine::Transform>();
 
 	scene1.RegisterSystem<engine::TransformSystem>();
-	scene1.RemoveSystem<engine::TransformSystem>();
+	scene1.RegisterSystem<engine::AnimationRenderSystem>();
+	//scene1.RemoveSystem<engine::AnimationRenderSystem>();
 
 	auto b1 = e4.IsAncestorOf(e1);
 	auto b2 = e1.IsDescendantOf(e4);
 
-	scene1.Serialize("../test.json");
-	//scene.Deserialize("../test.json");
+	scene1.SaveScene("../sceneTest");
+	//scene1.LoadScene("../sceneTest");
 
-	scene1.SavePrefab("../prefab.json", e1);
-	scene1.LoadPrefab("../prefab.json");
+	/*scene1.SavePrefab("../prefabTest", e1);
+	scene1.LoadPrefab("../prefabTest");*/
 
 	while (true)
 		scene1.Run();

@@ -1,17 +1,19 @@
 ﻿#include "pch.h"
 #include "Scene.h"
 
+#include "Systems.h"
 #include "Components.h"
-#include "ComponentTemplates.h"
 
 #include <fstream>
+#include <cereal/types/vector.hpp>
+
 
 engine::Entity engine::Scene::AddEntity()
 {
 	return { _registry.create(), this->_registry };
 }
 
-bool engine::Scene::Serialize(const std::string& path)
+bool engine::Scene::SaveScene(const std::string& path)
 {
 	std::stringstream ss;
 
@@ -27,9 +29,22 @@ bool engine::Scene::Serialize(const std::string& path)
 			if (auto save = type.func("SaveSnapshot"_hs))
 				save.invoke({}, &snapshot, &archive);
 		}
+
+		// 시스템 이름 추가
+		std::vector<std::string> systemNames;
+		for (const auto& name : _systemMap | std::views::keys)
+		{
+			auto it = std::ranges::find(systemNames, name);
+
+			if (it == systemNames.end())
+				systemNames.push_back(name);
+		}
+		archive(cereal::make_nvp("systems", systemNames));
 	}
 
-	std::ofstream outFile(path + ".sceneData", std::ios::out | std::ios::trunc);
+	auto str = ss.str();
+
+	std::ofstream outFile(path + ".scene", std::ios::out | std::ios::trunc);
 
 	// 씬 스냅샷 파일 저장
 	if (outFile)
@@ -45,9 +60,9 @@ bool engine::Scene::Serialize(const std::string& path)
 	return true;
 }
 
-bool engine::Scene::Deserialize(const std::string& path)
+bool engine::Scene::LoadScene(const std::string& path)
 {
-	std::ifstream file(path + ".sceneData");
+	std::ifstream file(path + ".scene");
 
 	if (!file.is_open())
 	{
@@ -66,8 +81,18 @@ bool engine::Scene::Deserialize(const std::string& path)
 
 		for (auto&& [id, type] : entt::resolve())
 		{
-			if (auto load = type.func("LoadSnapshot"_hs))
-				load.invoke({}, &loader, &archive);
+			if (auto loadStorage = type.func("LoadSnapshot"_hs))
+				loadStorage.invoke({}, &loader, &archive);
+		}
+
+		// 로드할 시스템 목록
+		std::vector<std::string> systemNames;
+		archive(cereal::make_nvp("systems", systemNames));
+
+		for (auto&& [id, type] : entt::resolve())
+		{
+			if (auto loadSystem = type.func("LoadSystem"_hs))
+				loadSystem.invoke({}, this, &systemNames);
 		}
 
 		// 불필요 엔터티 제거
@@ -120,12 +145,12 @@ bool engine::Scene::SavePrefab(const std::string& path, engine::Entity& entity)
 		}
 
 		// 계층구조 재연결
-		if(hasParent)
+		if (hasParent)
 		{
 			entity.Emplace<Relationship>(relationship);
 		}
 	}
-	
+
 	std::ofstream outFile(path + ".prefab", std::ios::out | std::ios::trunc);
 
 	// 프리팹 파일 저장
@@ -176,36 +201,15 @@ bool engine::Scene::LoadPrefab(const std::string& path)
 
 void engine::Scene::Run()
 {
-}
-
-bool engine::Scene::SerializeSystem(const std::string& path)
-{
-	std::stringstream ss;
-
-	for(auto& [name, sysIndex] : _systemMap)
+	for (auto& update : _updates)
 	{
-		
+		(*update)(_registry, 0.016f);
 	}
 
-	std::ofstream outFile(path + ".systemData", std::ios::out | std::ios::trunc);
-
-	// 프리팹 파일 저장
-	if (outFile)
+	for (auto& fixed : _fixeds)
 	{
-		outFile << ss.str();
-		outFile.close();
+		(*fixed)(_registry, 0.016f);
 	}
-	else
-	{
-		return false;
-	}
-
-	return true;
-}
-
-bool engine::Scene::DeserializeSystem(const std::string& path)
-{
-	return false;
 }
 
 void engine::Scene::UpdateSystemMapIndex(SystemType type, size_t oldIndex, size_t newIndex)

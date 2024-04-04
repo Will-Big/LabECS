@@ -5,26 +5,49 @@
 
 namespace engine
 {
-	class Graphics;
-
-	class TransformSystem
+	class IUpdateSystem
 	{
 	public:
-		void operator()(entt::registry& registry, float tick);
+		virtual ~IUpdateSystem() = default;
+		virtual void operator()(entt::registry& registry, float tick) = 0;
+	};
+
+	class IFixedSystem
+	{
+	public:
+		virtual ~IFixedSystem() = default;
+		virtual void operator()(entt::registry& registry, float tick) = 0;
+	};
+
+	class IRenderSystem
+	{
+	public:
+		virtual ~IRenderSystem() = default;
+		virtual void operator()(entt::registry& registry, Graphics& graphics, float tick) = 0;
+	};
+
+
+	class Graphics;
+
+	class TransformSystem : public IUpdateSystem
+	{
+	public:
+		void operator()(entt::registry& registry, float tick) override;
 	};
 	DEFINE_SYSTEM_TRAITS(TransformSystem, SystemType::Update)
 
-	class PhysicsSystem
+	class PhysicsSystem : public IFixedSystem
 	{
 	public:
-		void operator()(entt::registry& registry, float tick);
+		void operator()(entt::registry& registry, float tick) override;
 	};
 	DEFINE_SYSTEM_TRAITS(PhysicsSystem, SystemType::FixedUpdate);
 
-	class AnimationRenderSystem
+	class AnimationRenderSystem : public IUpdateSystem, public IRenderSystem
 	{
 	public:
-		void operator()(entt::registry& registry, Graphics& graphics, float tick);
+		void operator()(entt::registry& registry, float tick) override;
+		void operator()(entt::registry& registry, Graphics& graphics, float tick) override;
 	};
-	DEFINE_SYSTEM_TRAITS(AnimationRenderSystem, SystemType::Render)
+	DEFINE_SYSTEM_TRAITS(AnimationRenderSystem, SystemType::Update | SystemType::Render)
 }

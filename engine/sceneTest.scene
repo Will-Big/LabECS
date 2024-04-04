@@ -32,5 +32,9 @@
     "value16": 1,
     "value17": {
         "relationship.parent": 2
-    }
+    },
+    "systems": [
+        "AnimationRenderSystem",
+        "TransformSystem"
+    ]
 }

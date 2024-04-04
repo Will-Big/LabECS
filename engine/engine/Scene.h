@@ -4,20 +4,18 @@
 
 namespace engine
 {
-	class Graphics;
+	class IFixedSystem;
+}
 
-	enum class SystemType
-	{
-		Update,
-		FixedUpdate,
-		Render,
-	};
+namespace engine
+{
+	class IUpdateSystem;
+	class IRenderSystem;
+	class Graphics;
 
 	class Scene
 	{
-		using RenderSystemCallback = std::function<void(entt::registry&, Graphics&, float)>;
-		using SystemCallback = std::function<void(entt::registry&, float)>;
-		using SystemIndex = std::pair<SystemType, size_t>;
+		using SystemInfo = std::pair<SystemType, size_t>;
 
 	public:
 		Entity AddEntity();
@@ -28,8 +26,8 @@ namespace engine
 		template <typename T> requires HasSystemTraits<T>
 		void RemoveSystem();
 
-		bool Serialize(const std::string& path);
-		bool Deserialize(const std::string& path);
+		bool SaveScene(const std::string& path);
+		bool LoadScene(const std::string& path);
 
 		bool SavePrefab(const std::string& path, engine::Entity& entity);
 		bool LoadPrefab(const std::string& path);
@@ -37,107 +35,87 @@ namespace engine
 		void Run();
 
 	private:
-		bool SerializeSystem(const std::string& path);
-		bool DeserializeSystem(const std::string& path);
 		void UpdateSystemMapIndex(SystemType type, size_t oldIndex, size_t newIndex);
 
 		entt::registry _registry;
-		std::unordered_map<std::string, SystemIndex> _systemMap;
-		std::vector<SystemCallback> _updateSystems;
-		std::vector<SystemCallback> _fixedUpdateSystems;
-		std::vector<RenderSystemCallback> _renderSystems;
+		std::multimap<std::string, SystemInfo> _systemMap;
+
+		std::vector<std::unique_ptr<IUpdateSystem>> _updates;
+		std::vector<std::unique_ptr<IFixedSystem>> _fixeds;
+		std::vector<std::unique_ptr<IRenderSystem>> _renders;
 	};
 
 	template <typename T> requires HasSystemTraits<T>
 	void Scene::RegisterSystem()
 	{
 		// 시스템 메타 데이터
-		constexpr auto name =  SystemTraits<T>::name;
-		constexpr auto type =  SystemTraits<T>::type;
+		constexpr auto name = SystemTraits<T>::name;
+		constexpr auto type = SystemTraits<T>::type;
 
 		if (_systemMap.contains(name))
 			return;
 
-		if constexpr (type == SystemType::Render)
+		if constexpr (std::is_base_of_v<IUpdateSystem, T>)
 		{
-			// Render 시스템용 람다
-			auto systemObj = [system = T{}](entt::registry& registry, Graphics& graphics, float tick) mutable
-				{
-					system(registry, graphics, tick);
-				};
-
-			_renderSystems.push_back(systemObj);
-			_systemMap[name] = { type, _renderSystems.size() - 1 };
+			_updates.push_back(std::make_unique<T>());
+			_systemMap.insert({ name,  { SystemType::Update, _updates.size() - 1 } });
 		}
-		else
+		if constexpr (std::is_base_of_v<IFixedSystem, T>)
 		{
-			// Update 또는 FixedUpdate 시스템용 람다
-			auto systemObj = [system = T{}](entt::registry& registry, float tick) mutable
-				{
-					system(registry, tick);
-				};
-
-			// sysType에 따라 적절한 컨테이너 선택 및 추가
-			if constexpr (type == SystemType::Update)
-			{
-				_updateSystems.push_back(systemObj);
-				_systemMap[name] = { type, _updateSystems.size() - 1 };
-			}
-			else if constexpr (type == SystemType::FixedUpdate)
-			{
-				_fixedUpdateSystems.push_back(systemObj);
-				_systemMap[name] = { type, _fixedUpdateSystems.size() - 1 };
-			}
+			_fixeds.push_back(std::make_unique<T>());
+			_systemMap.insert({ name,  { SystemType::FixedUpdate, _fixeds.size() - 1 } });
 		}
-
-
+		if constexpr (std::is_base_of_v<IRenderSystem, T>)
+		{
+			_renders.push_back(std::make_unique<T>());
+			_systemMap.insert({ name,  { SystemType::Render, _renders.size() - 1 } });
+		}
 	}
 
 	template <typename T> requires HasSystemTraits<T>
 	void Scene::RemoveSystem()
 	{
-		// 시스템 메타 데이터
 		constexpr auto name = SystemTraits<T>::name;
 		constexpr auto type = SystemTraits<T>::type;
 
-		auto it = _systemMap.find(name);
+		auto range = _systemMap.equal_range(name);
 
-		if (it == _systemMap.end())
-			return;
-
-		// 시스템 타입과 인덱스 가져오기
-		auto [sysType, index] = it->second;
-
-		// 시스템 타입에 따라 적절한 컨테이너에서 시스템 삭제
-		switch (sysType)
+		for (auto it = range.first; it != range.second; ++it)
 		{
-		case SystemType::Update:
-			if (index < _updateSystems.size() - 1)
+			auto [sysType, index] = it->second;
+
+			// 시스템 타입에 따라 적절한 컨테이너에서 시스템 삭제
+			switch (sysType)
 			{
-				std::swap(_updateSystems[index], _updateSystems.back());
-				UpdateSystemMapIndex(sysType, _updateSystems.size() - 1, index);
+			case SystemType::Update:
+				if (index < _updates.size() - 1)
+				{
+					std::swap(_updates[index], _updates.back());
+					UpdateSystemMapIndex(sysType, _updates.size() - 1, index);
+				}
+				_updates.pop_back();
+				break;
+			case SystemType::FixedUpdate:
+				if (index < _fixeds.size() - 1)
+				{
+					std::swap(_fixeds[index], _fixeds.back());
+					UpdateSystemMapIndex(sysType, _fixeds.size() - 1, index);
+				}
+				_fixeds.pop_back();
+				break;
+			case SystemType::Render:
+				if (index < _renders.size() - 1)
+				{
+					std::swap(_renders[index], _renders.back());
+					UpdateSystemMapIndex(sysType, _renders.size() - 1, index);
+				}
+				_renders.pop_back();
+				break;
 			}
-			_updateSystems.pop_back();
-			break;
-		case SystemType::FixedUpdate:
-			if (index < _fixedUpdateSystems.size() - 1) 
-			{
-				std::swap(_fixedUpdateSystems[index], _fixedUpdateSystems.back());
-				UpdateSystemMapIndex(sysType, _fixedUpdateSystems.size() - 1, index);
-			}
-			_fixedUpdateSystems.pop_back();
-			break;
-		case SystemType::Render:
-			if (index < _renderSystems.size() - 1)
-			{
-				std::swap(_renderSystems[index], _renderSystems.back());
-				UpdateSystemMapIndex(sysType, _renderSystems.size() - 1, index);
-			}
-			_renderSystems.pop_back();
-			break;
 		}
 
-		_systemMap.erase(it);
+		if(_systemMap.contains(name))
+			_systemMap.erase(name);
 	}
 }
 

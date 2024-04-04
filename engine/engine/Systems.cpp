@@ -15,6 +15,10 @@ void engine::PhysicsSystem::operator()(entt::registry& registry, float tick)
 
 }
 
+void engine::AnimationRenderSystem::operator()(entt::registry& registry, float tick)
+{
+}
+
 void engine::AnimationRenderSystem::operator()(entt::registry& registry, Graphics& graphics, float tick)
 {
 
