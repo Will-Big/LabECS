@@ -3,6 +3,10 @@
 
 namespace core
 {
+	class Entity;
+	struct Collider;
+	struct Rigidbody;
+
 	class PhysicsScene
 	{
 	public:
@@ -12,6 +16,9 @@ namespace core
 		void Update(float tick);
 
 		void createStack(const physx::PxTransform& t, physx::PxU32 size, physx::PxReal halfExtent);
+
+		void AddRigidbody(Entity& entity, const Rigidbody& rigidbody);
+		void AddCollider(Entity& entity, const Collider& collider);
 
 	private:
 		physx::PxScene* _scene = nullptr;

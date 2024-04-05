@@ -3,9 +3,15 @@
 
 #include "Systems.h"
 #include "Components.h"
+#include "PhysicsScene.h"
 
 #include <fstream>
 #include <cereal/types/vector.hpp>
+
+core::Scene::Scene()
+{
+	_physicsScene = std::make_unique<PhysicsScene>();
+}
 
 core::Entity core::Scene::AddEntity()
 {
@@ -209,6 +215,8 @@ void core::Scene::Run()
 	{
 		(*fixed)(_registry, 0.016f);
 	}
+
+	_physicsScene->Update(0.016f);
 }
 
 void core::Scene::UpdateSystemMapIndex(SystemType type, size_t oldIndex, size_t newIndex)

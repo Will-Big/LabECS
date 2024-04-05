@@ -2,15 +2,13 @@
 #include "Entity.h"
 #include "SystemTraits.h"
 
-namespace core
-{
-	class IFixedSystem;
-}
 
 namespace core
 {
 	class IUpdateSystem;
+	class IFixedSystem;
 	class IRenderSystem;
+	class PhysicsScene;
 	class Graphics;
 
 	class Scene
@@ -18,6 +16,8 @@ namespace core
 		using SystemInfo = std::pair<SystemType, size_t>;
 
 	public:
+		Scene();
+
 		Entity AddEntity();
 
 		template <typename T> requires HasSystemTraits<T>
@@ -38,6 +38,8 @@ namespace core
 		void UpdateSystemMapIndex(SystemType type, size_t oldIndex, size_t newIndex);
 
 		entt::registry _registry;
+		std::unique_ptr<PhysicsScene>  _physicsScene;
+
 		std::multimap<std::string, SystemInfo> _systemMap;
 
 		std::vector<std::unique_ptr<IUpdateSystem>> _updates;

@@ -5,6 +5,8 @@
 
 namespace core
 {
+	class PhysicsScene;
+
 	class TransformSystem : public IUpdateSystem
 	{
 	public:

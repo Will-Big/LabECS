@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ComponentInlines.h" />
     <ClInclude Include="Components.h" />
     <ClInclude Include="ComponentTemplates.h" />
     <ClInclude Include="Entity.h" />

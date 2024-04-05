@@ -15,13 +15,13 @@ namespace core
 	template <typename T>
 	struct SystemTraits;
 
-	// SystemTraits가 주어진 T에 대해 정의되어 있고, type과 name을 멤버로 가지는지 확인하는 콘셉트
+	// 기본 생성자와 SystemTraits::type, SystemTraits::name 을 멤버로 가짐
 	template <typename T>
 	concept HasSystemTraits = requires
 	{
 		{ SystemTraits<T>::type } -> std::convertible_to<SystemType>;
 		{ SystemTraits<T>::name } -> std::convertible_to<const char*>;
-	};
+	} && std::is_default_constructible_v<T>;
 
 	enum class SystemType
 	{

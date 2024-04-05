@@ -12,6 +12,11 @@ namespace core
 	}
 
 	template<typename Archive>
+	void serialize(Archive& archive, core::Name& name) {
+		archive(CEREAL_NVP(name.name));
+	}
+
+	template<typename Archive>
 	void serialize(Archive& archive, core::Relationship& relationship) {
 		archive(CEREAL_NVP(relationship.parent));
 	}

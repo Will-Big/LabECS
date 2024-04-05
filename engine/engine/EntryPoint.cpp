@@ -12,9 +12,7 @@ int main()
 
 	core::Scene scene1;
 
-	core::PhysicsScene physicsScene1;
-
-	/*auto e1 = scene1.AddEntity();
+	auto e1 = scene1.AddEntity();
 	auto e2 = scene1.AddEntity();
 	auto e3 = scene1.AddEntity();
 	auto e4 = scene1.AddEntity();
@@ -28,13 +26,14 @@ int main()
 
 	scene1.RegisterSystem<core::TransformSystem>();
 	scene1.RegisterSystem<core::AnimationSystem>();
-	//scene1.RemoveSystem<core::AnimationSystem>();
+	scene1.RegisterSystem<core::PhysicsSystem>();
+	scene1.RemoveSystem<core::AnimationSystem>();
 
 	auto b1 = e4.IsAncestorOf(e1);
-	auto b2 = e1.IsDescendantOf(e4);*/
+	auto b2 = e1.IsDescendantOf(e4);
 
 	//scene1.SaveScene("../sceneTest");
-	scene1.LoadScene("../sceneTest");
+	//scene1.LoadScene("../sceneTest");
 
 	/*scene1.SavePrefab("../prefabTest", e1);
 	scene1.LoadPrefab("../prefabTest");*/
@@ -42,7 +41,6 @@ int main()
 	while (true)
 	{
 		scene1.Run();
-		physicsScene1.Update(0.016f);
 	}
 
 	return 0;

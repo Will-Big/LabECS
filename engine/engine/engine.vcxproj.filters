@@ -55,6 +55,9 @@
     <ClInclude Include="PhysicsScene.h">
       <Filter>소스 파일\Core</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentInlines.h">
+      <Filter>소스 파일\Core\Built-in\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
