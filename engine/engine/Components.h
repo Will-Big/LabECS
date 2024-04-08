@@ -1,18 +1,21 @@
 ﻿#pragma once
-#include <iostream>
 
 namespace core
 {
+	class Mesh;
+
 	struct Transform
 	{
-		float x;
-		float y;
-		float z;
+		Vector3 position;
+		Quaternion rotation;
+		Vector3 scale;
+		Matrix localMatrix;
+		Matrix worldMatrix;
 	};
 
 	struct Relationship
 	{
-		entt::entity parent;
+		entt::entity parent = entt::null;
 	};
 
 	struct Name
@@ -22,37 +25,47 @@ namespace core
 
 	struct Rigidbody
 	{
-		enum class Interpolation : uint_fast8_t
+		enum class Interpolation
 		{
 			None,
 			Interpolate,
 			Extrapolate
 		};
-		enum class Constraints : uint_fast8_t
+		enum class Constraints
 		{
 			None = 0,
-			FreezePositionX = 1 << 0, // 1
-			FreezePositionY = 1 << 1, // 2
-			FreezePositionZ = 1 << 2, // 4
-			FreezeRotationX = 1 << 3, // 8
-			FreezeRotationY = 1 << 4, // 16
-			FreezeRotationZ = 1 << 5, // 32
-			FreezePosition = FreezePositionX | FreezePositionY | FreezePositionZ,	// 7
-			FreezeRotation = FreezeRotationX | FreezeRotationY | FreezeRotationZ,	// 56
-			FreezeAll = FreezePosition | FreezeRotation,							// 63
+			FreezePositionX = (1 << 0),
+			FreezePositionY = (1 << 1),
+			FreezePositionZ = (1 << 2),
+			FreezeRotationX = (1 << 3),
+			FreezeRotationY = (1 << 4),
+			FreezeRotationZ = (1 << 5),
+			FreezePosition = FreezePositionX | FreezePositionY | FreezePositionZ,
+			FreezeRotation = FreezeRotationX | FreezeRotationY | FreezeRotationZ,
+			FreezeAll = FreezePosition | FreezeRotation,
 		};
 
 		float mass = 0.f;
 		float drag = 0.f;
 		float angularDrag = 0.f;
+		Vector3 velocity;
 		bool useGravity = false;
 		bool isKinematic = false;
 		Interpolation interpolation = Interpolation::None;
 		Constraints constraints = Constraints::None;
 	};
 
-	struct Collider
+	struct ColliderCommon
 	{
+		enum class Shape
+		{
+			None,
+			Box,
+			Sphere,
+			Capsule,
+			Mesh,
+		};
+
 		struct PhysicMaterial
 		{
 			float dynamicFriction = 0.f;
@@ -60,28 +73,45 @@ namespace core
 			float bounciness = 0.f;
 		};
 
-		bool isTrigger;
+		bool isTrigger = false;
 		PhysicMaterial material;
+		Shape shape = Shape::None;
 	};
 
-	struct BoxCollider : Collider
+	struct BoxCollider
 	{
-		
+		Vector3 center;
+		Vector3 size;
 	};
 
-	struct SphereCollider : Collider
+	struct SphereCollider
 	{
-		
+		Vector3 center;
+		float radius = 0.f;
 	};
 
-	struct CapsuleCollider : Collider
+	struct CapsuleCollider
 	{
-		
+		Vector3 center;
+		float radius = 0.f;
+		float height = 0.f;
+		int direction = 0;
 	};
 
-	struct MeshCollider : Collider
+	struct MeshCollider
 	{
-		
+		enum class MeshColliderCookingOptions
+		{
+			None,
+			CookForFasterSimulation,
+			EnableMeshCleaning,
+			WeldColocatedVertices,
+			UseFastMidphase,
+		};
+
+		bool convex = false;
+		std::string sharedMesh;
+		MeshColliderCookingOptions cookingOptions = MeshColliderCookingOptions::None;
 	};
 }
 

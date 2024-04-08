@@ -8,21 +8,60 @@
     "value6": 3,
     "value7": 0,
     "value8": {
-        "transform.x": 0.0,
-        "transform.y": 0.0,
-        "transform.z": 0.0
+        "transform.position": {
+            "vector.x": 0.0,
+            "vector.y": 0.0,
+            "vector.z": 0.0
+        },
+        "transform.rotation": {
+            "quaternion.x": 0.0,
+            "quaternion.y": 0.0,
+            "quaternion.z": 0.0,
+            "quaternion.w": 1.0
+        },
+        "transform.scale": {
+            "vector.x": 0.0,
+            "vector.y": 0.0,
+            "vector.z": 0.0
+        }
     },
     "value9": 1,
     "value10": {
-        "transform.x": 0.0,
-        "transform.y": 0.0,
-        "transform.z": 0.0
+        "transform.position": {
+            "vector.x": 0.0,
+            "vector.y": 0.0,
+            "vector.z": 0.0
+        },
+        "transform.rotation": {
+            "quaternion.x": 0.0,
+            "quaternion.y": 0.0,
+            "quaternion.z": 0.0,
+            "quaternion.w": 1.0
+        },
+        "transform.scale": {
+            "vector.x": 0.0,
+            "vector.y": 0.0,
+            "vector.z": 0.0
+        }
     },
     "value11": 2,
     "value12": {
-        "transform.x": 0.0,
-        "transform.y": 0.0,
-        "transform.z": 0.0
+        "transform.position": {
+            "vector.x": 0.0,
+            "vector.y": 0.0,
+            "vector.z": 0.0
+        },
+        "transform.rotation": {
+            "quaternion.x": 0.0,
+            "quaternion.y": 0.0,
+            "quaternion.z": 0.0,
+            "quaternion.w": 1.0
+        },
+        "transform.scale": {
+            "vector.x": 0.0,
+            "vector.y": 0.0,
+            "vector.z": 0.0
+        }
     },
     "value13": 2,
     "value14": 0,
@@ -33,8 +72,47 @@
     "value17": {
         "relationship.parent": 2
     },
+    "value18": 0,
+    "value19": 1,
+    "value20": 2,
+    "value21": {
+        "rigidbody.mass": 0.0,
+        "rigidbody.drag": 0.0,
+        "rigidbody.angularDrag": 0.0,
+        "rigidbody.useGravity": false,
+        "rigidbody.isKinematic": false,
+        "rigidbody.interpolation": 0,
+        "rigidbody.constraints": 0
+    },
+    "value22": 1,
+    "value23": 2,
+    "value24": {
+        "collider.isTrigger": false,
+        "collider.material": {
+            "material.dynamicFriction": 0.0,
+            "material.staticFriction": 0.0,
+            "material.bounciness": 0.0
+        },
+        "collider.shape": 0
+    },
+    "value25": 1,
+    "value26": 2,
+    "value27": {
+        "boxCollider.center": {
+            "vector.x": 0.0,
+            "vector.y": 0.0,
+            "vector.z": 0.0
+        },
+        "boxCollider.size": {
+            "vector.x": 0.0,
+            "vector.y": 0.0,
+            "vector.z": 0.0
+        }
+    },
+    "value28": 0,
+    "value29": 0,
     "systems": [
-        "AnimationSystem",
+        "PhysicsSystem",
         "TransformSystem"
     ]
 }

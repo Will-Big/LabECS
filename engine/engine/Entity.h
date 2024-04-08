@@ -10,6 +10,9 @@ namespace core
 		template <typename T, typename... Args>
 		T& Emplace(Args&&... args);
 
+		template <typename T, typename... Args>
+		T& Replace(Args&&... args);
+
 		template <typename T>
 		T& Get() const;
 
@@ -24,11 +27,11 @@ namespace core
 
 		void Destroy() const { _registry.destroy(_handle); }
 
-		void SetParent(Entity entity);
-		std::vector<Entity> GetChildren();
+		void SetParent(const core::Entity& entity);
+		std::vector<Entity> GetChildren() const;
 
-		bool IsAncestorOf(Entity entity) const;
-		bool IsDescendantOf(Entity entity) const;
+		bool IsAncestorOf(core::Entity entity) const;
+		bool IsDescendantOf(const Entity& entity) const;
 
 		uint32_t GetHandle() const { return static_cast<uint32_t>(_handle); }
 
@@ -49,6 +52,12 @@ namespace core
 	T& Entity::Emplace(Args&&... args)
 	{
 		return _registry.emplace<T>(_handle, std::forward<Args>(args)...);
+	}
+
+	template <typename T, typename ... Args>
+	T& Entity::Replace(Args&&... args)
+	{
+		return _registry.replace<T>(_handle, std::forward<Args>(args)...);
 	}
 
 	template <typename T>

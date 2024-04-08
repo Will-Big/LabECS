@@ -38,7 +38,7 @@ namespace core
 		void UpdateSystemMapIndex(SystemType type, size_t oldIndex, size_t newIndex);
 
 		entt::registry _registry;
-		std::unique_ptr<PhysicsScene>  _physicsScene;
+		std::unique_ptr<PhysicsScene> _physicsScene;
 
 		std::multimap<std::string, SystemInfo> _systemMap;
 

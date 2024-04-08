@@ -4,7 +4,7 @@
 namespace core
 {
 	class Entity;
-	struct Collider;
+	struct ColliderCommon;
 	struct Rigidbody;
 
 	class PhysicsScene
@@ -15,16 +15,18 @@ namespace core
 
 		void Update(float tick);
 
-		void createStack(const physx::PxTransform& t, physx::PxU32 size, physx::PxReal halfExtent);
-
-		void AddRigidbody(Entity& entity, const Rigidbody& rigidbody);
-		void AddCollider(Entity& entity, const Collider& collider);
+		bool AddPhysicsActor(const Entity& entity);
 
 	private:
 		physx::PxScene* _scene = nullptr;
 		physx::PxFoundation* _foundation = nullptr;
 		physx::PxPhysics* _physics = nullptr;
 		physx::PxPvd* _pvd = nullptr;
+
+		inline static physx::PxDefaultAllocator _allocator;
+		inline static physx::PxDefaultErrorCallback _errorCallback;
+
+		std::unordered_map<entt::entity, physx::PxActor*> _entityToPxActorMap;
 	};
 }
 

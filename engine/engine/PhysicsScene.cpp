@@ -3,19 +3,14 @@
 
 #include "Entity.h"
 #include "Components.h"
-
-static physx::PxMaterial* gMaterial = nullptr;
-static physx::PxReal stackZ = 10.0f;
-
-static physx::PxDefaultAllocator allocator;
-static physx::PxDefaultErrorCallback errorCallback;
+#include "ComponentInlines.h"
 
 core::PhysicsScene::PhysicsScene()
 {
 	using namespace physx;
 
 	// PxFoundation 생성
-	_foundation = PxCreateFoundation(PX_PHYSICS_VERSION, allocator, errorCallback);
+	_foundation = PxCreateFoundation(PX_PHYSICS_VERSION, _allocator, _errorCallback);
 
 	// PxPvd 생성
 	_pvd = PxCreatePvd(*_foundation);
@@ -40,13 +35,6 @@ core::PhysicsScene::PhysicsScene()
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 	}
-	gMaterial = _physics->createMaterial(0.5f, 0.5f, 0.6f);
-
-	PxRigidStatic* groundPlane = PxCreatePlane(*_physics, PxPlane(0, 1, 0, 0), *gMaterial);
-	_scene->addActor(*groundPlane);
-
-	for (PxU32 i = 0; i < 5; i++)
-		createStack(PxTransform(PxVec3(0, 0, stackZ -= 10.0f)), 10, 2.0f);
 }
 
 core::PhysicsScene::~PhysicsScene()
@@ -61,65 +49,117 @@ void core::PhysicsScene::Update(float tick)
 	_scene->fetchResults(true);
 }
 
-void core::PhysicsScene::createStack(const physx::PxTransform& t, physx::PxU32 size, physx::PxReal halfExtent)
+bool core::PhysicsScene::AddPhysicsActor(const core::Entity& entity)
 {
 	using namespace physx;
 
-	PxShape* shape = _physics->createShape(PxBoxGeometry(halfExtent, halfExtent, halfExtent), *gMaterial);
-	for (PxU32 i = 0; i < size; i++)
+	if (!entity.HasAllOf<Transform, ColliderCommon>())
+		return false;
+
+	if (!entity.HasAnyOf<BoxCollider, SphereCollider, CapsuleCollider, MeshCollider>())
+		return false;
+
+	const auto& collider = entity.Get<ColliderCommon>();
+	const auto& transform = entity.Get<Transform>();
+
+	PxMaterial* material = _physics->createMaterial(
+		collider.material.staticFriction,
+		collider.material.dynamicFriction,
+		collider.material.bounciness);
+
+	PxShape* shape = nullptr;
+	PxActor* actor = nullptr;
+
+	switch (collider.shape)
 	{
-		for (PxU32 j = 0; j < size - i; j++)
-		{
-			PxTransform localTm(PxVec3(PxReal(j * 2) - PxReal(size - i), PxReal(i * 2 + 1), 0) * halfExtent);
-			PxRigidDynamic* body = _physics->createRigidDynamic(t.transform(localTm));
-			body->attachShape(*shape);
-			PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
-			_scene->addActor(*body);
-		}
+	case ColliderCommon::Shape::Box:
+	{
+		const auto& box = entity.Get<BoxCollider>();
+		shape = _physics->createShape(PxBoxGeometry(box.size.x / 2, box.size.y / 2, box.size.z / 2), *material);
+		break;
 	}
-	shape->release();
-}
+	case ColliderCommon::Shape::Sphere:
+	{
+		const auto& sphere = entity.Get<SphereCollider>();
+		shape = _physics->createShape(PxSphereGeometry(sphere.radius), *material);
+		break;
+	}
+	case ColliderCommon::Shape::Capsule:
+	{
+		const auto& capsule = entity.Get<CapsuleCollider>();
+		shape = _physics->createShape(PxCapsuleGeometry(capsule.radius, capsule.height), *material);
+		break;
+	}
+	case ColliderCommon::Shape::Mesh:
+	{
+		/*const auto& mesh = entity.Get<MeshCollider>();
+		shape = _physics->createShape(PxConvexMeshGeometry(1.0f, 1.0f, 1.0f), *material);*/
+		break;
+	}
+	case ColliderCommon::Shape::None:
+	default:
+		material->release();
+		return false;
+	}
 
-void core::PhysicsScene::AddRigidbody(Entity& entity, const Rigidbody& rigidbody)
-{
-	// Entity에 연결된 PxActor를 가져오거나 생성합니다.
-	physx::PxRigidDynamic* dynamicActor = _physics->createRigidDynamic(physx::PxTransform(physx::PxVec3(0, 0, 0)));
+	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, !collider.isTrigger);
+	shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, collider.isTrigger);
 
-	// Rigidbody 속성을 기반으로 물리 속성 설정
-	dynamicActor->setMass(rigidbody.mass);
-	dynamicActor->setLinearDamping(rigidbody.drag);
-	dynamicActor->setAngularDamping(rigidbody.angularDrag);
-	dynamicActor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, !rigidbody.useGravity);
-	dynamicActor->setRigidBodyFlag(physx::PxRigidBodyFlag::eKINEMATIC, rigidbody.isKinematic);
+	if (entity.HasAllOf<Rigidbody>())
+	{
+		const auto& rigid = entity.Get<Rigidbody>();
 
-	// Entity와 PxRigidDynamic 연결 (가정)
-	//entity.SetPhysxActor(dynamicActor);
+		// 동적 액터 생성
+		PxRigidDynamic* dynamicActor = _physics->createRigidDynamic(
+			PxTransform(
+				PxVec3(transform.position.x, transform.position.y, transform.position.z),
+				PxQuat(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w)
+			)
+		);
 
-	// Scene에 액터 추가
-	_scene->addActor(*dynamicActor);
-}
+		dynamicActor->setMass(rigid.mass);
+		dynamicActor->setLinearDamping(rigid.drag);
+		dynamicActor->setAngularDamping(rigid.angularDrag);
+		dynamicActor->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !rigid.useGravity);
+		dynamicActor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, rigid.isKinematic);
+		dynamicActor->attachShape(*shape);
 
-void core::PhysicsScene::AddCollider(Entity& entity, const Collider& collider)
-{
-	// Entity에 연결된 PxActor를 가져옵니다. 여기서는 PxRigidDynamic으로 가정합니다.
-	//physx::PxRigidActor* actor = static_cast<physx::PxRigidActor*>(entity.GetPhysxActor());
-	physx::PxRigidActor* actor = nullptr;
-	if (!actor) return; // 오류 처리
+		auto setLockFlag = [&](Rigidbody::Constraints flag, PxRigidDynamicLockFlag::Enum pxFlag)
+			{
+				if ((rigid.constraints & flag) != Rigidbody::Constraints::None)
+					dynamicActor->setRigidDynamicLockFlag(pxFlag, true);
+			};
 
-	// Collider의 물리 재질 생성
-	physx::PxMaterial* material = _physics->createMaterial(collider.material.dynamicFriction, collider.material.staticFriction, collider.material.bounciness);
+		setLockFlag(Rigidbody::Constraints::FreezePositionX, PxRigidDynamicLockFlag::eLOCK_LINEAR_X);
+		setLockFlag(Rigidbody::Constraints::FreezePositionY, PxRigidDynamicLockFlag::eLOCK_LINEAR_Y);
+		setLockFlag(Rigidbody::Constraints::FreezePositionZ, PxRigidDynamicLockFlag::eLOCK_LINEAR_Z);
+		setLockFlag(Rigidbody::Constraints::FreezeRotationX, PxRigidDynamicLockFlag::eLOCK_ANGULAR_X);
+		setLockFlag(Rigidbody::Constraints::FreezeRotationY, PxRigidDynamicLockFlag::eLOCK_ANGULAR_Y);
+		setLockFlag(Rigidbody::Constraints::FreezeRotationZ, PxRigidDynamicLockFlag::eLOCK_ANGULAR_Z);
 
-	// 예시: 박스 콜라이더 생성. 실제로는 Collider 구조체에 따라 다른 형태의 콜라이더를 생성해야 할 수 있습니다.
-	physx::PxShape* shape = _physics->createShape(physx::PxBoxGeometry(1.0f, 1.0f, 1.0f), *material);
+		actor = dynamicActor;
+	}
+	else
+	{
+		// 정적 액터 생성
+		PxRigidStatic* staticActor = _physics->createRigidStatic(
+			PxTransform(
+				PxVec3(transform.position.x, transform.position.y, transform.position.z),
+				PxQuat(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w)
+			)
+		);
 
-	// 콜라이더가 트리거인지 설정
-	shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, !collider.isTrigger);
-	shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, collider.isTrigger);
+		staticActor->attachShape(*shape);
 
-	// 액터에 콜라이더(Shape) 부착
-	actor->attachShape(*shape);
+		actor = staticActor;
+	}
 
-	// 사용이 끝난 후 PxMaterial과 PxShape를 해제
+	// 매핑 테이블에 액터 추가
+	_entityToPxActorMap[entity] = actor;
+	_scene->addActor(*actor);
+
 	shape->release();
 	material->release();
+
+	return true;
 }

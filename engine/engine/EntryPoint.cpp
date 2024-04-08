@@ -23,6 +23,10 @@ int main()
 	e1.Emplace<core::Transform>();
 	e2.Emplace<core::Transform>();
 	e3.Emplace<core::Transform>();
+	e3.Emplace<core::ColliderCommon>();
+	e3.Emplace<core::BoxCollider>();
+	e3.Emplace<core::Rigidbody>();
+
 
 	scene1.RegisterSystem<core::TransformSystem>();
 	scene1.RegisterSystem<core::AnimationSystem>();
@@ -32,7 +36,7 @@ int main()
 	auto b1 = e4.IsAncestorOf(e1);
 	auto b2 = e1.IsDescendantOf(e4);
 
-	//scene1.SaveScene("../sceneTest");
+	scene1.SaveScene("../sceneTest");
 	//scene1.LoadScene("../sceneTest");
 
 	/*scene1.SavePrefab("../prefabTest", e1);

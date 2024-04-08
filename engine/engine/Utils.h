@@ -3,6 +3,18 @@
 #include "SystemTemplates.h"
 #include "ComponentTemplates.h"
 
+#define META_TYPE_HELPER(class) \
+	.type(entt::type_hash<class>::value())
+
+#define META_COMPONENT_FUNC_HELPER(class) \
+	.func<&core::SaveSnapshot<class>>("SaveSnapshot"_hs) \
+	.func<&core::LoadSnapshot<class>>("LoadSnapshot"_hs) \
+	.func<&core::SavePrefabSnapshot<class>>("SavePrefabSnapshot"_hs) \
+	.func<&core::LoadPrefabSnapshot<class>>("LoadPrefabSnapshot"_hs) \
+
+#define META_SYSTEM_FUNC_HELPER(class) \
+	.func<&core::LoadSystem<class>>("LoadSystem"_hs) \
+
 namespace core
 {
 	inline void RegisterMetaData()
@@ -10,34 +22,72 @@ namespace core
 		// register system meta data
 		{
 			entt::meta<TransformSystem>()
-				.type(entt::type_hash<TransformSystem>::value())
-				.func<&core::LoadSystem<TransformSystem>>("LoadSystem"_hs);
+				META_TYPE_HELPER(TransformSystem)
+				META_SYSTEM_FUNC_HELPER(TransformSystem);
 
 			entt::meta<AnimationSystem>()
-				.type(entt::type_hash<AnimationSystem>::value())
-				.func<&core::LoadSystem<AnimationSystem>>("LoadSystem"_hs);
+				META_TYPE_HELPER(AnimationSystem)
+				META_SYSTEM_FUNC_HELPER(AnimationSystem);
 		}
 
 		// register component meta data
 		{
 			entt::meta<Transform>()
-				.type(entt::type_hash<Transform>::value())
-				.data<&Transform::x>("x"_hs)
-				.data<&Transform::y>("y"_hs)
-				.data<&Transform::z>("z"_hs)
-				.func<&core::SaveSnapshot<Transform>>("SaveSnapshot"_hs)
-				.func<&core::LoadSnapshot<Transform>>("LoadSnapshot"_hs)
-				.func<&core::SavePrefabSnapshot<Transform>>("SavePrefabSnapshot"_hs)
-				.func<&core::LoadPrefabSnapshot<Transform>>("LoadPrefabSnapshot"_hs);
-
+				META_TYPE_HELPER(Transform)
+				META_COMPONENT_FUNC_HELPER(Transform)
+				.data<&Transform::position>("position"_hs)
+				.data<&Transform::rotation>("rotation"_hs)
+				.data<&Transform::scale>("scale"_hs)
+				.data<&Transform::localMatrix>("localMatrix"_hs)
+				.data<&Transform::worldMatrix>("worldMatrix"_hs);
 
 			entt::meta<Relationship>()
-				.type(entt::type_hash<Relationship>::value())
-				.data<&Relationship::parent>("parent"_hs)
-				.func<&core::SaveSnapshot<Relationship>>("SaveSnapshot"_hs)
-				.func<&core::LoadSnapshot<Relationship>>("LoadSnapshot"_hs)
-				.func<&core::SavePrefabSnapshot<Relationship>>("SavePrefabSnapshot"_hs)
-				.func<&core::LoadPrefabSnapshot<Relationship>>("LoadPrefabSnapshot"_hs);
+				META_TYPE_HELPER(Relationship)
+				META_COMPONENT_FUNC_HELPER(Relationship)
+				.data<&Relationship::parent>("parent"_hs);
+
+			entt::meta<Name>()
+				META_TYPE_HELPER(Name)
+				META_COMPONENT_FUNC_HELPER(Name)
+				.data<&Name::name>("name"_hs);
+
+			entt::meta<Rigidbody>()
+				META_TYPE_HELPER(Rigidbody)
+				META_COMPONENT_FUNC_HELPER(Rigidbody)
+				.data<&Rigidbody::mass>("mass"_hs)
+				.data<&Rigidbody::drag>("drag"_hs)
+				.data<&Rigidbody::angularDrag>("angularDrag"_hs)
+				.data<&Rigidbody::useGravity>("useGravity"_hs)
+				.data<&Rigidbody::isKinematic>("isKinematic"_hs)
+				.data<&Rigidbody::interpolation>("interpolation"_hs)
+				.data<&Rigidbody::constraints>("constraints"_hs);
+
+			entt::meta<ColliderCommon>()
+				META_TYPE_HELPER(ColliderCommon)
+				META_COMPONENT_FUNC_HELPER(ColliderCommon)
+				.data<&ColliderCommon::isTrigger>("isTrigger"_hs)
+				.data<&ColliderCommon::material>("shape"_hs)
+				.data<&ColliderCommon::shape>("shape"_hs);
+
+			entt::meta<BoxCollider>()
+				META_TYPE_HELPER(BoxCollider)
+				META_COMPONENT_FUNC_HELPER(BoxCollider)
+				.data<&BoxCollider::center>("center"_hs)
+				.data<&BoxCollider::size>("size"_hs);
+
+			entt::meta<SphereCollider>()
+				META_TYPE_HELPER(SphereCollider)
+				META_COMPONENT_FUNC_HELPER(SphereCollider)
+				.data<&SphereCollider::center>("center"_hs)
+				.data<&SphereCollider::radius>("radius"_hs);
+
+			entt::meta<CapsuleCollider>()
+				META_TYPE_HELPER(CapsuleCollider)
+				META_COMPONENT_FUNC_HELPER(CapsuleCollider)
+				.data<&CapsuleCollider::center>("center"_hs)
+				.data<&CapsuleCollider::radius>("radius"_hs)
+				.data<&CapsuleCollider::height>("height"_hs)
+				.data<&CapsuleCollider::direction>("direction"_hs);
 		}
 	}
 }

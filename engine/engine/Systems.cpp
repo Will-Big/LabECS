@@ -6,8 +6,6 @@
 void core::TransformSystem::operator()(entt::registry& registry, float tick)
 {
 	auto view = registry.view<Transform>();
-
-
 }
 
 void core::PhysicsSystem::operator()(entt::registry& registry, float tick)
