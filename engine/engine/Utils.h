@@ -66,8 +66,7 @@ namespace core
 				META_TYPE_HELPER(ColliderCommon)
 				META_COMPONENT_FUNC_HELPER(ColliderCommon)
 				.data<&ColliderCommon::isTrigger>("isTrigger"_hs)
-				.data<&ColliderCommon::material>("shape"_hs)
-				.data<&ColliderCommon::shape>("shape"_hs);
+				.data<&ColliderCommon::material>("shape"_hs);
 
 			entt::meta<BoxCollider>()
 				META_TYPE_HELPER(BoxCollider)

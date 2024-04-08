@@ -92,8 +92,7 @@
             "material.dynamicFriction": 0.0,
             "material.staticFriction": 0.0,
             "material.bounciness": 0.0
-        },
-        "collider.shape": 0
+        }
     },
     "value25": 1,
     "value26": 2,

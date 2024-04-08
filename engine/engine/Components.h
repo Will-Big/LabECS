@@ -57,15 +57,6 @@ namespace core
 
 	struct ColliderCommon
 	{
-		enum class Shape
-		{
-			None,
-			Box,
-			Sphere,
-			Capsule,
-			Mesh,
-		};
-
 		struct PhysicMaterial
 		{
 			float dynamicFriction = 0.f;
@@ -75,7 +66,6 @@ namespace core
 
 		bool isTrigger = false;
 		PhysicMaterial material;
-		Shape shape = Shape::None;
 	};
 
 	struct BoxCollider

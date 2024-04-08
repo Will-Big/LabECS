@@ -73,8 +73,7 @@ namespace cereal
 	{
 		archive(
 			CEREAL_NVP(collider.isTrigger),
-			CEREAL_NVP(collider.material),
-			CEREAL_NVP(collider.shape)
+			CEREAL_NVP(collider.material)
 		);
 	}
 

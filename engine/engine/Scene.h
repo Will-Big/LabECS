@@ -2,7 +2,6 @@
 #include "Entity.h"
 #include "SystemTraits.h"
 
-
 namespace core
 {
 	class IUpdateSystem;
@@ -37,6 +36,7 @@ namespace core
 	private:
 		void UpdateSystemMapIndex(SystemType type, size_t oldIndex, size_t newIndex);
 
+	public:
 		entt::registry _registry;
 		std::unique_ptr<PhysicsScene> _physicsScene;
 

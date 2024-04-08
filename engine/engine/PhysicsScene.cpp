@@ -15,10 +15,12 @@ core::PhysicsScene::PhysicsScene()
 	// PxPvd 생성
 	_pvd = PxCreatePvd(*_foundation);
 	PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
-	_pvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 
 	// PxPhysics 생성
-	_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *_foundation, PxTolerancesScale(), false, _pvd);
+	if(_pvd->connect(*transport, PxPvdInstrumentationFlag::eALL))
+		_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *_foundation, PxTolerancesScale(), false, _pvd);
+	else
+		_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *_foundation, PxTolerancesScale());
 
 	// PxScene 생성
 	PxSceneDesc sceneDesc(_physics->getTolerancesScale());
@@ -28,8 +30,7 @@ core::PhysicsScene::PhysicsScene()
 	sceneDesc.filterShader = PxDefaultSimulationFilterShader;
 	_scene = _physics->createScene(sceneDesc);
 
-	PxPvdSceneClient* pvdClient = _scene->getScenePvdClient();
-	if (pvdClient)
+	if (PxPvdSceneClient* pvdClient = _scene->getScenePvdClient())
 	{
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
@@ -56,48 +57,45 @@ bool core::PhysicsScene::AddPhysicsActor(const core::Entity& entity)
 	if (!entity.HasAllOf<Transform, ColliderCommon>())
 		return false;
 
-	if (!entity.HasAnyOf<BoxCollider, SphereCollider, CapsuleCollider, MeshCollider>())
-		return false;
-
 	const auto& collider = entity.Get<ColliderCommon>();
 	const auto& transform = entity.Get<Transform>();
 
 	PxMaterial* material = _physics->createMaterial(
 		collider.material.staticFriction,
 		collider.material.dynamicFriction,
-		collider.material.bounciness);
+		collider.material.bounciness
+	);
 
 	PxShape* shape = nullptr;
 	PxActor* actor = nullptr;
 
-	switch (collider.shape)
-	{
-	case ColliderCommon::Shape::Box:
+	if (entity.HasAllOf<BoxCollider>())
 	{
 		const auto& box = entity.Get<BoxCollider>();
 		shape = _physics->createShape(PxBoxGeometry(box.size.x / 2, box.size.y / 2, box.size.z / 2), *material);
-		break;
 	}
-	case ColliderCommon::Shape::Sphere:
+	else if (entity.HasAllOf<BoxCollider>())
 	{
 		const auto& sphere = entity.Get<SphereCollider>();
 		shape = _physics->createShape(PxSphereGeometry(sphere.radius), *material);
-		break;
 	}
-	case ColliderCommon::Shape::Capsule:
+	else if (entity.HasAllOf<BoxCollider>())
 	{
 		const auto& capsule = entity.Get<CapsuleCollider>();
 		shape = _physics->createShape(PxCapsuleGeometry(capsule.radius, capsule.height), *material);
-		break;
 	}
-	case ColliderCommon::Shape::Mesh:
+	else if (entity.HasAllOf<MeshCollider>()) // todo
 	{
-		/*const auto& mesh = entity.Get<MeshCollider>();
-		shape = _physics->createShape(PxConvexMeshGeometry(1.0f, 1.0f, 1.0f), *material);*/
-		break;
+		const auto& mesh = entity.Get<MeshCollider>();
 	}
-	case ColliderCommon::Shape::None:
-	default:
+	else
+	{
+		material->release();
+		return false;
+	}
+
+	if (!shape)
+	{
 		material->release();
 		return false;
 	}
