@@ -25,6 +25,10 @@ namespace core
 				META_TYPE_HELPER(TransformSystem)
 				META_SYSTEM_FUNC_HELPER(TransformSystem);
 
+			entt::meta<PhysicsSystem>()
+				META_TYPE_HELPER(PhysicsSystem)
+				META_SYSTEM_FUNC_HELPER(PhysicsSystem);
+
 			entt::meta<AnimationSystem>()
 				META_TYPE_HELPER(AnimationSystem)
 				META_SYSTEM_FUNC_HELPER(AnimationSystem);
@@ -66,7 +70,8 @@ namespace core
 				META_TYPE_HELPER(ColliderCommon)
 				META_COMPONENT_FUNC_HELPER(ColliderCommon)
 				.data<&ColliderCommon::isTrigger>("isTrigger"_hs)
-				.data<&ColliderCommon::material>("shape"_hs);
+				.data<&ColliderCommon::material>("shape"_hs)
+				.data<&ColliderCommon::sharedMaterial>("sharedMaterial"_hs);
 
 			entt::meta<BoxCollider>()
 				META_TYPE_HELPER(BoxCollider)

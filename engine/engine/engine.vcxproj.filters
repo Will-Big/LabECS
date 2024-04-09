@@ -17,31 +17,25 @@
     <Filter Include="소스 파일\Core\Built-in\Components">
       <UniqueIdentifier>{8945e21b-291b-4546-9e95-af6be06b98e5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Core\etc">
+      <UniqueIdentifier>{f026f526-e415-4f38-b88b-48a4ae8e0029}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Core\Base">
+      <UniqueIdentifier>{6f8012df-6d19-4271-a034-1642a8810e17}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainProcess.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
-    <ClInclude Include="pch.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Systems.h">
       <Filter>소스 파일\Core\Built-in\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="Entity.h">
-      <Filter>소스 파일\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>소스 파일\Core</Filter>
     </ClInclude>
     <ClInclude Include="Components.h">
       <Filter>소스 파일\Core\Built-in\Components</Filter>
     </ClInclude>
     <ClInclude Include="SystemTraits.h">
       <Filter>소스 파일\Core\Built-in\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils.h">
-      <Filter>소스 파일\Core</Filter>
     </ClInclude>
     <ClInclude Include="ComponentTemplates.h">
       <Filter>소스 파일\Core\Built-in\Components</Filter>
@@ -52,32 +46,50 @@
     <ClInclude Include="SystemInterface.h">
       <Filter>소스 파일\Core\Built-in\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="PhysicsScene.h">
-      <Filter>소스 파일\Core</Filter>
-    </ClInclude>
     <ClInclude Include="ComponentInlines.h">
       <Filter>소스 파일\Core\Built-in\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>소스 파일\Core\Built-in</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>소스 파일\Core\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>소스 파일\Core\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>소스 파일\Core\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsScene.h">
+      <Filter>소스 파일\Core\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneDispatcher.h">
+      <Filter>소스 파일\Core\Base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="MainProcess.cpp">
       <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="EntryPoint.cpp" />
-    <ClCompile Include="Entity.cpp">
-      <Filter>소스 파일\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>소스 파일\Core</Filter>
     </ClCompile>
     <ClCompile Include="Systems.cpp">
       <Filter>소스 파일\Core\Built-in\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>소스 파일\Core\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>소스 파일\Core\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>소스 파일\Core\Base</Filter>
+    </ClCompile>
     <ClCompile Include="PhysicsScene.cpp">
-      <Filter>소스 파일\Core</Filter>
+      <Filter>소스 파일\Core\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="EntryPoint.cpp" />
+    <ClCompile Include="SceneDispatcher.cpp">
+      <Filter>소스 파일\Core\Base</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

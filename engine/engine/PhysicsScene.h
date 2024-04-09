@@ -17,6 +17,8 @@ namespace core
 
 		bool AddPhysicsActor(const Entity& entity);
 
+
+
 	private:
 		physx::PxScene* _scene = nullptr;
 		physx::PxFoundation* _foundation = nullptr;

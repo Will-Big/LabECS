@@ -4,11 +4,13 @@
 
 namespace core
 {
-	class IUpdateSystem;
-	class IFixedSystem;
-	class IRenderSystem;
-	class PhysicsScene;
 	class Graphics;
+	class PhysicsScene;
+	class IFixedSystem;
+	class IUpdateSystem;
+	class IRenderSystem;
+	class PhysicsSystem;
+	class SceneDispatcher;
 
 	class Scene
 	{
@@ -39,6 +41,7 @@ namespace core
 	public:
 		entt::registry _registry;
 		std::unique_ptr<PhysicsScene> _physicsScene;
+		std::unique_ptr<SceneDispatcher> _dispatcher;
 
 		std::multimap<std::string, SystemInfo> _systemMap;
 
@@ -52,24 +55,29 @@ namespace core
 	{
 		// 시스템 메타 데이터
 		constexpr auto name = SystemTraits<T>::name;
-		constexpr auto type = SystemTraits<T>::type;
 
 		if (_systemMap.contains(name))
 			return;
 
+		auto system = std::make_unique<T>();
+
 		if constexpr (std::is_base_of_v<IUpdateSystem, T>)
 		{
-			_updates.push_back(std::make_unique<T>());
+			_updates.push_back(std::move(system));
 			_systemMap.insert({ name,  { SystemType::Update, _updates.size() - 1 } });
 		}
 		if constexpr (std::is_base_of_v<IFixedSystem, T>)
 		{
-			_fixeds.push_back(std::make_unique<T>());
+			if constexpr (std::is_same_v<PhysicsSystem, T>)
+			{
+				system->physicsScene = _physicsScene.get();
+			}
+			_fixeds.push_back(std::move(system));
 			_systemMap.insert({ name,  { SystemType::FixedUpdate, _fixeds.size() - 1 } });
 		}
 		if constexpr (std::is_base_of_v<IRenderSystem, T>)
 		{
-			_renders.push_back(std::make_unique<T>());
+			_renders.push_back(std::move(system));
 			_systemMap.insert({ name,  { SystemType::Render, _renders.size() - 1 } });
 		}
 	}
@@ -78,7 +86,6 @@ namespace core
 	void Scene::RemoveSystem()
 	{
 		constexpr auto name = SystemTraits<T>::name;
-		constexpr auto type = SystemTraits<T>::type;
 
 		auto range = _systemMap.equal_range(name);
 

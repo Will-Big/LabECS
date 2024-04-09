@@ -66,6 +66,7 @@ namespace core
 
 		bool isTrigger = false;
 		PhysicMaterial material;
+		std::string sharedMaterial;
 	};
 
 	struct BoxCollider

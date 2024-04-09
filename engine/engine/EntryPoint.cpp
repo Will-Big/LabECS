@@ -23,11 +23,22 @@ int main()
 	e1.Emplace<core::Transform>();
 	e2.Emplace<core::Transform>();
 	e3.Emplace<core::Transform>();
-	auto& collider = e3.Emplace<core::ColliderCommon>();
-	auto& box = e3.Emplace<core::BoxCollider>();
-	box.size = Vector3{ 3.f, 4.f, 5.f };
-	auto& rigid = e3.Emplace<core::Rigidbody>();
-	scene1._physicsScene->AddPhysicsActor(e3);
+
+	for(auto i = 0; i < 10; i++)
+	{
+		auto entity = scene1.AddEntity();
+
+		auto& transform = entity.Emplace<Transform>();
+		transform.position = Vector3{(4.f * i), (4.f * i), (4.f * i)};
+
+		entity.Emplace<ColliderCommon>();
+		auto& boxCollider = entity.Emplace<BoxCollider>();
+		boxCollider.size = Vector3{ 4.f, 4.f, 4.f };
+
+		auto& rigidbody = entity.Emplace<core::Rigidbody>();
+		scene1._physicsScene->AddPhysicsActor(entity);
+	}
+
 
 	scene1.RegisterSystem<core::TransformSystem>();
 	scene1.RegisterSystem<core::AnimationSystem>();

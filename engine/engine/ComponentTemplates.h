@@ -6,9 +6,11 @@ namespace cereal
 	template <class Archive>
 	void serialize(Archive& archive, DirectX::SimpleMath::Vector3& vector)
 	{
-		archive(CEREAL_NVP(vector.x));
-		archive(CEREAL_NVP(vector.y));
-		archive(CEREAL_NVP(vector.z));
+		archive(
+			CEREAL_NVP(vector.x),
+			CEREAL_NVP(vector.y),
+			CEREAL_NVP(vector.z)
+		);
 	}
 
 	template <class Archive>
@@ -73,7 +75,8 @@ namespace cereal
 	{
 		archive(
 			CEREAL_NVP(collider.isTrigger),
-			CEREAL_NVP(collider.material)
+			CEREAL_NVP(collider.material),
+			CEREAL_NVP(collider.sharedMaterial)
 		);
 	}
 

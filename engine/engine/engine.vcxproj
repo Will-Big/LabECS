@@ -149,6 +149,7 @@
     <ClInclude Include="ComponentTemplates.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="PhysicsScene.h" />
+    <ClInclude Include="SceneDispatcher.h" />
     <ClInclude Include="SystemInterface.h" />
     <ClInclude Include="SystemTemplates.h" />
     <ClInclude Include="Utils.h" />
@@ -170,6 +171,7 @@
     </ClCompile>
     <ClCompile Include="PhysicsScene.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SceneDispatcher.cpp" />
     <ClCompile Include="Systems.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

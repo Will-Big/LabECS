@@ -1,5 +1,5 @@
-﻿#ifndef PCH_H
-#define PCH_H
+﻿#ifndef CORE_PCH_H
+#define CORE_PCH_H
 
 #define WIN32_LEAN_AND_MEAN
 
@@ -13,6 +13,7 @@
 #include <memory>
 #include <vector>
 #include <variant>
+#include <crtdbg.h>
 #include <algorithm>
 #include <filesystem>
 #include <functional>
@@ -41,4 +42,4 @@ using Vector4 = DirectX::SimpleMath::Vector4;
 using Matrix = DirectX::SimpleMath::Matrix;
 using Quaternion = DirectX::SimpleMath::Quaternion;
 
-#endif //PCH_H
+#endif //CORE_PCH_H

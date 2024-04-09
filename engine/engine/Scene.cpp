@@ -215,8 +215,6 @@ void core::Scene::Run()
 	{
 		(*fixed)(_registry, 0.016f);
 	}
-
-	
 }
 
 void core::Scene::UpdateSystemMapIndex(SystemType type, size_t oldIndex, size_t newIndex)

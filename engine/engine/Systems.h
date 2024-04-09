@@ -12,14 +12,16 @@ namespace core
 	public:
 		void operator()(entt::registry& registry, float tick) override;
 	};
-	DEFINE_SYSTEM_TRAITS(TransformSystem, SystemType::Update)
+	DEFINE_SYSTEM_TRAITS(TransformSystem)
 
 	class PhysicsSystem : public IFixedSystem
 	{
 	public:
 		void operator()(entt::registry& registry, float tick) override;
+
+		PhysicsScene* physicsScene = nullptr;;
 	};
-	DEFINE_SYSTEM_TRAITS(PhysicsSystem, SystemType::FixedUpdate);
+	DEFINE_SYSTEM_TRAITS(PhysicsSystem);
 
 	class AnimationSystem : public IUpdateSystem, public IRenderSystem
 	{
@@ -27,5 +29,5 @@ namespace core
 		void operator()(entt::registry& registry, float tick) override;
 		void operator()(entt::registry& registry, Graphics& graphics, float tick) override;
 	};
-	DEFINE_SYSTEM_TRAITS(AnimationSystem, SystemType::Update | SystemType::Render)
+	DEFINE_SYSTEM_TRAITS(AnimationSystem)
 }

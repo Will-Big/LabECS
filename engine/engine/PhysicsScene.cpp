@@ -17,7 +17,7 @@ core::PhysicsScene::PhysicsScene()
 	PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
 
 	// PxPhysics 생성
-	if(_pvd->connect(*transport, PxPvdInstrumentationFlag::eALL))
+	if (_pvd->connect(*transport, PxPvdInstrumentationFlag::eALL))
 		_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *_foundation, PxTolerancesScale(), false, _pvd);
 	else
 		_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *_foundation, PxTolerancesScale());
@@ -72,17 +72,29 @@ bool core::PhysicsScene::AddPhysicsActor(const core::Entity& entity)
 	if (entity.HasAllOf<BoxCollider>())
 	{
 		const auto& box = entity.Get<BoxCollider>();
-		shape = _physics->createShape(PxBoxGeometry(box.size.x / 2, box.size.y / 2, box.size.z / 2), *material);
+
+		if (collider.sharedMaterial.empty())
+			shape = _physics->createShape(PxBoxGeometry(box.size.x / 2, box.size.y / 2, box.size.z / 2), *material, true);
+		else
+			shape = shape = _physics->createShape(PxBoxGeometry(box.size.x / 2, box.size.y / 2, box.size.z / 2), *material);
 	}
-	else if (entity.HasAllOf<BoxCollider>())
+	else if (entity.HasAllOf<SphereCollider>())
 	{
 		const auto& sphere = entity.Get<SphereCollider>();
-		shape = _physics->createShape(PxSphereGeometry(sphere.radius), *material);
+
+		if (collider.sharedMaterial.empty())
+			shape = _physics->createShape(PxSphereGeometry(sphere.radius), *material, true);
+		else
+			shape = _physics->createShape(PxSphereGeometry(sphere.radius), *material);
 	}
-	else if (entity.HasAllOf<BoxCollider>())
+	else if (entity.HasAllOf<CapsuleCollider>())
 	{
 		const auto& capsule = entity.Get<CapsuleCollider>();
-		shape = _physics->createShape(PxCapsuleGeometry(capsule.radius, capsule.height), *material);
+
+		if (collider.sharedMaterial.empty())
+			shape = _physics->createShape(PxCapsuleGeometry(capsule.radius, capsule.height), *material, true);
+		else
+			shape = _physics->createShape(PxCapsuleGeometry(capsule.radius, capsule.height), *material);
 	}
 	else if (entity.HasAllOf<MeshCollider>()) // todo
 	{
