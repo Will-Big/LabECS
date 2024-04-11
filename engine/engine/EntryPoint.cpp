@@ -1,6 +1,5 @@
 ﻿#include "pch.h"
 
-#include "PhysicsScene.h"
 #include "Scene.h"
 #include "Utils.h"
 
@@ -12,10 +11,10 @@ int main()
 
 	core::Scene scene1;
 
-	auto e1 = scene1.AddEntity();
-	auto e2 = scene1.AddEntity();
-	auto e3 = scene1.AddEntity();
-	auto e4 = scene1.AddEntity();
+	auto e1 = scene1.CreateEntity();
+	auto e2 = scene1.CreateEntity();
+	auto e3 = scene1.CreateEntity();
+	auto e4 = scene1.CreateEntity();
 
 	e1.SetParent(e2);
 	e2.SetParent(e3);
@@ -26,7 +25,7 @@ int main()
 
 	for(auto i = 0; i < 10; i++)
 	{
-		auto entity = scene1.AddEntity();
+		auto entity = scene1.CreateEntity();
 
 		auto& transform = entity.Emplace<Transform>();
 		transform.position = Vector3{(4.f * i), (4.f * i), (4.f * i)};
@@ -36,14 +35,12 @@ int main()
 		boxCollider.size = Vector3{ 4.f, 4.f, 4.f };
 
 		auto& rigidbody = entity.Emplace<core::Rigidbody>();
-		scene1._physicsScene->AddPhysicsActor(entity);
 	}
-
 
 	scene1.RegisterSystem<core::TransformSystem>();
 	scene1.RegisterSystem<core::AnimationSystem>();
 	scene1.RegisterSystem<core::PhysicsSystem>();
-	scene1.RemoveSystem<core::AnimationSystem>();
+	scene1.RegisterSystem<core::EventTestSystem>();
 
 	auto b1 = e4.IsAncestorOf(e1);
 	auto b2 = e1.IsDescendantOf(e4);
@@ -54,10 +51,14 @@ int main()
 	/*scene1.SavePrefab("../prefabTest", e1);
 	scene1.LoadPrefab("../prefabTest");*/
 
+	scene1.Start();
+
 	while (true)
 	{
 		scene1.Run();
 	}
+
+	scene1.Finish();
 
 	return 0;
 }

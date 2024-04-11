@@ -2,7 +2,18 @@
 
 namespace core
 {
+	class Scene;
 	class Graphics;
+
+	class ISystemBase
+	{
+	public:
+		ISystemBase(entt::dispatcher& dispatcher) : _dispatcher(&dispatcher) {}
+		virtual ~ISystemBase() = default;
+
+	protected:
+		entt::dispatcher* _dispatcher = nullptr;
+	};
 
 	class IUpdateSystem
 	{

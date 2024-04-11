@@ -7,18 +7,18 @@
         static constexpr auto name = #SystemClass; \
     };
 
-
 namespace core
 {
+	class ISystemBase;
+
 	template <typename T>
 	struct SystemTraits;
 
-	// 기본 생성자와 SystemTraits::name 을 멤버로 가짐
 	template <typename T>
 	concept HasSystemTraits = requires
 	{
 		{ SystemTraits<T>::name } -> std::convertible_to<const char*>;
-	} && std::is_default_constructible_v<T>;
+	} && std::is_base_of_v<ISystemBase, T>;
 
 	enum class SystemType
 	{

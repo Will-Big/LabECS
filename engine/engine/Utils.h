@@ -32,6 +32,10 @@ namespace core
 			entt::meta<AnimationSystem>()
 				META_TYPE_HELPER(AnimationSystem)
 				META_SYSTEM_FUNC_HELPER(AnimationSystem);
+
+			entt::meta<EventTestSystem>()
+				META_TYPE_HELPER(EventTestSystem)
+				META_SYSTEM_FUNC_HELPER(EventTestSystem);
 		}
 
 		// register component meta data

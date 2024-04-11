@@ -5,12 +5,12 @@
 namespace core
 {
 	class Graphics;
+	class ISystemBase;
 	class PhysicsScene;
 	class IFixedSystem;
 	class IUpdateSystem;
 	class IRenderSystem;
 	class PhysicsSystem;
-	class SceneDispatcher;
 
 	class Scene
 	{
@@ -19,7 +19,7 @@ namespace core
 	public:
 		Scene();
 
-		Entity AddEntity();
+		Entity CreateEntity();
 
 		template <typename T> requires HasSystemTraits<T>
 		void RegisterSystem();
@@ -35,19 +35,30 @@ namespace core
 
 		void Run();
 
+		void Start();
+		void Finish();
+
+		void Clear();
+
+		entt::registry* GetRegistry() { return &_registry; }
+		entt::dispatcher* GetDispatcher() { return &_dispatcher; }
+		std::shared_ptr<PhysicsScene> GetPhysicsScene() { return _physicsScene; }
+
 	private:
-		void UpdateSystemMapIndex(SystemType type, size_t oldIndex, size_t newIndex);
+		void updateSystemMapIndex(SystemType type, size_t oldIndex, size_t newIndex);
 
-	public:
+	private:
 		entt::registry _registry;
-		std::unique_ptr<PhysicsScene> _physicsScene;
-		std::unique_ptr<SceneDispatcher> _dispatcher;
+		entt::dispatcher _dispatcher;
+		std::shared_ptr<PhysicsScene> _physicsScene;
 
+		// 시스템 컨테이너
 		std::multimap<std::string, SystemInfo> _systemMap;
+		std::vector<std::shared_ptr<IUpdateSystem>> _updates;
+		std::vector<std::shared_ptr<IFixedSystem>> _fixeds;
+		std::vector<std::shared_ptr<IRenderSystem>> _renders;
 
-		std::vector<std::unique_ptr<IUpdateSystem>> _updates;
-		std::vector<std::unique_ptr<IFixedSystem>> _fixeds;
-		std::vector<std::unique_ptr<IRenderSystem>> _renders;
+		bool _isStarted = false;
 	};
 
 	template <typename T> requires HasSystemTraits<T>
@@ -59,25 +70,21 @@ namespace core
 		if (_systemMap.contains(name))
 			return;
 
-		auto system = std::make_unique<T>();
+		auto system = std::make_shared<T>(_dispatcher);
 
 		if constexpr (std::is_base_of_v<IUpdateSystem, T>)
 		{
-			_updates.push_back(std::move(system));
+			_updates.push_back(system);
 			_systemMap.insert({ name,  { SystemType::Update, _updates.size() - 1 } });
 		}
 		if constexpr (std::is_base_of_v<IFixedSystem, T>)
 		{
-			if constexpr (std::is_same_v<PhysicsSystem, T>)
-			{
-				system->physicsScene = _physicsScene.get();
-			}
-			_fixeds.push_back(std::move(system));
+			_fixeds.push_back(system);
 			_systemMap.insert({ name,  { SystemType::FixedUpdate, _fixeds.size() - 1 } });
 		}
 		if constexpr (std::is_base_of_v<IRenderSystem, T>)
 		{
-			_renders.push_back(std::move(system));
+			_renders.push_back(system);
 			_systemMap.insert({ name,  { SystemType::Render, _renders.size() - 1 } });
 		}
 	}
@@ -100,7 +107,7 @@ namespace core
 				if (index < _updates.size() - 1)
 				{
 					std::swap(_updates[index], _updates.back());
-					UpdateSystemMapIndex(sysType, _updates.size() - 1, index);
+					updateSystemMapIndex(sysType, _updates.size() - 1, index);
 				}
 				_updates.pop_back();
 				break;
@@ -108,7 +115,7 @@ namespace core
 				if (index < _fixeds.size() - 1)
 				{
 					std::swap(_fixeds[index], _fixeds.back());
-					UpdateSystemMapIndex(sysType, _fixeds.size() - 1, index);
+					updateSystemMapIndex(sysType, _fixeds.size() - 1, index);
 				}
 				_fixeds.pop_back();
 				break;
@@ -116,14 +123,16 @@ namespace core
 				if (index < _renders.size() - 1)
 				{
 					std::swap(_renders[index], _renders.back());
-					UpdateSystemMapIndex(sysType, _renders.size() - 1, index);
+					updateSystemMapIndex(sysType, _renders.size() - 1, index);
 				}
 				_renders.pop_back();
+				break;
+			default:
 				break;
 			}
 		}
 
-		if(_systemMap.contains(name))
+		if (_systemMap.contains(name))
 			_systemMap.erase(name);
 	}
 }

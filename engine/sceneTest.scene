@@ -609,6 +609,8 @@
     "value112": 0,
     "value113": 0,
     "systems": [
+        "AnimationSystem",
+        "EventTestSystem",
         "PhysicsSystem",
         "TransformSystem"
     ]

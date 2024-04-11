@@ -10,12 +10,18 @@
 
 core::Scene::Scene()
 {
-	_physicsScene = std::make_unique<PhysicsScene>();
+	_physicsScene = std::make_shared<PhysicsScene>();
 }
 
-core::Entity core::Scene::AddEntity()
+core::Entity core::Scene::CreateEntity()
 {
-	return { _registry.create(), this->_registry };
+	Entity entity = { _registry.create(), this->_registry };
+
+	// 런타임 중 엔터티 추가
+	if(_isStarted)
+		_dispatcher.enqueue<OnStartEntity>(entity);
+
+	return entity;
 }
 
 bool core::Scene::SaveScene(const std::string& path)
@@ -215,9 +221,35 @@ void core::Scene::Run()
 	{
 		(*fixed)(_registry, 0.016f);
 	}
+
+	_dispatcher.update();
 }
 
-void core::Scene::UpdateSystemMapIndex(SystemType type, size_t oldIndex, size_t newIndex)
+void core::Scene::Start()
+{
+	_dispatcher.trigger<OnStartSystem>(*this);
+	_isStarted = true;
+}
+
+void core::Scene::Finish()
+{
+	_dispatcher.trigger<OnFinishSystem>(*this);
+	_isStarted = false;
+}
+
+void core::Scene::Clear()
+{
+	_registry.clear();
+	_dispatcher.clear();
+	_physicsScene->Clear();
+
+	_systemMap.clear();
+	_updates.clear();
+	_fixeds.clear();
+	_renders.clear();
+}
+
+void core::Scene::updateSystemMapIndex(SystemType type, size_t oldIndex, size_t newIndex)
 {
 	// 시스템 맵에서 스왑된 시스템을 찾아 인덱스를 업데이트
 	for (auto& pair : _systemMap | std::views::values)
