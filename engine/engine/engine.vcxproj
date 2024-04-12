@@ -144,6 +144,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CollisionCallback.h" />
     <ClInclude Include="ComponentInlines.h" />
     <ClInclude Include="Components.h" />
     <ClInclude Include="ComponentTemplates.h" />
@@ -160,6 +161,7 @@
     <ClInclude Include="SystemTraits.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CollisionCallback.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
     <ClCompile Include="MainProcess.cpp" />

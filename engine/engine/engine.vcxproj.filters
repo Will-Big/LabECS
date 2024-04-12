@@ -23,6 +23,9 @@
     <Filter Include="소스 파일\Core\Base">
       <UniqueIdentifier>{6f8012df-6d19-4271-a034-1642a8810e17}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Core\Base\PhysX">
+      <UniqueIdentifier>{6b16db86-aab5-405f-99c2-5cdd802428d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainProcess.h">
@@ -61,11 +64,14 @@
     <ClInclude Include="Scene.h">
       <Filter>소스 파일\Core\Base</Filter>
     </ClInclude>
-    <ClInclude Include="PhysicsScene.h">
-      <Filter>소스 파일\Core\Base</Filter>
-    </ClInclude>
     <ClInclude Include="SystemEvents.h">
       <Filter>소스 파일\Core\Built-in\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsScene.h">
+      <Filter>소스 파일\Core\Base\PhysX</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionCallback.h">
+      <Filter>소스 파일\Core\Base\PhysX</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -84,9 +90,12 @@
     <ClCompile Include="Scene.cpp">
       <Filter>소스 파일\Core\Base</Filter>
     </ClCompile>
-    <ClCompile Include="PhysicsScene.cpp">
-      <Filter>소스 파일\Core\Base</Filter>
-    </ClCompile>
     <ClCompile Include="EntryPoint.cpp" />
+    <ClCompile Include="PhysicsScene.cpp">
+      <Filter>소스 파일\Core\Base\PhysX</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionCallback.cpp">
+      <Filter>소스 파일\Core\Base\PhysX</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

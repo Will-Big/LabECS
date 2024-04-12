@@ -4,6 +4,7 @@
 #include "Entity.h"
 #include "Components.h"
 #include "ComponentInlines.h"
+#include "CollisionCallback.h"
 
 core::PhysicsScene::PhysicsScene()
 {
@@ -29,6 +30,7 @@ core::PhysicsScene::PhysicsScene()
 	sceneDesc.cpuDispatcher = dispatcher;
 	sceneDesc.filterShader = PxDefaultSimulationFilterShader;
 	_scene = _physics->createScene(sceneDesc);
+	_scene->setSimulationEventCallback(new CollisionCallback);
 
 	if (PxPvdSceneClient* pvdClient = _scene->getScenePvdClient())
 	{
@@ -41,6 +43,8 @@ core::PhysicsScene::PhysicsScene()
 core::PhysicsScene::~PhysicsScene()
 {
 	using namespace physx;
+
+	delete _scene->getSimulationEventCallback();
 }
 
 void core::PhysicsScene::Update(float tick)
