@@ -12,6 +12,11 @@
 	.func<&core::SavePrefabSnapshot<class>>("SavePrefabSnapshot"_hs) \
 	.func<&core::LoadPrefabSnapshot<class>>("LoadPrefabSnapshot"_hs) \
 
+#define META_COMPONENT_MEMBER_HELPER(memberAddress, name) \
+	.data<&##memberAddress>(name##_hs) \
+	.prop("name"_hs, name) \
+
+
 #define META_SYSTEM_FUNC_HELPER(class) \
 	.func<&core::LoadSystem<class>>("LoadSystem"_hs) \
 
@@ -62,59 +67,59 @@ namespace core
 			entt::meta<Transform>()
 				META_TYPE_HELPER(Transform)
 				META_COMPONENT_FUNC_HELPER(Transform)
-				.data<&Transform::position>("position"_hs)
-				.data<&Transform::rotation>("rotation"_hs)
-				.data<&Transform::scale>("scale"_hs)
-				.data<&Transform::localMatrix>("localMatrix"_hs)
-				.data<&Transform::worldMatrix>("worldMatrix"_hs);
+				META_COMPONENT_MEMBER_HELPER(Transform::position, "position")
+				META_COMPONENT_MEMBER_HELPER(Transform::rotation, "rotation")
+				META_COMPONENT_MEMBER_HELPER(Transform::scale, "scale")
+				META_COMPONENT_MEMBER_HELPER(Transform::localMatrix, "localMatrix")
+				META_COMPONENT_MEMBER_HELPER(Transform::worldMatrix, "worldMatrix");
 
 			entt::meta<Relationship>()
 				META_TYPE_HELPER(Relationship)
 				META_COMPONENT_FUNC_HELPER(Relationship)
-				.data<&Relationship::parent>("parent"_hs);
+				META_COMPONENT_MEMBER_HELPER(Relationship::parent, "parent");
 
 			entt::meta<Name>()
 				META_TYPE_HELPER(Name)
 				META_COMPONENT_FUNC_HELPER(Name)
-				.data<&Name::name>("name"_hs);
+				META_COMPONENT_MEMBER_HELPER(Name::name, "name");
 
 			entt::meta<Rigidbody>()
 				META_TYPE_HELPER(Rigidbody)
 				META_COMPONENT_FUNC_HELPER(Rigidbody)
-				.data<&Rigidbody::mass>("mass"_hs)
-				.data<&Rigidbody::drag>("drag"_hs)
-				.data<&Rigidbody::angularDrag>("angularDrag"_hs)
-				.data<&Rigidbody::useGravity>("useGravity"_hs)
-				.data<&Rigidbody::isKinematic>("isKinematic"_hs)
-				.data<&Rigidbody::interpolation>("interpolation"_hs)
-				.data<&Rigidbody::constraints>("constraints"_hs);
+				META_COMPONENT_MEMBER_HELPER(Rigidbody::mass, "mass")
+				META_COMPONENT_MEMBER_HELPER(Rigidbody::drag, "drag")
+				META_COMPONENT_MEMBER_HELPER(Rigidbody::angularDrag, "angularDrag")
+				META_COMPONENT_MEMBER_HELPER(Rigidbody::useGravity, "useGravity")
+				META_COMPONENT_MEMBER_HELPER(Rigidbody::isKinematic, "isKinematic")
+				META_COMPONENT_MEMBER_HELPER(Rigidbody::interpolation, "interpolation")
+				META_COMPONENT_MEMBER_HELPER(Rigidbody::constraints, "constraints");
 
 			entt::meta<ColliderCommon>()
 				META_TYPE_HELPER(ColliderCommon)
 				META_COMPONENT_FUNC_HELPER(ColliderCommon)
-				.data<&ColliderCommon::isTrigger>("isTrigger"_hs)
-				.data<&ColliderCommon::material>("shape"_hs)
-				.data<&ColliderCommon::sharedMaterial>("sharedMaterial"_hs);
+				META_COMPONENT_MEMBER_HELPER(ColliderCommon::isTrigger, "isTrigger")
+				META_COMPONENT_MEMBER_HELPER(ColliderCommon::material, "shape")
+				META_COMPONENT_MEMBER_HELPER(ColliderCommon::sharedMaterial, "sharedMaterial");
 
 			entt::meta<BoxCollider>()
 				META_TYPE_HELPER(BoxCollider)
 				META_COMPONENT_FUNC_HELPER(BoxCollider)
-				.data<&BoxCollider::center>("center"_hs)
-				.data<&BoxCollider::size>("size"_hs);
+				META_COMPONENT_MEMBER_HELPER(BoxCollider::center, "center")
+				META_COMPONENT_MEMBER_HELPER(BoxCollider::size, "size");
 
 			entt::meta<SphereCollider>()
 				META_TYPE_HELPER(SphereCollider)
 				META_COMPONENT_FUNC_HELPER(SphereCollider)
-				.data<&SphereCollider::center>("center"_hs)
-				.data<&SphereCollider::radius>("radius"_hs);
+				META_COMPONENT_MEMBER_HELPER(SphereCollider::center, "center")
+				META_COMPONENT_MEMBER_HELPER(SphereCollider::radius, "radius");
 
 			entt::meta<CapsuleCollider>()
 				META_TYPE_HELPER(CapsuleCollider)
 				META_COMPONENT_FUNC_HELPER(CapsuleCollider)
-				.data<&CapsuleCollider::center>("center"_hs)
-				.data<&CapsuleCollider::radius>("radius"_hs)
-				.data<&CapsuleCollider::height>("height"_hs)
-				.data<&CapsuleCollider::direction>("direction"_hs);
+				META_COMPONENT_MEMBER_HELPER(CapsuleCollider::center, "center")
+				META_COMPONENT_MEMBER_HELPER(CapsuleCollider::radius, "radius")
+				META_COMPONENT_MEMBER_HELPER(CapsuleCollider::height, "height")
+				META_COMPONENT_MEMBER_HELPER(CapsuleCollider::direction, "direction");
 		}
 	}
 }
