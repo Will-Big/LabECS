@@ -1,35 +1,40 @@
 ﻿#pragma once
 
+#include "Entity.h"
+
 namespace core
 {
 	class Scene;
-	class Entity;
 
-	struct OnStartSystem
+	struct Event {};
+
+	struct OnStartSystem : Event
 	{
 		Scene* scene = nullptr;
 
 		OnStartSystem(Scene& scene) : scene(&scene) {}
 	};
 
-	struct OnFinishSystem
+	struct OnFinishSystem : Event
 	{
 		Scene* scene = nullptr;
 
 		OnFinishSystem(Scene& scene) : scene(&scene) {}
 	};
 
-	struct OnStartEntity
+	struct OnCreateEntity : Event
 	{
-		const Entity* entity = nullptr;
+		Entity entity;
 
-		OnStartEntity(const Entity& entity) : entity(&entity) {}
+		OnCreateEntity(entt::entity handle, entt::registry& registry) : entity(handle, registry) {}
+		OnCreateEntity(const Entity& entity) : entity(entity) {}
 	};
 
-	struct OnDestroyEntity
+	struct OnDestroyEntity : Event
 	{
-		const Entity* entity = nullptr;
+		Entity entity;
 
-		OnDestroyEntity(const Entity& entity) : entity(&entity) {}
+		OnDestroyEntity(entt::entity handle, entt::registry& registry) : entity(handle, registry) {}
+		OnDestroyEntity(const Entity& entity) : entity(entity) {}
 	};
 }

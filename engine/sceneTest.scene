@@ -95,6 +95,25 @@
     "value25": 5,
     "value26": {
         "transform.position": {
+            "vector.x": 2.0,
+            "vector.y": 2.0,
+            "vector.z": 2.0
+        },
+        "transform.rotation": {
+            "quaternion.x": 0.0,
+            "quaternion.y": 0.0,
+            "quaternion.z": 0.0,
+            "quaternion.w": 1.0
+        },
+        "transform.scale": {
+            "vector.x": 0.0,
+            "vector.y": 0.0,
+            "vector.z": 0.0
+        }
+    },
+    "value27": 6,
+    "value28": {
+        "transform.position": {
             "vector.x": 4.0,
             "vector.y": 4.0,
             "vector.z": 4.0
@@ -111,8 +130,27 @@
             "vector.z": 0.0
         }
     },
-    "value27": 6,
-    "value28": {
+    "value29": 7,
+    "value30": {
+        "transform.position": {
+            "vector.x": 6.0,
+            "vector.y": 6.0,
+            "vector.z": 6.0
+        },
+        "transform.rotation": {
+            "quaternion.x": 0.0,
+            "quaternion.y": 0.0,
+            "quaternion.z": 0.0,
+            "quaternion.w": 1.0
+        },
+        "transform.scale": {
+            "vector.x": 0.0,
+            "vector.y": 0.0,
+            "vector.z": 0.0
+        }
+    },
+    "value31": 8,
+    "value32": {
         "transform.position": {
             "vector.x": 8.0,
             "vector.y": 8.0,
@@ -130,8 +168,27 @@
             "vector.z": 0.0
         }
     },
-    "value29": 7,
-    "value30": {
+    "value33": 9,
+    "value34": {
+        "transform.position": {
+            "vector.x": 10.0,
+            "vector.y": 10.0,
+            "vector.z": 10.0
+        },
+        "transform.rotation": {
+            "quaternion.x": 0.0,
+            "quaternion.y": 0.0,
+            "quaternion.z": 0.0,
+            "quaternion.w": 1.0
+        },
+        "transform.scale": {
+            "vector.x": 0.0,
+            "vector.y": 0.0,
+            "vector.z": 0.0
+        }
+    },
+    "value35": 10,
+    "value36": {
         "transform.position": {
             "vector.x": 12.0,
             "vector.y": 12.0,
@@ -149,8 +206,27 @@
             "vector.z": 0.0
         }
     },
-    "value31": 8,
-    "value32": {
+    "value37": 11,
+    "value38": {
+        "transform.position": {
+            "vector.x": 14.0,
+            "vector.y": 14.0,
+            "vector.z": 14.0
+        },
+        "transform.rotation": {
+            "quaternion.x": 0.0,
+            "quaternion.y": 0.0,
+            "quaternion.z": 0.0,
+            "quaternion.w": 1.0
+        },
+        "transform.scale": {
+            "vector.x": 0.0,
+            "vector.y": 0.0,
+            "vector.z": 0.0
+        }
+    },
+    "value39": 12,
+    "value40": {
         "transform.position": {
             "vector.x": 16.0,
             "vector.y": 16.0,
@@ -168,88 +244,12 @@
             "vector.z": 0.0
         }
     },
-    "value33": 9,
-    "value34": {
-        "transform.position": {
-            "vector.x": 20.0,
-            "vector.y": 20.0,
-            "vector.z": 20.0
-        },
-        "transform.rotation": {
-            "quaternion.x": 0.0,
-            "quaternion.y": 0.0,
-            "quaternion.z": 0.0,
-            "quaternion.w": 1.0
-        },
-        "transform.scale": {
-            "vector.x": 0.0,
-            "vector.y": 0.0,
-            "vector.z": 0.0
-        }
-    },
-    "value35": 10,
-    "value36": {
-        "transform.position": {
-            "vector.x": 24.0,
-            "vector.y": 24.0,
-            "vector.z": 24.0
-        },
-        "transform.rotation": {
-            "quaternion.x": 0.0,
-            "quaternion.y": 0.0,
-            "quaternion.z": 0.0,
-            "quaternion.w": 1.0
-        },
-        "transform.scale": {
-            "vector.x": 0.0,
-            "vector.y": 0.0,
-            "vector.z": 0.0
-        }
-    },
-    "value37": 11,
-    "value38": {
-        "transform.position": {
-            "vector.x": 28.0,
-            "vector.y": 28.0,
-            "vector.z": 28.0
-        },
-        "transform.rotation": {
-            "quaternion.x": 0.0,
-            "quaternion.y": 0.0,
-            "quaternion.z": 0.0,
-            "quaternion.w": 1.0
-        },
-        "transform.scale": {
-            "vector.x": 0.0,
-            "vector.y": 0.0,
-            "vector.z": 0.0
-        }
-    },
-    "value39": 12,
-    "value40": {
-        "transform.position": {
-            "vector.x": 32.0,
-            "vector.y": 32.0,
-            "vector.z": 32.0
-        },
-        "transform.rotation": {
-            "quaternion.x": 0.0,
-            "quaternion.y": 0.0,
-            "quaternion.z": 0.0,
-            "quaternion.w": 1.0
-        },
-        "transform.scale": {
-            "vector.x": 0.0,
-            "vector.y": 0.0,
-            "vector.z": 0.0
-        }
-    },
     "value41": 13,
     "value42": {
         "transform.position": {
-            "vector.x": 36.0,
-            "vector.y": 36.0,
-            "vector.z": 36.0
+            "vector.x": 18.0,
+            "vector.y": 18.0,
+            "vector.z": 18.0
         },
         "transform.rotation": {
             "quaternion.x": 0.0,

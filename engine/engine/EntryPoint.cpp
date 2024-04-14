@@ -7,9 +7,10 @@ int main()
 {
 	using namespace core;
 
-	RegisterMetaData();
+	RegisterCoreMetaData();
 
 	core::Scene scene1;
+	core::Scene scene2;
 
 	auto e1 = scene1.CreateEntity();
 	auto e2 = scene1.CreateEntity();
@@ -28,7 +29,7 @@ int main()
 		auto entity = scene1.CreateEntity();
 
 		auto& transform = entity.Emplace<Transform>();
-		transform.position = Vector3{(4.f * i), (4.f * i), (4.f * i)};
+		transform.position = Vector3{(2.f * i), (2.f * i), (2.f * i)};
 
 		entity.Emplace<ColliderCommon>();
 		auto& boxCollider = entity.Emplace<BoxCollider>();
@@ -46,10 +47,10 @@ int main()
 	auto b2 = e1.IsDescendantOf(e4);
 
 	scene1.SaveScene("../sceneTest");
-	//scene1.LoadScene("../sceneTest");
+	scene2.LoadScene("../sceneTest");
 
-	/*scene1.SavePrefab("../prefabTest", e1);
-	scene1.LoadPrefab("../prefabTest");*/
+	//scene1.SavePrefab("../prefabTest", e1);
+	//scene1.LoadPrefab("../prefabTest");
 
 	scene1.Start();
 

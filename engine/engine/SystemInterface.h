@@ -11,7 +11,6 @@ namespace core
 		ISystemBase(entt::dispatcher& dispatcher) : _dispatcher(&dispatcher) {}
 		virtual ~ISystemBase() = default;
 
-	protected:
 		entt::dispatcher* _dispatcher = nullptr;
 	};
 

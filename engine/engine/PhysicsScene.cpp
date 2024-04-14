@@ -6,31 +6,38 @@
 #include "ComponentInlines.h"
 #include "CollisionCallback.h"
 
-core::PhysicsScene::PhysicsScene()
+core::PhysicsScene::PhysicsScene(entt::dispatcher& dispatcher)
+	: _dispatcher(&dispatcher)
 {
 	using namespace physx;
 
 	// PxFoundation 생성
-	_foundation = PxCreateFoundation(PX_PHYSICS_VERSION, _allocator, _errorCallback);
+	if (!_foundation)
+		_foundation = PxCreateFoundation(PX_PHYSICS_VERSION, _allocator, _errorCallback);
 
 	// PxPvd 생성
-	_pvd = PxCreatePvd(*_foundation);
+	if (!_pvd)
+		_pvd = PxCreatePvd(*_foundation);
+
 	PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
 
 	// PxPhysics 생성
-	if (_pvd->connect(*transport, PxPvdInstrumentationFlag::eALL))
-		_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *_foundation, PxTolerancesScale(), false, _pvd);
-	else
-		_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *_foundation, PxTolerancesScale());
+	if (!_physics)
+	{
+		if (transport && _pvd->connect(*transport, PxPvdInstrumentationFlag::eALL))
+			_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *_foundation, PxTolerancesScale(), false, _pvd);
+		else
+			_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *_foundation, PxTolerancesScale());
+	}
 
 	// PxScene 생성
 	PxSceneDesc sceneDesc(_physics->getTolerancesScale());
-	PxDefaultCpuDispatcher* dispatcher = PxDefaultCpuDispatcherCreate(2);
+	PxDefaultCpuDispatcher* pxDispatcher = PxDefaultCpuDispatcherCreate(2);
 	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
-	sceneDesc.cpuDispatcher = dispatcher;
+	sceneDesc.cpuDispatcher = pxDispatcher;
 	sceneDesc.filterShader = PxDefaultSimulationFilterShader;
 	_scene = _physics->createScene(sceneDesc);
-	_scene->setSimulationEventCallback(new CollisionCallback);
+	_scene->setSimulationEventCallback(new CollisionCallback(*_dispatcher));
 
 	if (PxPvdSceneClient* pvdClient = _scene->getScenePvdClient())
 	{
@@ -45,25 +52,38 @@ core::PhysicsScene::~PhysicsScene()
 	using namespace physx;
 
 	delete _scene->getSimulationEventCallback();
+
+	_scene->release();
+	_pvd->release();
+	_physics->release();
+	_foundation->release();
 }
 
 void core::PhysicsScene::Update(float tick)
 {
+	using namespace physx;
+
 	// 시뮬레이션 업데이트
 	_scene->simulate(tick);
 	_scene->fetchResults(true);
 }
 
-bool core::PhysicsScene::AddPhysicsActor(const core::Entity& entity)
+bool core::PhysicsScene::CreatePhysicsActor(const core::Entity& entity)
 {
 	using namespace physx;
 
+	// 필수 컴포넌트 검사
 	if (!entity.HasAllOf<Transform, ColliderCommon>())
+		return false;
+
+	// 중복 검사
+	if (_entityToPxActorMap.contains(entity))
 		return false;
 
 	const auto& collider = entity.Get<ColliderCommon>();
 	const auto& transform = entity.Get<Transform>();
 
+	// 물리 Material 생성
 	PxMaterial* material = _physics->createMaterial(
 		collider.material.staticFriction,
 		collider.material.dynamicFriction,
@@ -73,6 +93,7 @@ bool core::PhysicsScene::AddPhysicsActor(const core::Entity& entity)
 	PxShape* shape = nullptr;
 	PxActor* actor = nullptr;
 
+	// Collider 할당
 	if (entity.HasAllOf<BoxCollider>())
 	{
 		const auto& box = entity.Get<BoxCollider>();
@@ -168,7 +189,7 @@ bool core::PhysicsScene::AddPhysicsActor(const core::Entity& entity)
 		actor = staticActor;
 	}
 
-	// 매핑 테이블에 액터 추가
+	// 매핑 테이블에 액터 추가 및 물리 씬에 추가
 	_entityToPxActorMap[entity] = actor;
 	_scene->addActor(*actor);
 
@@ -176,4 +197,62 @@ bool core::PhysicsScene::AddPhysicsActor(const core::Entity& entity)
 	material->release();
 
 	return true;
+}
+
+bool core::PhysicsScene::DestroyPhysicsActor(const Entity& entity)
+{
+	using namespace physx;
+
+	// 엔티티와 매핑된 액터 찾기
+
+	if (const auto it = _entityToPxActorMap.find(entity); it != _entityToPxActorMap.end())
+	{
+		// 액터를 물리 씬에서 제거
+		PxActor* actor = it->second;
+		_scene->removeActor(*actor);
+
+		// 액터 메모리 해제
+		if (actor->is<PxRigidDynamic>())
+		{
+			actor->is<PxRigidDynamic>()->release();
+		}
+		else if (actor->is<PxRigidStatic>())
+		{
+			actor->is<PxRigidStatic>()->release();
+		}
+
+		// 매핑에서 엔티티 제거
+		_entityToPxActorMap.erase(it);
+
+		return true;
+	}
+
+	return false;
+}
+
+void core::PhysicsScene::Clear()
+{
+	using namespace physx;
+
+	for (const auto& actor : _entityToPxActorMap | std::views::values)
+	{
+		if (actor != nullptr)
+		{
+			// 액터를 물리 씬에서 제거
+			_scene->removeActor(*actor, true);
+
+			// 액터 메모리 해제
+			if (actor->is<PxRigidDynamic>())
+			{
+				actor->is<PxRigidDynamic>()->release();
+			}
+			else if (actor->is<PxRigidStatic>())
+			{
+				actor->is<PxRigidStatic>()->release();
+			}
+		}
+	}
+
+	// 매핑 정보 클리어
+	_entityToPxActorMap.clear();
 }

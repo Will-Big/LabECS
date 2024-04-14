@@ -17,9 +17,9 @@
 
 namespace core
 {
-	inline void RegisterMetaData()
+	inline void RegisterCoreMetaData()
 	{
-		// register system meta data
+		// 시스템 메타 데이터 등록
 		{
 			entt::meta<TransformSystem>()
 				META_TYPE_HELPER(TransformSystem)
@@ -38,7 +38,26 @@ namespace core
 				META_SYSTEM_FUNC_HELPER(EventTestSystem);
 		}
 
-		// register component meta data
+		// 이벤트 메타 데이터 등록
+		{
+			entt::meta<OnStartSystem>()
+				META_TYPE_HELPER(OnStartSystem)
+				.base<Event>();
+
+			entt::meta<OnFinishSystem>()
+				META_TYPE_HELPER(OnFinishSystem)
+				.base<Event>();
+
+			entt::meta<OnCreateEntity>()
+				META_TYPE_HELPER(OnCreateEntity)
+				.base<Event>();
+
+			entt::meta<OnDestroyEntity>()
+				META_TYPE_HELPER(OnDestroyEntity)
+				.base<Event>();
+		}
+
+		// 컴포넌트 메타 데이터 등록
 		{
 			entt::meta<Transform>()
 				META_TYPE_HELPER(Transform)

@@ -10,21 +10,23 @@ namespace core
 	class PhysicsScene
 	{
 	public:
-		PhysicsScene();
+		PhysicsScene(entt::dispatcher& dispatcher);
 		~PhysicsScene();
 
 		void Update(float tick);
 
-		bool AddPhysicsActor(const Entity& entity);
+		bool CreatePhysicsActor(const Entity& entity);
+		bool DestroyPhysicsActor(const Entity& entity);
 
-		void Clear() {};
+		void Clear();
 
 	private:
+		entt::dispatcher* _dispatcher = nullptr;
 		physx::PxScene* _scene = nullptr;
-		physx::PxFoundation* _foundation = nullptr;
-		physx::PxPhysics* _physics = nullptr;
-		physx::PxPvd* _pvd = nullptr;
 
+		inline static physx::PxPhysics* _physics = nullptr;
+		inline static physx::PxPvd* _pvd = nullptr;
+		inline static physx::PxFoundation* _foundation = nullptr;
 		inline static physx::PxDefaultAllocator _allocator;
 		inline static physx::PxDefaultErrorCallback _errorCallback;
 

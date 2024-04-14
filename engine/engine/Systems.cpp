@@ -16,44 +16,54 @@ void core::TransformSystem::operator()(entt::registry& registry, float tick)
 core::PhysicsSystem::PhysicsSystem(entt::dispatcher& dispatcher)
 	: ISystemBase(dispatcher)
 {
-	_dispatcher->sink<struct OnStartSystem>().connect<&PhysicsSystem::OnStartSystem>(this);
-	_dispatcher->sink<struct OnFinishSystem>().connect<&PhysicsSystem::OnFinishSystem>(this);
+	_dispatcher->sink<OnStartSystem>().connect<&PhysicsSystem::startSystem>(this);
+	_dispatcher->sink<OnFinishSystem>().connect<&PhysicsSystem::finishSystem>(this);
 
-	_dispatcher->sink<struct OnStartEntity>().connect<&PhysicsSystem::OnStartEntity>(this);
-	_dispatcher->sink<struct OnDestroyEntity>().connect<&PhysicsSystem::OnDestroyEntity>(this);
+	_dispatcher->sink<OnCreateEntity>().connect<&PhysicsSystem::createEntity>(this);
+	_dispatcher->sink<OnDestroyEntity>().connect<&PhysicsSystem::destroyEntity>(this);
 }
 
-void core::PhysicsSystem::OnStartSystem(const core::OnStartSystem& event)
+void core::PhysicsSystem::startSystem(const core::OnStartSystem& event)
 {
 	_physicsScene = event.scene->GetPhysicsScene();
 
 	auto registry = event.scene->GetRegistry();
 
+	// 씬 시작시 액터 생성
 	for (auto&& [entity, collider] : registry->view<ColliderCommon>().each())
 	{
-		_physicsScene->AddPhysicsActor({ entity, *registry });
+		_physicsScene->CreatePhysicsActor({ entity, *registry });
 	}
 }
 
-void core::PhysicsSystem::OnFinishSystem(const core::OnFinishSystem& event)
+void core::PhysicsSystem::finishSystem(const core::OnFinishSystem& event)
 {
+	auto registry = event.scene->GetRegistry();
+
+	// 씬 종료시 액터 삭제
+	for (auto&& [entity, collider] : registry->view<ColliderCommon>().each())
+	{
+		_physicsScene->DestroyPhysicsActor({ entity, *registry });
+	}
+
 	_physicsScene = nullptr;
 }
 
-void core::PhysicsSystem::OnStartEntity(const core::OnStartEntity& event)
+void core::PhysicsSystem::createEntity(const core::OnCreateEntity& event)
 {
-	_physicsScene->AddPhysicsActor(*event.entity);
+	// 런타임 중 액터 생성
+	_physicsScene->CreatePhysicsActor(event.entity);
 }
 
-void core::PhysicsSystem::OnDestroyEntity(const core::OnDestroyEntity& event)
+void core::PhysicsSystem::destroyEntity(const core::OnDestroyEntity& event)
 {
-	// todo
+	// 런타임 중 액터 삭제
+	_physicsScene->DestroyPhysicsActor(event.entity);
 }
 
 void core::PhysicsSystem::operator()(entt::registry& registry, float tick)
 {
 	_physicsScene->Update(tick);
-
 }
 #pragma endregion
 
@@ -72,15 +82,15 @@ void core::AnimationSystem::operator()(entt::registry& registry, Graphics& graph
 core::EventTestSystem::EventTestSystem(entt::dispatcher& dispatcher)
 	: ISystemBase(dispatcher)
 {
-	_dispatcher->sink<struct OnStartSystem>().connect<&EventTestSystem::OnStartSystem>(this);
-	_dispatcher->sink<struct OnFinishSystem>().connect<&EventTestSystem::OnFinishSystem>(this);
+	_dispatcher->sink<OnStartSystem>().connect<&EventTestSystem::startSystem>(this);
+	_dispatcher->sink<OnFinishSystem>().connect<&EventTestSystem::finishSystem>(this);
 }
 
-void core::EventTestSystem::OnStartSystem(const core::OnStartSystem& event)
+void core::EventTestSystem::startSystem(const core::OnStartSystem& event)
 {
 }
 
-void core::EventTestSystem::OnFinishSystem(const core::OnFinishSystem& event)
+void core::EventTestSystem::finishSystem(const core::OnFinishSystem& event)
 {
 }
 #pragma endregion

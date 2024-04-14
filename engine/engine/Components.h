@@ -55,6 +55,13 @@ namespace core
 		Constraints constraints = Constraints::None;
 	};
 
+	struct JointCommon
+	{
+		Vector3 anchor;
+		Vector3 axis;
+		Rigidbody* connectedBody = nullptr;
+	};
+
 	struct ColliderCommon
 	{
 		struct PhysicMaterial

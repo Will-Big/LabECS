@@ -10,16 +10,14 @@
 
 core::Scene::Scene()
 {
-	_physicsScene = std::make_shared<PhysicsScene>();
+	_physicsScene = std::make_shared<PhysicsScene>(_dispatcher);
+
+	_dispatcher.sink<OnDestroyEntity>().connect<&Scene::addDestroyedEntity>(this);
 }
 
 core::Entity core::Scene::CreateEntity()
 {
 	Entity entity = { _registry.create(), this->_registry };
-
-	// 런타임 중 엔터티 추가
-	if(_isStarted)
-		_dispatcher.enqueue<OnStartEntity>(entity);
 
 	return entity;
 }
@@ -88,6 +86,10 @@ bool core::Scene::LoadScene(const std::string& path)
 	{
 		cereal::JSONInputArchive archive(ss);
 		entt::snapshot_loader loader(_registry);
+
+		// 불필요 엔티티 제거
+		loader.orphans();
+
 		loader.get<entt::entity>(archive);
 
 		for (auto&& [id, type] : entt::resolve())
@@ -105,9 +107,6 @@ bool core::Scene::LoadScene(const std::string& path)
 			if (auto loadSystem = type.func("LoadSystem"_hs))
 				loadSystem.invoke({}, this, &systemNames);
 		}
-
-		// 불필요 엔터티 제거
-		loader.orphans();
 	}
 
 	return true;
@@ -119,7 +118,7 @@ bool core::Scene::SavePrefab(const std::string& path, core::Entity& entity)
 	std::vector<entt::entity> descendents;
 	descendents.push_back(entity);
 
-	// 하위 엔터티 저장
+	// 하위 엔티티 저장
 	auto entities = _registry.view<entt::entity>();
 	for (auto& element : entities)
 	{
@@ -195,6 +194,10 @@ bool core::Scene::LoadPrefab(const std::string& path)
 	{
 		cereal::JSONInputArchive archive(ss);
 		entt::continuous_loader loader(_registry);
+
+		// 불필요 엔티티 제거
+		loader.orphans();
+
 		loader.get<entt::entity>(archive);
 
 		for (auto&& [id, type] : entt::resolve())
@@ -202,9 +205,6 @@ bool core::Scene::LoadPrefab(const std::string& path)
 			if (auto load = type.func("LoadPrefabSnapshot"_hs))
 				load.invoke({}, &loader, &archive);
 		}
-
-		// 불필요 엔터티 제거
-		loader.orphans();
 	}
 
 	return true;
@@ -222,19 +222,21 @@ void core::Scene::Run()
 		(*fixed)(_registry, 0.016f);
 	}
 
+	// 이벤트 처리
 	_dispatcher.update();
+
+	// 엔티티 삭제
+	destroyEntities();
 }
 
 void core::Scene::Start()
 {
 	_dispatcher.trigger<OnStartSystem>(*this);
-	_isStarted = true;
 }
 
 void core::Scene::Finish()
 {
 	_dispatcher.trigger<OnFinishSystem>(*this);
-	_isStarted = false;
 }
 
 void core::Scene::Clear()
@@ -259,5 +261,21 @@ void core::Scene::updateSystemMapIndex(SystemType type, size_t oldIndex, size_t 
 			pair.second = newIndex;
 			break;
 		}
+	}
+}
+
+void core::Scene::addDestroyedEntity(const OnDestroyEntity& event)
+{
+	_destroyedEntities.push(event.entity);
+}
+
+void core::Scene::destroyEntities()
+{
+	while(!_destroyedEntities.empty())
+	{
+		auto& entity = _destroyedEntities.front();
+		entity.Destroy();
+
+		_destroyedEntities.pop();
 	}
 }

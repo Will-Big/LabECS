@@ -27,11 +27,11 @@ namespace core
 		void operator()(entt::registry& registry, float tick) override;
 
 	private:
-		void OnStartSystem(const OnStartSystem& event);
-		void OnFinishSystem(const OnFinishSystem& event);
+		void startSystem(const OnStartSystem& event);
+		void finishSystem(const OnFinishSystem& event);
 
-		void OnStartEntity(const OnStartEntity& event);
-		void OnDestroyEntity(const OnDestroyEntity& event);
+		void createEntity(const OnCreateEntity& event);
+		void destroyEntity(const OnDestroyEntity& event);
 
 	private:
 		std::shared_ptr<PhysicsScene> _physicsScene;
@@ -60,8 +60,8 @@ namespace core
 		void operator()(entt::registry& registry, float tick) override {}
 
 	private:
-		void OnStartSystem(const OnStartSystem& event);
-		void OnFinishSystem(const OnFinishSystem& event);
+		void startSystem(const OnStartSystem& event);
+		void finishSystem(const OnFinishSystem& event);
 	};
 	DEFINE_SYSTEM_TRAITS(EventTestSystem)
 #pragma endregion

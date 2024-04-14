@@ -9,6 +9,7 @@
 #include <list>
 #include <array>
 #include <mutex>
+#include <queue>
 #include <ranges>
 #include <memory>
 #include <vector>

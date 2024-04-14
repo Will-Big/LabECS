@@ -11,6 +11,7 @@ namespace core
 	class IUpdateSystem;
 	class IRenderSystem;
 	class PhysicsSystem;
+	struct OnDestroyEntity;
 
 	class Scene
 	{
@@ -46,6 +47,8 @@ namespace core
 
 	private:
 		void updateSystemMapIndex(SystemType type, size_t oldIndex, size_t newIndex);
+		void addDestroyedEntity(const OnDestroyEntity& event);
+		void destroyEntities();
 
 	private:
 		entt::registry _registry;
@@ -58,7 +61,8 @@ namespace core
 		std::vector<std::shared_ptr<IFixedSystem>> _fixeds;
 		std::vector<std::shared_ptr<IRenderSystem>> _renders;
 
-		bool _isStarted = false;
+		// 모든 이벤트 처리 후 삭제를 위한 대기 큐
+		std::queue<Entity> _destroyedEntities;
 	};
 
 	template <typename T> requires HasSystemTraits<T>
