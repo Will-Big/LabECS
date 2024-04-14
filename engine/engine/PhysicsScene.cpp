@@ -51,8 +51,9 @@ core::PhysicsScene::~PhysicsScene()
 {
 	using namespace physx;
 
-	delete _scene->getSimulationEventCallback();
+	Clear();
 
+	delete _scene->getSimulationEventCallback();
 	_scene->release();
 	_pvd->release();
 	_physics->release();
