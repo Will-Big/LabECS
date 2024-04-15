@@ -149,6 +149,7 @@
     <ClInclude Include="Components.h" />
     <ClInclude Include="ComponentTemplates.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="MetaCtxs.h" />
     <ClInclude Include="PhysicsScene.h" />
     <ClInclude Include="SystemEvents.h" />
     <ClInclude Include="SystemInterface.h" />

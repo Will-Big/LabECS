@@ -8,10 +8,10 @@ namespace core
 	class PhysicsScene;
 
 #pragma region TransformSystem
-	class TransformSystem : public ISystemBase, public IUpdateSystem
+	class TransformSystem : public ISystem, public IUpdateSystem
 	{
 	public:
-		using ISystemBase::ISystemBase;
+		using ISystem::ISystem;
 
 		void operator()(entt::registry& registry, float tick) override;
 	};
@@ -19,7 +19,7 @@ namespace core
 #pragma endregion
 
 #pragma region PhysicsSystem
-	class PhysicsSystem : public ISystemBase, public IFixedSystem
+	class PhysicsSystem : public ISystem, public IFixedSystem
 	{
 	public:
 		PhysicsSystem(entt::dispatcher& dispatcher);
@@ -40,10 +40,10 @@ namespace core
 #pragma endregion
 
 #pragma region AnimationSystem
-	class AnimationSystem : public ISystemBase, public IUpdateSystem, public IRenderSystem
+	class AnimationSystem : public ISystem, public IUpdateSystem, public IRenderSystem
 	{
 	public:
-		using ISystemBase::ISystemBase;
+		using ISystem::ISystem;
 
 		void operator()(entt::registry& registry, float tick) override;
 		void operator()(entt::registry& registry, Graphics& graphics, float tick) override;
@@ -52,7 +52,7 @@ namespace core
 #pragma endregion
 
 #pragma region EventTestSystem
-	class EventTestSystem : public ISystemBase, public IUpdateSystem
+	class EventTestSystem : public ISystem, public IUpdateSystem
 	{
 	public:
 		EventTestSystem(entt::dispatcher& dispatcher);

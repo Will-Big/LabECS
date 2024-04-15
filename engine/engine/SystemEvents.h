@@ -6,23 +6,21 @@ namespace core
 {
 	class Scene;
 
-	struct Event {};
-
-	struct OnStartSystem : Event
+	struct OnStartSystem
 	{
 		Scene* scene = nullptr;
 
 		OnStartSystem(Scene& scene) : scene(&scene) {}
 	};
 
-	struct OnFinishSystem : Event
+	struct OnFinishSystem
 	{
 		Scene* scene = nullptr;
 
 		OnFinishSystem(Scene& scene) : scene(&scene) {}
 	};
 
-	struct OnCreateEntity : Event
+	struct OnCreateEntity
 	{
 		Entity entity;
 
@@ -30,7 +28,7 @@ namespace core
 		OnCreateEntity(const Entity& entity) : entity(entity) {}
 	};
 
-	struct OnDestroyEntity : Event
+	struct OnDestroyEntity
 	{
 		Entity entity;
 

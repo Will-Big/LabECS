@@ -5,11 +5,11 @@ namespace core
 	class Scene;
 	class Graphics;
 
-	class ISystemBase
+	class ISystem
 	{
 	public:
-		ISystemBase(entt::dispatcher& dispatcher) : _dispatcher(&dispatcher) {}
-		virtual ~ISystemBase() = default;
+		ISystem(entt::dispatcher& dispatcher) : _dispatcher(&dispatcher) {}
+		virtual ~ISystem() = default;
 
 		entt::dispatcher* _dispatcher = nullptr;
 	};

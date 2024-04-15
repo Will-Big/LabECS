@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Systems.h"
+#include "MetaCtxs.h"
 #include "SystemTemplates.h"
 #include "ComponentTemplates.h"
 
@@ -7,6 +8,7 @@
 	.type(entt::type_hash<class>::value())
 
 #define META_COMPONENT_FUNC_HELPER(class) \
+	.func<&core::Assign<class>>("Assign"_hs) \
 	.func<&core::SaveSnapshot<class>>("SaveSnapshot"_hs) \
 	.func<&core::LoadSnapshot<class>>("LoadSnapshot"_hs) \
 	.func<&core::SavePrefabSnapshot<class>>("SavePrefabSnapshot"_hs) \
@@ -26,45 +28,41 @@ namespace core
 	{
 		// 시스템 메타 데이터 등록
 		{
-			entt::meta<TransformSystem>()
+			entt::meta<TransformSystem>(systemMetaCtx)
 				META_TYPE_HELPER(TransformSystem)
 				META_SYSTEM_FUNC_HELPER(TransformSystem);
 
-			entt::meta<PhysicsSystem>()
+			entt::meta<PhysicsSystem>(systemMetaCtx)
 				META_TYPE_HELPER(PhysicsSystem)
 				META_SYSTEM_FUNC_HELPER(PhysicsSystem);
 
-			entt::meta<AnimationSystem>()
+			entt::meta<AnimationSystem>(systemMetaCtx)
 				META_TYPE_HELPER(AnimationSystem)
 				META_SYSTEM_FUNC_HELPER(AnimationSystem);
 
-			entt::meta<EventTestSystem>()
+			entt::meta<EventTestSystem>(systemMetaCtx)
 				META_TYPE_HELPER(EventTestSystem)
 				META_SYSTEM_FUNC_HELPER(EventTestSystem);
 		}
 
 		// 이벤트 메타 데이터 등록
 		{
-			entt::meta<OnStartSystem>()
-				META_TYPE_HELPER(OnStartSystem)
-				.base<Event>();
+			entt::meta<OnStartSystem>(eventMetaCtx)
+				META_TYPE_HELPER(OnStartSystem);
 
-			entt::meta<OnFinishSystem>()
-				META_TYPE_HELPER(OnFinishSystem)
-				.base<Event>();
+			entt::meta<OnFinishSystem>(eventMetaCtx)
+				META_TYPE_HELPER(OnFinishSystem);
 
-			entt::meta<OnCreateEntity>()
-				META_TYPE_HELPER(OnCreateEntity)
-				.base<Event>();
+			entt::meta<OnCreateEntity>(eventMetaCtx)
+				META_TYPE_HELPER(OnCreateEntity);
 
-			entt::meta<OnDestroyEntity>()
-				META_TYPE_HELPER(OnDestroyEntity)
-				.base<Event>();
+			entt::meta<OnDestroyEntity>(eventMetaCtx)
+				META_TYPE_HELPER(OnDestroyEntity);
 		}
 
 		// 컴포넌트 메타 데이터 등록
 		{
-			entt::meta<Transform>()
+			entt::meta<Transform>(componentMetaCtx)
 				META_TYPE_HELPER(Transform)
 				META_COMPONENT_FUNC_HELPER(Transform)
 				META_COMPONENT_MEMBER_HELPER(Transform::position, "position")
@@ -73,17 +71,17 @@ namespace core
 				META_COMPONENT_MEMBER_HELPER(Transform::localMatrix, "localMatrix")
 				META_COMPONENT_MEMBER_HELPER(Transform::worldMatrix, "worldMatrix");
 
-			entt::meta<Relationship>()
+			entt::meta<Relationship>(componentMetaCtx)
 				META_TYPE_HELPER(Relationship)
 				META_COMPONENT_FUNC_HELPER(Relationship)
 				META_COMPONENT_MEMBER_HELPER(Relationship::parent, "parent");
 
-			entt::meta<Name>()
+			entt::meta<Name>(componentMetaCtx)
 				META_TYPE_HELPER(Name)
 				META_COMPONENT_FUNC_HELPER(Name)
 				META_COMPONENT_MEMBER_HELPER(Name::name, "name");
 
-			entt::meta<Rigidbody>()
+			entt::meta<Rigidbody>(componentMetaCtx)
 				META_TYPE_HELPER(Rigidbody)
 				META_COMPONENT_FUNC_HELPER(Rigidbody)
 				META_COMPONENT_MEMBER_HELPER(Rigidbody::mass, "mass")
@@ -94,26 +92,26 @@ namespace core
 				META_COMPONENT_MEMBER_HELPER(Rigidbody::interpolation, "interpolation")
 				META_COMPONENT_MEMBER_HELPER(Rigidbody::constraints, "constraints");
 
-			entt::meta<ColliderCommon>()
+			entt::meta<ColliderCommon>(componentMetaCtx)
 				META_TYPE_HELPER(ColliderCommon)
 				META_COMPONENT_FUNC_HELPER(ColliderCommon)
 				META_COMPONENT_MEMBER_HELPER(ColliderCommon::isTrigger, "isTrigger")
 				META_COMPONENT_MEMBER_HELPER(ColliderCommon::material, "shape")
 				META_COMPONENT_MEMBER_HELPER(ColliderCommon::sharedMaterial, "sharedMaterial");
 
-			entt::meta<BoxCollider>()
+			entt::meta<BoxCollider>(componentMetaCtx)
 				META_TYPE_HELPER(BoxCollider)
 				META_COMPONENT_FUNC_HELPER(BoxCollider)
 				META_COMPONENT_MEMBER_HELPER(BoxCollider::center, "center")
 				META_COMPONENT_MEMBER_HELPER(BoxCollider::size, "size");
 
-			entt::meta<SphereCollider>()
+			entt::meta<SphereCollider>(componentMetaCtx)
 				META_TYPE_HELPER(SphereCollider)
 				META_COMPONENT_FUNC_HELPER(SphereCollider)
 				META_COMPONENT_MEMBER_HELPER(SphereCollider::center, "center")
 				META_COMPONENT_MEMBER_HELPER(SphereCollider::radius, "radius");
 
-			entt::meta<CapsuleCollider>()
+			entt::meta<CapsuleCollider>(componentMetaCtx)
 				META_TYPE_HELPER(CapsuleCollider)
 				META_COMPONENT_FUNC_HELPER(CapsuleCollider)
 				META_COMPONENT_MEMBER_HELPER(CapsuleCollider::center, "center")

@@ -149,4 +149,10 @@ namespace core
 		loader->get<T>(*archive);
 	}
 
+	template <typename T>
+	void Assign(entt::registry* registry, const entt::entity* entity, entt::meta_any* component)
+	{
+		registry->emplace_or_replace<T>(*entity, component->cast<T>());
+	}
+
 }

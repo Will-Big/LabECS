@@ -24,12 +24,12 @@ int main()
 	e2.Emplace<core::Transform>();
 	e3.Emplace<core::Transform>();
 
-	for(auto i = 0; i < 10; i++)
+	for (auto i = 0; i < 10; i++)
 	{
 		auto entity = scene1.CreateEntity();
 
 		auto& transform = entity.Emplace<Transform>();
-		transform.position = Vector3{(2.f * i), (2.f * i), (2.f * i)};
+		transform.position = Vector3{ (2.f * i), (2.f * i), (2.f * i) };
 
 		entity.Emplace<ColliderCommon>();
 		auto& boxCollider = entity.Emplace<BoxCollider>();
@@ -37,6 +37,39 @@ int main()
 
 		auto& rigidbody = entity.Emplace<core::Rigidbody>();
 	}
+
+#pragma region meta_test
+	//{
+	//	int number = 0;
+
+	//	for (auto&& [id, meta] : entt::resolve(componentMetaCtx))
+	//	{
+	//		std::cout << ++number << ": ";
+	//		std::cout << meta.info().name() << std::endl;
+	//	}
+
+	//	int input = 0;
+	//	std::cin >> input;
+
+	//	if (input > 0)
+	//	{
+	//		int counter = 0;
+	//		for (auto&& [id, meta] : entt::resolve(componentMetaCtx))
+	//		{
+	//			++counter;
+	//			if(counter == input)
+	//			{
+	//				std::cout << "constructed component: ";
+	//				std::cout << meta.info().name() << std::endl;
+	//				auto component = meta.construct();
+	//				meta.func("Assign"_hs).invoke({}, scene1.GetRegistry(), &e1.GetHandle(), &component);
+	//				counter = 0;
+	//				break;
+	//			}
+	//		}
+	//	}
+	//}
+#pragma endregion
 
 	scene1.RegisterSystem<core::TransformSystem>();
 	scene1.RegisterSystem<core::AnimationSystem>();

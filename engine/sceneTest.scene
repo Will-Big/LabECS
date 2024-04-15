@@ -606,8 +606,17 @@
             "vector.z": 4.0
         }
     },
-    "value112": 0,
+    "value112": 1,
     "value113": 0,
+    "value114": {
+        "sphereCollider.center": {
+            "vector.x": 0.0,
+            "vector.y": 0.0,
+            "vector.z": 0.0
+        },
+        "sphereCollider.radius": 0.0
+    },
+    "value115": 0,
     "systems": [
         "AnimationSystem",
         "EventTestSystem",

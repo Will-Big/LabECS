@@ -5,7 +5,7 @@
 namespace core
 {
 	class Graphics;
-	class ISystemBase;
+	class ISystem;
 	class PhysicsScene;
 	class IFixedSystem;
 	class IUpdateSystem;

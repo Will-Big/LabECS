@@ -14,7 +14,7 @@ void core::TransformSystem::operator()(entt::registry& registry, float tick)
 
 #pragma region PhysicsSystem
 core::PhysicsSystem::PhysicsSystem(entt::dispatcher& dispatcher)
-	: ISystemBase(dispatcher)
+	: ISystem(dispatcher)
 {
 	_dispatcher->sink<OnStartSystem>().connect<&PhysicsSystem::startSystem>(this);
 	_dispatcher->sink<OnFinishSystem>().connect<&PhysicsSystem::finishSystem>(this);
@@ -80,7 +80,7 @@ void core::AnimationSystem::operator()(entt::registry& registry, Graphics& graph
 
 #pragma region EventTestSystem
 core::EventTestSystem::EventTestSystem(entt::dispatcher& dispatcher)
-	: ISystemBase(dispatcher)
+	: ISystem(dispatcher)
 {
 	_dispatcher->sink<OnStartSystem>().connect<&EventTestSystem::startSystem>(this);
 	_dispatcher->sink<OnFinishSystem>().connect<&EventTestSystem::finishSystem>(this);

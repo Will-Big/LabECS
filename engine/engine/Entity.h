@@ -33,7 +33,8 @@ namespace core
 		bool IsAncestorOf(core::Entity entity) const;
 		bool IsDescendantOf(const Entity& entity) const;
 
-		uint32_t GetHandle() const { return static_cast<uint32_t>(_handle); }
+		const entt::entity& GetHandle() const { return _handle; }
+		//uint32_t GetHandle() const { return static_cast<uint32_t>(_handle); }
 
 		operator uint32_t () const { return static_cast<uint32_t>(_handle); }
 		operator entt::entity() const { return _handle; }

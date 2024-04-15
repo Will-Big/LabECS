@@ -9,7 +9,7 @@
 
 namespace core
 {
-	class ISystemBase;
+	class ISystem;
 
 	template <typename T>
 	struct SystemTraits;
@@ -18,7 +18,7 @@ namespace core
 	concept HasSystemTraits = requires
 	{
 		{ SystemTraits<T>::name } -> std::convertible_to<const char*>;
-	} && std::is_base_of_v<ISystemBase, T>;
+	} && std::is_base_of_v<ISystem, T>;
 
 	enum class SystemType
 	{

@@ -2,6 +2,7 @@
 #include "Scene.h"
 
 #include "Systems.h"
+#include "MetaCtxs.h"
 #include "Components.h"
 #include "PhysicsScene.h"
 
@@ -33,7 +34,7 @@ bool core::Scene::SaveScene(const std::string& path)
 
 		snapshot.get<entt::entity>(archive);
 
-		for (auto&& [id, type] : entt::resolve())
+		for (auto&& [id, type] : entt::resolve(componentMetaCtx))
 		{
 			if (auto save = type.func("SaveSnapshot"_hs))
 				save.invoke({}, &snapshot, &archive);
@@ -92,7 +93,7 @@ bool core::Scene::LoadScene(const std::string& path)
 
 		loader.get<entt::entity>(archive);
 
-		for (auto&& [id, type] : entt::resolve())
+		for (auto&& [id, type] : entt::resolve(componentMetaCtx))
 		{
 			if (auto loadStorage = type.func("LoadSnapshot"_hs))
 				loadStorage.invoke({}, &loader, &archive);
@@ -102,7 +103,7 @@ bool core::Scene::LoadScene(const std::string& path)
 		std::vector<std::string> systemNames;
 		archive(cereal::make_nvp("systems", systemNames));
 
-		for (auto&& [id, type] : entt::resolve())
+		for (auto&& [id, type] : entt::resolve(systemMetaCtx))
 		{
 			if (auto loadSystem = type.func("LoadSystem"_hs))
 				loadSystem.invoke({}, this, &systemNames);
@@ -147,7 +148,7 @@ bool core::Scene::SavePrefab(const std::string& path, core::Entity& entity)
 
 			snapshot.get<entt::entity>(archive);
 
-			for (auto&& [id, type] : entt::resolve())
+			for (auto&& [id, type] : entt::resolve(componentMetaCtx))
 			{
 				if (auto save = type.func("SavePrefabSnapshot"_hs))
 					save.invoke({}, &snapshot, &archive, descendents.begin(), descendents.end());
@@ -200,7 +201,7 @@ bool core::Scene::LoadPrefab(const std::string& path)
 
 		loader.get<entt::entity>(archive);
 
-		for (auto&& [id, type] : entt::resolve())
+		for (auto&& [id, type] : entt::resolve(componentMetaCtx))
 		{
 			if (auto load = type.func("LoadPrefabSnapshot"_hs))
 				load.invoke({}, &loader, &archive);
