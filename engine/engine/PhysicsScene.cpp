@@ -35,9 +35,11 @@ core::PhysicsScene::PhysicsScene(entt::dispatcher& dispatcher)
 	PxDefaultCpuDispatcher* pxDispatcher = PxDefaultCpuDispatcherCreate(2);
 	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
 	sceneDesc.cpuDispatcher = pxDispatcher;
-	sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+	sceneDesc.filterShader = CustomFilterShader;
 	_scene = _physics->createScene(sceneDesc);
 	_scene->setSimulationEventCallback(new CollisionCallback(*_dispatcher));
+
+	PxPairFlags desiredFlags = PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_PERSISTS;
 
 	if (PxPvdSceneClient* pvdClient = _scene->getScenePvdClient())
 	{
@@ -45,6 +47,10 @@ core::PhysicsScene::PhysicsScene(entt::dispatcher& dispatcher)
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 	}
+
+	auto gMaterial = _physics->createMaterial(0.5f, 0.5f, 0.6f);
+	PxRigidStatic* groundPlane = PxCreatePlane(*_physics, PxPlane(0, 1, 0, 0), *gMaterial);
+	_scene->addActor(*groundPlane);
 }
 
 core::PhysicsScene::~PhysicsScene()
@@ -229,6 +235,94 @@ bool core::PhysicsScene::DestroyPhysicsActor(const Entity& entity)
 	}
 
 	return false;
+}
+
+void core::PhysicsScene::Fetch(const Entity& entity)
+{
+	using namespace physx;
+
+	auto& transform = entity.Get<Transform>();
+
+	PxTransform pxTransform;
+	PxVec3 pxVec3;
+
+	auto it = _entityToPxActorMap.find(entity);
+
+	if (it == _entityToPxActorMap.end())
+		return;
+
+	if (auto dynamicActor = it->second->is<PxRigidDynamic>())
+	{
+		pxTransform = dynamicActor->getGlobalPose();
+		pxVec3 = dynamicActor->getLinearVelocity();
+
+		auto& rigidbody = entity.Get<Rigidbody>();
+		rigidbody.velocity = Convert<Vector3>(pxVec3);
+	}
+	else if (auto staticActor = it->second->is<PxRigidStatic>())
+	{
+		pxTransform = staticActor->getGlobalPose();
+	}
+
+	// PhysX의 오른손 좌표계에서 왼손 좌표계로 변환
+	pxTransform = RightToLeft(pxTransform);
+
+	// Transform 컴포넌트 업데이트
+	transform.position.x = pxTransform.p.x;
+	transform.position.y = pxTransform.p.y;
+	transform.position.z = pxTransform.p.z;
+
+	transform.rotation.x = pxTransform.q.x;
+	transform.rotation.y = pxTransform.q.y;
+	transform.rotation.z = pxTransform.q.z;
+	transform.rotation.w = pxTransform.q.w;
+}
+
+physx::PxFilterFlags core::PhysicsScene::CustomFilterShader(
+	physx::PxFilterObjectAttributes attributes0, physx::PxFilterData filterData0,
+	physx::PxFilterObjectAttributes attributes1, physx::PxFilterData filterData1,
+	physx::PxPairFlags& pairFlags, const void* constantBlock, physx::PxU32 constantBlockSize)
+{
+	// Default processing
+	if (physx::PxFilterObjectIsTrigger(attributes0) || physx::PxFilterObjectIsTrigger(attributes1))
+	{
+		pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT;
+		return physx::PxFilterFlag::eDEFAULT;
+	}
+
+	// Enable contact callbacks for these two objects
+	pairFlags = physx::PxPairFlag::eSOLVE_CONTACT | physx::PxPairFlag::eDETECT_DISCRETE_CONTACT;
+	pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_FOUND | physx::PxPairFlag::eNOTIFY_TOUCH_PERSISTS;
+
+	return physx::PxFilterFlag::eDEFAULT;
+}
+
+physx::PxTransform core::PhysicsScene::RightToLeft(const physx::PxTransform& rightHandTransform)
+{
+	// 위치의 z 좌표를 반전
+	physx::PxVec3 position = rightHandTransform.p;
+	position.z = -position.z;
+
+	// 회전의 z축 반전을 위해 적절한 회전 조정
+	physx::PxQuat rotation = rightHandTransform.q;
+	physx::PxQuat zFlip(0, 0, 1, 0); // 180도 z축 회전
+	rotation = rotation * zFlip;
+
+	return physx::PxTransform(position, rotation);
+}
+
+physx::PxTransform core::PhysicsScene::LeftToRight(const physx::PxTransform& leftHandTransform)
+{
+	// 위치의 z 좌표를 반전
+	physx::PxVec3 position = leftHandTransform.p;
+	position.z = -position.z;
+
+	// 회전의 z축 반전을 위해 적절한 회전 조정
+	physx::PxQuat rotation = leftHandTransform.q;
+	physx::PxQuat zFlip(0, 0, 1, 0); // 180도 z축 회전
+	rotation = rotation * zFlip;
+
+	return physx::PxTransform(position, rotation);
 }
 
 void core::PhysicsScene::Clear()

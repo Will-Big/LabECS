@@ -276,100 +276,100 @@
     "value49": 10,
     "value50": 4,
     "value51": {
-        "rigidbody.mass": 0.0,
+        "rigidbody.mass": 3.0,
         "rigidbody.drag": 0.0,
         "rigidbody.angularDrag": 0.0,
-        "rigidbody.useGravity": false,
+        "rigidbody.useGravity": true,
         "rigidbody.isKinematic": false,
         "rigidbody.interpolation": 0,
         "rigidbody.constraints": 0
     },
     "value52": 5,
     "value53": {
-        "rigidbody.mass": 0.0,
+        "rigidbody.mass": 3.0,
         "rigidbody.drag": 0.0,
         "rigidbody.angularDrag": 0.0,
-        "rigidbody.useGravity": false,
+        "rigidbody.useGravity": true,
         "rigidbody.isKinematic": false,
         "rigidbody.interpolation": 0,
         "rigidbody.constraints": 0
     },
     "value54": 6,
     "value55": {
-        "rigidbody.mass": 0.0,
+        "rigidbody.mass": 3.0,
         "rigidbody.drag": 0.0,
         "rigidbody.angularDrag": 0.0,
-        "rigidbody.useGravity": false,
+        "rigidbody.useGravity": true,
         "rigidbody.isKinematic": false,
         "rigidbody.interpolation": 0,
         "rigidbody.constraints": 0
     },
     "value56": 7,
     "value57": {
-        "rigidbody.mass": 0.0,
+        "rigidbody.mass": 3.0,
         "rigidbody.drag": 0.0,
         "rigidbody.angularDrag": 0.0,
-        "rigidbody.useGravity": false,
+        "rigidbody.useGravity": true,
         "rigidbody.isKinematic": false,
         "rigidbody.interpolation": 0,
         "rigidbody.constraints": 0
     },
     "value58": 8,
     "value59": {
-        "rigidbody.mass": 0.0,
+        "rigidbody.mass": 3.0,
         "rigidbody.drag": 0.0,
         "rigidbody.angularDrag": 0.0,
-        "rigidbody.useGravity": false,
+        "rigidbody.useGravity": true,
         "rigidbody.isKinematic": false,
         "rigidbody.interpolation": 0,
         "rigidbody.constraints": 0
     },
     "value60": 9,
     "value61": {
-        "rigidbody.mass": 0.0,
+        "rigidbody.mass": 3.0,
         "rigidbody.drag": 0.0,
         "rigidbody.angularDrag": 0.0,
-        "rigidbody.useGravity": false,
+        "rigidbody.useGravity": true,
         "rigidbody.isKinematic": false,
         "rigidbody.interpolation": 0,
         "rigidbody.constraints": 0
     },
     "value62": 10,
     "value63": {
-        "rigidbody.mass": 0.0,
+        "rigidbody.mass": 3.0,
         "rigidbody.drag": 0.0,
         "rigidbody.angularDrag": 0.0,
-        "rigidbody.useGravity": false,
+        "rigidbody.useGravity": true,
         "rigidbody.isKinematic": false,
         "rigidbody.interpolation": 0,
         "rigidbody.constraints": 0
     },
     "value64": 11,
     "value65": {
-        "rigidbody.mass": 0.0,
+        "rigidbody.mass": 3.0,
         "rigidbody.drag": 0.0,
         "rigidbody.angularDrag": 0.0,
-        "rigidbody.useGravity": false,
+        "rigidbody.useGravity": true,
         "rigidbody.isKinematic": false,
         "rigidbody.interpolation": 0,
         "rigidbody.constraints": 0
     },
     "value66": 12,
     "value67": {
-        "rigidbody.mass": 0.0,
+        "rigidbody.mass": 3.0,
         "rigidbody.drag": 0.0,
         "rigidbody.angularDrag": 0.0,
-        "rigidbody.useGravity": false,
+        "rigidbody.useGravity": true,
         "rigidbody.isKinematic": false,
         "rigidbody.interpolation": 0,
         "rigidbody.constraints": 0
     },
     "value68": 13,
     "value69": {
-        "rigidbody.mass": 0.0,
+        "rigidbody.mass": 3.0,
         "rigidbody.drag": 0.0,
         "rigidbody.angularDrag": 0.0,
-        "rigidbody.useGravity": false,
+        "rigidbody.useGravity": true,
         "rigidbody.isKinematic": false,
         "rigidbody.interpolation": 0,
         "rigidbody.constraints": 0
@@ -606,17 +606,8 @@
             "vector.z": 4.0
         }
     },
-    "value112": 1,
+    "value112": 0,
     "value113": 0,
-    "value114": {
-        "sphereCollider.center": {
-            "vector.x": 0.0,
-            "vector.y": 0.0,
-            "vector.z": 0.0
-        },
-        "sphereCollider.radius": 0.0
-    },
-    "value115": 0,
     "systems": [
         "AnimationSystem",
         "EventTestSystem",

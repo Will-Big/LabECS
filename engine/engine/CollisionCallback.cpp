@@ -9,14 +9,17 @@ void core::CollisionCallback::onContact(const physx::PxContactPairHeader& pairHe
 
         if (cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_FOUND) 
         {
+            _dispatcher->enqueue<>();
             // 충돌 시작 이벤트 처리
         }
         if (cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_PERSISTS) 
         {
+            int k = 0;
 			// 충돌 지속 이벤트 처리
         }
         if (cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_LOST) 
         {
+            int k = 0;
             // 충돌 종료 이벤트 처리
         }
     }
@@ -24,6 +27,7 @@ void core::CollisionCallback::onContact(const physx::PxContactPairHeader& pairHe
 
 void core::CollisionCallback::onTrigger(physx::PxTriggerPair* pairs, physx::PxU32 count)
 {
+    int k = 0;
 }
 
 void core::CollisionCallback::onConstraintBreak(physx::PxConstraintInfo* constraints, physx::PxU32 count)

@@ -24,6 +24,7 @@ int main()
 	e2.Emplace<core::Transform>();
 	e3.Emplace<core::Transform>();
 
+
 	for (auto i = 0; i < 10; i++)
 	{
 		auto entity = scene1.CreateEntity();
@@ -36,6 +37,8 @@ int main()
 		boxCollider.size = Vector3{ 4.f, 4.f, 4.f };
 
 		auto& rigidbody = entity.Emplace<core::Rigidbody>();
+		rigidbody.mass = 3.0f;
+		rigidbody.useGravity = true;
 	}
 
 #pragma region meta_test
