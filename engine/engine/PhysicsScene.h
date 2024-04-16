@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <physx/PxPhysicsAPI.h>
 
-#define PX_TO_CORE_VALID(CORE, PHYSX) (std::is_same_v<CoreType, CORE> && std::is_same_v<PhysxType, PHYSX>)
+#define IS_VALID_CONVERT(FROM, TO) (std::is_same_v<FromType, FROM> && std::is_same_v<ToType, TO>)
 
 namespace core
 {
@@ -20,15 +20,17 @@ namespace core
 		bool CreatePhysicsActor(const Entity& entity);
 		bool DestroyPhysicsActor(const Entity& entity);
 
+		void Clear();
+
+	private:
 		void Fetch(const Entity& entity);
 
-		template <typename CoreType, typename PhysxType>
-		CoreType Convert(const PhysxType& physxType);
+		template <typename ToType, typename FromType>
+		ToType Convert(const FromType& fromType);
 
+		// 좌표계 변환
 		physx::PxTransform RightToLeft(const physx::PxTransform& rightHandTransform);
 		physx::PxTransform LeftToRight(const physx::PxTransform& leftHandTransform);
-
-		void Clear();
 
 		static physx::PxFilterFlags CustomFilterShader(
 			physx::PxFilterObjectAttributes attributes0, physx::PxFilterData filterData0,
@@ -48,28 +50,32 @@ namespace core
 		std::unordered_map<entt::entity, physx::PxActor*> _entityToPxActorMap;
 	};
 
-	template <typename CoreType, typename PhysxType>
-	CoreType PhysicsScene::Convert(const PhysxType& physxType)
+	template <typename ToType, typename FromType>
+	ToType PhysicsScene::Convert(const FromType& fromType)
 	{
-		static_assert(PX_TO_CORE_VALID(CoreType, PhysxType), "Unsupported type conversion requested.");
-
 		using namespace physx;
 
-		if constexpr (PX_TO_CORE_VALID(Vector2, PxVec2))
-		{
-			return Vector3{ physxType.x, physxType.y };
+		if constexpr (IS_VALID_CONVERT(PxVec3, Vector3)) {
+			return Vector3{ fromType.x, fromType.y, fromType.z };
 		}
-		if constexpr (PX_TO_CORE_VALID(Vector3, PxVec3))
-		{
-			return Vector3{ physxType.x, physxType.y, physxType.z };
+		else if constexpr (IS_VALID_CONVERT(PxVec2, Vector2)) {
+			return Vector2{ fromType.x, fromType.y };
 		}
-		else if constexpr (PX_TO_CORE_VALID(Quaternion, PxQuat))
-		{
-			return Quaternion{ physxType.x, physxType.y, physxType.z, physxType.w };
+		else if constexpr (IS_VALID_CONVERT(PxQuat, Quaternion)) {
+			return Quaternion{ fromType.x, fromType.y, fromType.z, fromType.w };
 		}
-		else
-		{
-			return CoreType{};
+		else if constexpr (IS_VALID_CONVERT(Vector3, PxVec3)) {
+			return PxVec3(fromType.x, fromType.y, fromType.z);
+		}
+		else if constexpr (IS_VALID_CONVERT(Vector2, PxVec2)) {
+			return PxVec2(fromType.x, fromType.y);
+		}
+		else if constexpr (IS_VALID_CONVERT(Quaternion, PxQuat)) {
+			return PxQuat(fromType.x, fromType.y, fromType.z, fromType.w);
+		}
+		else {
+			static_assert(IS_VALID_CONVERT(ToType, FromType), "Unsupported type conversion requested.");
+			return ToType{};
 		}
 	}
 }

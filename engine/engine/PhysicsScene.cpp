@@ -154,8 +154,8 @@ bool core::PhysicsScene::CreatePhysicsActor(const core::Entity& entity)
 		// 동적 액터 생성
 		PxRigidDynamic* dynamicActor = _physics->createRigidDynamic(
 			PxTransform(
-				PxVec3(transform.position.x, transform.position.y, transform.position.z),
-				PxQuat(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w)
+				Convert<PxVec3>(transform.position),
+				Convert<PxQuat>(transform.rotation)
 			)
 		);
 
@@ -186,8 +186,8 @@ bool core::PhysicsScene::CreatePhysicsActor(const core::Entity& entity)
 		// 정적 액터 생성
 		PxRigidStatic* staticActor = _physics->createRigidStatic(
 			PxTransform(
-				PxVec3(transform.position.x, transform.position.y, transform.position.z),
-				PxQuat(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w)
+				Convert<PxVec3>(transform.position),
+				Convert<PxQuat>(transform.rotation)
 			)
 		);
 
@@ -196,12 +196,16 @@ bool core::PhysicsScene::CreatePhysicsActor(const core::Entity& entity)
 		actor = staticActor;
 	}
 
+	// todo: check valid
+	shape->release();
+	material->release();
+
+	if(!actor)
+		return false;
+
 	// 매핑 테이블에 액터 추가 및 물리 씬에 추가
 	_entityToPxActorMap[entity] = actor;
 	_scene->addActor(*actor);
-
-	shape->release();
-	material->release();
 
 	return true;
 }
@@ -244,7 +248,6 @@ void core::PhysicsScene::Fetch(const Entity& entity)
 	auto& transform = entity.Get<Transform>();
 
 	PxTransform pxTransform;
-	PxVec3 pxVec3;
 
 	auto it = _entityToPxActorMap.find(entity);
 
@@ -254,7 +257,7 @@ void core::PhysicsScene::Fetch(const Entity& entity)
 	if (auto dynamicActor = it->second->is<PxRigidDynamic>())
 	{
 		pxTransform = dynamicActor->getGlobalPose();
-		pxVec3 = dynamicActor->getLinearVelocity();
+		const PxVec3 pxVec3 = dynamicActor->getLinearVelocity();
 
 		auto& rigidbody = entity.Get<Rigidbody>();
 		rigidbody.velocity = Convert<Vector3>(pxVec3);
@@ -268,14 +271,8 @@ void core::PhysicsScene::Fetch(const Entity& entity)
 	pxTransform = RightToLeft(pxTransform);
 
 	// Transform 컴포넌트 업데이트
-	transform.position.x = pxTransform.p.x;
-	transform.position.y = pxTransform.p.y;
-	transform.position.z = pxTransform.p.z;
-
-	transform.rotation.x = pxTransform.q.x;
-	transform.rotation.y = pxTransform.q.y;
-	transform.rotation.z = pxTransform.q.z;
-	transform.rotation.w = pxTransform.q.w;
+	transform.position = Convert<Vector3>(pxTransform.p);
+	transform.rotation = Convert<Quaternion>(pxTransform.q);
 }
 
 physx::PxFilterFlags core::PhysicsScene::CustomFilterShader(

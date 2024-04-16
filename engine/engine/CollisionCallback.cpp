@@ -9,7 +9,6 @@ void core::CollisionCallback::onContact(const physx::PxContactPairHeader& pairHe
 
         if (cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_FOUND) 
         {
-            _dispatcher->enqueue<>();
             // 충돌 시작 이벤트 처리
         }
         if (cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_PERSISTS) 
