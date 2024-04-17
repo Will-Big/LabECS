@@ -79,18 +79,37 @@ void core::AnimationSystem::operator()(entt::registry& registry, Graphics& graph
 #pragma endregion
 
 #pragma region EventTestSystem
-core::EventTestSystem::EventTestSystem(entt::dispatcher& dispatcher)
+core::CollisionTesterSystem::CollisionTesterSystem(entt::dispatcher& dispatcher)
 	: ISystem(dispatcher)
 {
-	_dispatcher->sink<OnStartSystem>().connect<&EventTestSystem::startSystem>(this);
-	_dispatcher->sink<OnFinishSystem>().connect<&EventTestSystem::finishSystem>(this);
+	_dispatcher->sink<OnStartSystem>().connect<&CollisionTesterSystem::startSystem>(this);
+	_dispatcher->sink<OnFinishSystem>().connect<&CollisionTesterSystem::finishSystem>(this);
 }
 
-void core::EventTestSystem::startSystem(const core::OnStartSystem& event)
+void core::CollisionTesterSystem::startSystem(const core::OnStartSystem& event)
+{
+	auto dispatcher = event.scene->GetDispatcher();
+
+	// 시작시 충돌을 관리할 컴포넌트 타입에 대해 
+	dispatcher->trigger<OnRegisterCollisionHandler>({entt::type_hash<TestObject>(), this});
+}
+
+void core::CollisionTesterSystem::finishSystem(const core::OnFinishSystem& event)
 {
 }
 
-void core::EventTestSystem::finishSystem(const core::OnFinishSystem& event)
+void core::CollisionTesterSystem::OnCollisionEnter(const Entity& self, const Entity& other)
 {
+	int i = 0;
+}
+
+void core::CollisionTesterSystem::OnCollisionStay(const Entity& self, const Entity& other)
+{
+	int i = 0;
+}
+
+void core::CollisionTesterSystem::OnCollisionExit(const Entity& self, const Entity& other)
+{
+	int i = 0;
 }
 #pragma endregion

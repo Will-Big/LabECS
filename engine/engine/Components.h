@@ -111,6 +111,16 @@ namespace core
 		std::string sharedMesh;
 		MeshColliderCookingOptions cookingOptions = MeshColliderCookingOptions::None;
 	};
+
+	struct Tag
+	{
+		entt::id_type id = entt::null;
+	};
+
+	struct TestObject
+	{
+		int i = 0;
+	};
 }
 
 

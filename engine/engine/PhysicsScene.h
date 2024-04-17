@@ -5,6 +5,7 @@
 
 namespace core
 {
+	class Scene;
 	class Entity;
 	struct ColliderCommon;
 	struct Rigidbody;
@@ -12,7 +13,7 @@ namespace core
 	class PhysicsScene
 	{
 	public:
-		PhysicsScene(entt::dispatcher& dispatcher);
+		PhysicsScene(Scene& scene);
 		~PhysicsScene();
 
 		void Update(float tick);
@@ -38,8 +39,8 @@ namespace core
 			physx::PxPairFlags& pairFlags, const void* constantBlock, physx::PxU32 constantBlockSize);
 
 	private:
-		entt::dispatcher* _dispatcher = nullptr;
-		physx::PxScene* _scene = nullptr;
+		Scene* _scene = nullptr;
+		physx::PxScene* _pxScene = nullptr;
 
 		inline static physx::PxPhysics* _physics = nullptr;
 		inline static physx::PxPvd* _pvd = nullptr;

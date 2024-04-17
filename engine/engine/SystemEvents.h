@@ -5,7 +5,9 @@
 namespace core
 {
 	class Scene;
+	class ICollisionHandler;
 
+	// 시스템 시작
 	struct OnStartSystem
 	{
 		Scene* scene = nullptr;
@@ -13,6 +15,7 @@ namespace core
 		OnStartSystem(Scene& scene) : scene(&scene) {}
 	};
 
+	// 시스템 종료
 	struct OnFinishSystem
 	{
 		Scene* scene = nullptr;
@@ -20,6 +23,7 @@ namespace core
 		OnFinishSystem(Scene& scene) : scene(&scene) {}
 	};
 
+	// 엔티티 생성
 	struct OnCreateEntity
 	{
 		Entity entity;
@@ -28,6 +32,7 @@ namespace core
 		OnCreateEntity(const Entity& entity) : entity(entity) {}
 	};
 
+	// 엔티티 삭제
 	struct OnDestroyEntity
 	{
 		Entity entity;
@@ -36,36 +41,20 @@ namespace core
 		OnDestroyEntity(const Entity& entity) : entity(entity) {}
 	};
 
-	struct OnCollisionEnter
+
+	/*!
+	 * 시스템 시작(OnStartSystem)시 실행 필요, 예시)
+	 * @code{cpp}
+	 * entt::dispatcher->trigger<core::OnRegisterCollisionHandler>({ entt::type_hash<ComponentClass>(), this });
+	 * @endcode
+	 * id(타입) 와 관련된 모든 충돌을 이 구조체로 이벤트를 연결한 클래스가 받음, CollisionCallback 클래스 참조
+	 */
+	struct OnRegisterCollisionHandler
 	{
-		Entity entity1;
-		Entity entity2;
+		entt::id_type id;
+		ICollisionHandler* handler;
 
-		OnCollisionEnter(entt::entity handle1, entt::entity handle2, entt::registry& registry)
-			: entity1(handle1, registry), entity2(handle2, registry) {}
-		OnCollisionEnter(const Entity& entity1, const Entity& entity2)
-			: entity1(entity1), entity2(entity2) {}
-	};
-
-	struct OnCollisionStay
-	{
-		Entity entity1;
-		Entity entity2;
-
-		OnCollisionStay(entt::entity handle1, entt::entity handle2, entt::registry& registry)
-			: entity1(handle1, registry), entity2(handle2, registry) {}
-		OnCollisionStay(const Entity& entity1, const Entity& entity2)
-			: entity1(entity1), entity2(entity2) {}
-	};
-
-	struct OnCollisionExit
-	{
-		Entity entity1;
-		Entity entity2;
-
-		OnCollisionExit(entt::entity handle1, entt::entity handle2, entt::registry& registry)
-			: entity1(handle1, registry), entity2(handle2, registry) {}
-		OnCollisionExit(const Entity& entity1, const Entity& entity2)
-			: entity1(entity1), entity2(entity2) {}
+		OnRegisterCollisionHandler(const entt::id_type& id, ICollisionHandler* handler)
+			: id(id), handler(handler) {}
 	};
 }

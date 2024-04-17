@@ -34,4 +34,13 @@ namespace core
 		virtual ~IRenderSystem() = default;
 		virtual void operator()(entt::registry& registry, Graphics& graphics, float tick) = 0;
 	};
+
+	class ICollisionHandler
+	{
+	public:
+		virtual ~ICollisionHandler() = default;
+		virtual void OnCollisionEnter(const Entity& self, const Entity& other) = 0;
+		virtual void OnCollisionStay(const Entity& self, const Entity& other) = 0;
+		virtual void OnCollisionExit(const Entity& self, const Entity& other) = 0;
+	};
 }

@@ -610,7 +610,7 @@
     "value113": 0,
     "systems": [
         "AnimationSystem",
-        "EventTestSystem",
+        "CollisionTesterSystem",
         "PhysicsSystem",
         "TransformSystem"
     ]

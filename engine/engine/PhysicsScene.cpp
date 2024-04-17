@@ -6,8 +6,8 @@
 #include "ComponentInlines.h"
 #include "CollisionCallback.h"
 
-core::PhysicsScene::PhysicsScene(entt::dispatcher& dispatcher)
-	: _dispatcher(&dispatcher)
+core::PhysicsScene::PhysicsScene(Scene& scene)
+	: _scene(&scene)
 {
 	using namespace physx;
 
@@ -36,21 +36,21 @@ core::PhysicsScene::PhysicsScene(entt::dispatcher& dispatcher)
 	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
 	sceneDesc.cpuDispatcher = pxDispatcher;
 	sceneDesc.filterShader = CustomFilterShader;
-	_scene = _physics->createScene(sceneDesc);
-	_scene->setSimulationEventCallback(new CollisionCallback(*_dispatcher));
+	_pxScene = _physics->createScene(sceneDesc);
+	_pxScene->setSimulationEventCallback(new CollisionCallback(*_scene));
 
 	PxPairFlags desiredFlags = PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_PERSISTS;
 
-	if (PxPvdSceneClient* pvdClient = _scene->getScenePvdClient())
+	if (PxPvdSceneClient* pvdClient = _pxScene->getScenePvdClient())
 	{
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 	}
 
-	auto gMaterial = _physics->createMaterial(0.5f, 0.5f, 0.6f);
-	PxRigidStatic* groundPlane = PxCreatePlane(*_physics, PxPlane(0, 1, 0, 0), *gMaterial);
-	_scene->addActor(*groundPlane);
+	//auto gMaterial = _physics->createMaterial(0.5f, 0.5f, 0.6f);
+	//PxRigidStatic* groundPlane = PxCreatePlane(*_physics, PxPlane(0, 1, 0, 0), *gMaterial);
+	//_pxScene->addActor(*groundPlane);
 }
 
 core::PhysicsScene::~PhysicsScene()
@@ -59,8 +59,8 @@ core::PhysicsScene::~PhysicsScene()
 
 	Clear();
 
-	delete _scene->getSimulationEventCallback();
-	_scene->release();
+	delete _pxScene->getSimulationEventCallback();
+	_pxScene->release();
 	_pvd->release();
 	_physics->release();
 	_foundation->release();
@@ -71,8 +71,8 @@ void core::PhysicsScene::Update(float tick)
 	using namespace physx;
 
 	// 시뮬레이션 업데이트
-	_scene->simulate(tick);
-	_scene->fetchResults(true);
+	_pxScene->simulate(tick);
+	_pxScene->fetchResults(true);
 }
 
 bool core::PhysicsScene::CreatePhysicsActor(const core::Entity& entity)
@@ -196,16 +196,19 @@ bool core::PhysicsScene::CreatePhysicsActor(const core::Entity& entity)
 		actor = staticActor;
 	}
 
-	// todo: check valid
 	shape->release();
 	material->release();
 
 	if(!actor)
 		return false;
 
+	// userData 할당
+	entt::entity* entityPtr = new entt::entity(entity.GetHandle());
+	actor->userData = static_cast<void*>(entityPtr);
+
 	// 매핑 테이블에 액터 추가 및 물리 씬에 추가
 	_entityToPxActorMap[entity] = actor;
-	_scene->addActor(*actor);
+	_pxScene->addActor(*actor);
 
 	return true;
 }
@@ -220,7 +223,8 @@ bool core::PhysicsScene::DestroyPhysicsActor(const Entity& entity)
 	{
 		// 액터를 물리 씬에서 제거
 		PxActor* actor = it->second;
-		_scene->removeActor(*actor);
+		_pxScene->removeActor(*actor);
+		delete static_cast<entt::entity*>(actor->userData);
 
 		// 액터 메모리 해제
 		if (actor->is<PxRigidDynamic>())
@@ -289,7 +293,7 @@ physx::PxFilterFlags core::PhysicsScene::CustomFilterShader(
 
 	// Enable contact callbacks for these two objects
 	pairFlags = physx::PxPairFlag::eSOLVE_CONTACT | physx::PxPairFlag::eDETECT_DISCRETE_CONTACT;
-	pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_FOUND | physx::PxPairFlag::eNOTIFY_TOUCH_PERSISTS;
+	pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_FOUND | physx::PxPairFlag::eNOTIFY_TOUCH_PERSISTS | physx::PxPairFlag::eNOTIFY_TOUCH_LOST;
 
 	return physx::PxFilterFlag::eDEFAULT;
 }
@@ -331,7 +335,8 @@ void core::PhysicsScene::Clear()
 		if (actor != nullptr)
 		{
 			// 액터를 물리 씬에서 제거
-			_scene->removeActor(*actor, true);
+			_pxScene->removeActor(*actor, true);
+			delete static_cast<entt::entity*>(actor->userData);
 
 			// 액터 메모리 해제
 			if (actor->is<PxRigidDynamic>())

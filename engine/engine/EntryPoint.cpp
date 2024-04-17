@@ -50,6 +50,9 @@ int main()
 	{
 		auto entity = scene1.CreateEntity();
 
+		auto& tag = entity.Emplace<Tag>();
+		tag.id = entt::type_hash<TestObject>();
+
 		auto& transform = entity.Emplace<Transform>();
 		transform.position = Vector3{ (2.f * i), (2.f * i), (2.f * i) };
 
@@ -98,7 +101,7 @@ int main()
 	scene1.RegisterSystem<core::TransformSystem>();
 	scene1.RegisterSystem<core::AnimationSystem>();
 	scene1.RegisterSystem<core::PhysicsSystem>();
-	scene1.RegisterSystem<core::EventTestSystem>();
+	scene1.RegisterSystem<core::CollisionTesterSystem>();
 
 	auto b1 = e4.IsAncestorOf(e1);
 	auto b2 = e1.IsDescendantOf(e4);

@@ -51,18 +51,23 @@ namespace core
 	DEFINE_SYSTEM_TRAITS(AnimationSystem)
 #pragma endregion
 
-#pragma region EventTestSystem
-	class EventTestSystem : public ISystem, public IUpdateSystem
+#pragma region CollisionTesterSystem
+	class CollisionTesterSystem : public ISystem, public IUpdateSystem, public ICollisionHandler
 	{
 	public:
-		EventTestSystem(entt::dispatcher& dispatcher);
+		CollisionTesterSystem(entt::dispatcher& dispatcher);
 
 		void operator()(entt::registry& registry, float tick) override {}
 
 	private:
 		void startSystem(const OnStartSystem& event);
 		void finishSystem(const OnFinishSystem& event);
+
+	public:
+		void OnCollisionEnter(const Entity& self, const Entity& other) override;
+		void OnCollisionStay(const Entity& self, const Entity& other) override;
+		void OnCollisionExit(const Entity& self, const Entity& other) override;
 	};
-	DEFINE_SYSTEM_TRAITS(EventTestSystem)
+	DEFINE_SYSTEM_TRAITS(CollisionTesterSystem)
 #pragma endregion
 }
