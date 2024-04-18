@@ -1,9 +1,9 @@
 ﻿#include "pch.h"
 #include "Scene.h"
 
-#include "Systems.h"
+#include "CoreSystems.h"
 #include "MetaCtxs.h"
-#include "Components.h"
+#include "CoreComponents.h"
 #include "PhysicsScene.h"
 
 #include <fstream>

@@ -2,18 +2,20 @@
 #include "CollisionCallback.h"
 
 #include "Scene.h"
-#include "Components.h"
-#include "SystemEvents.h"
+#include "CoreTags.h"
+#include "SystemInterface.h"
+#include "CoreSystemEvents.h"
 
 #include <physx/PxActor.h>
 
-#include "SystemInterface.h"
 
 
 core::CollisionCallback::CollisionCallback(Scene& scene)
 	: _scene(&scene)
 {
 	auto dispatcher = _scene->GetDispatcher();
+
+	// 콜리전 핸들러 시스템 등록 이벤트 연결
 	dispatcher->sink<OnRegisterCollisionHandler>().connect<&CollisionCallback::registerCollisionHandler>(this);
 }
 
@@ -70,7 +72,7 @@ void core::CollisionCallback::processCollisionEvent(const physx::PxContactPair& 
 			{
 				if (registry->all_of<Tag>(self))
 				{
-					auto tag = registry->get<Tag>(self);
+					const auto& tag = registry->get<Tag>(self);
 
 					for (auto it = _handlers.find(tag.id); it != _handlers.end(); ++it)
 					{

@@ -51,7 +51,7 @@ int main()
 		auto entity = scene1.CreateEntity();
 
 		auto& tag = entity.Emplace<Tag>();
-		tag.id = entt::type_hash<TestObject>();
+		tag.id = tag::Untagged::id;
 
 		auto& transform = entity.Emplace<Transform>();
 		transform.position = Vector3{ (2.f * i), (2.f * i), (2.f * i) };

@@ -2,27 +2,6 @@
 
 namespace core
 {
-	class Mesh;
-
-	struct Transform
-	{
-		Vector3 position;
-		Quaternion rotation;
-		Vector3 scale;
-		Matrix localMatrix;
-		Matrix worldMatrix;
-	};
-
-	struct Relationship
-	{
-		entt::entity parent = entt::null;
-	};
-
-	struct Name
-	{
-		std::string name;
-	};
-
 	struct Rigidbody
 	{
 		enum class Interpolation
@@ -111,18 +90,4 @@ namespace core
 		std::string sharedMesh;
 		MeshColliderCookingOptions cookingOptions = MeshColliderCookingOptions::None;
 	};
-
-	struct Tag
-	{
-		entt::id_type id = entt::null;
-	};
-
-	struct TestObject
-	{
-		int i = 0;
-	};
 }
-
-
-
-

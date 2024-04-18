@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "SystemTraits.h"
-#include "SystemEvents.h"
+#include "CoreSystemEvents.h"
 #include "SystemInterface.h"
 
 namespace core

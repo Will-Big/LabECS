@@ -31,25 +31,19 @@
     <ClInclude Include="MainProcess.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Systems.h">
+    <ClInclude Include="CoreSystems.h">
       <Filter>소스 파일\Core\Built-in\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="Components.h">
+    <ClInclude Include="CoreComponents.h">
       <Filter>소스 파일\Core\Built-in\Components</Filter>
     </ClInclude>
     <ClInclude Include="SystemTraits.h">
       <Filter>소스 파일\Core\Built-in\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentTemplates.h">
-      <Filter>소스 파일\Core\Built-in\Components</Filter>
-    </ClInclude>
     <ClInclude Include="SystemTemplates.h">
       <Filter>소스 파일\Core\Built-in\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="SystemInterface.h">
-      <Filter>소스 파일\Core\Built-in\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="ComponentInlines.h">
+    <ClInclude Include="CoreComponentInlines.h">
       <Filter>소스 파일\Core\Built-in\Components</Filter>
     </ClInclude>
     <ClInclude Include="Utils.h">
@@ -64,7 +58,7 @@
     <ClInclude Include="Scene.h">
       <Filter>소스 파일\Core\Base</Filter>
     </ClInclude>
-    <ClInclude Include="SystemEvents.h">
+    <ClInclude Include="CoreSystemEvents.h">
       <Filter>소스 파일\Core\Built-in\Systems</Filter>
     </ClInclude>
     <ClInclude Include="PhysicsScene.h">
@@ -76,12 +70,24 @@
     <ClInclude Include="MetaCtxs.h">
       <Filter>소스 파일\Core\Built-in</Filter>
     </ClInclude>
+    <ClInclude Include="SystemInterface.h">
+      <Filter>소스 파일\Core\Built-in\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreTags.h">
+      <Filter>소스 파일\Core\Built-in\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="CorePhysicsComponents.h">
+      <Filter>소스 파일\Core\Built-in\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentTemplates.h">
+      <Filter>소스 파일\Core\Built-in\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainProcess.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Systems.cpp">
+    <ClCompile Include="CoreSystems.cpp">
       <Filter>소스 파일\Core\Built-in\Systems</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">

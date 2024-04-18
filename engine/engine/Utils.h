@@ -1,7 +1,9 @@
 ﻿#pragma once
-#include "Systems.h"
+#include "CoreTags.h"
 #include "MetaCtxs.h"
+#include "CoreSystems.h"
 #include "SystemTemplates.h"
+#include "CorePhysicsComponents.h"
 #include "ComponentTemplates.h"
 
 #define META_TYPE_HELPER(class) \
@@ -17,7 +19,6 @@
 #define META_COMPONENT_MEMBER_HELPER(memberAddress, name) \
 	.data<&##memberAddress>(name##_hs) \
 	.prop("name"_hs, name) \
-
 
 #define META_SYSTEM_FUNC_HELPER(class) \
 	.func<&core::LoadSystem<class>>("LoadSystem"_hs) \
@@ -118,6 +119,12 @@ namespace core
 				META_COMPONENT_MEMBER_HELPER(CapsuleCollider::radius, "radius")
 				META_COMPONENT_MEMBER_HELPER(CapsuleCollider::height, "height")
 				META_COMPONENT_MEMBER_HELPER(CapsuleCollider::direction, "direction");
+		}
+
+		// 태그 메타 데이터 등록
+		{
+			entt::meta<tag::Untagged>(global::tagTypeMetaCtx)
+				META_TYPE_HELPER(tag::Untagged);
 		}
 	}
 }

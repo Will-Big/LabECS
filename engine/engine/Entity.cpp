@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "Entity.h"
-#include "Components.h"
+#include "CoreComponents.h"
 
 void core::Entity::SetParent(const core::Entity& entity)
 {

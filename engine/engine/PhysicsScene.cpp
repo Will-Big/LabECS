@@ -2,9 +2,10 @@
 #include "PhysicsScene.h"
 
 #include "Entity.h"
-#include "Components.h"
-#include "ComponentInlines.h"
+#include "CoreComponents.h"
 #include "CollisionCallback.h"
+#include "CorePhysicsComponents.h"
+#include "CoreComponentInlines.h"
 
 core::PhysicsScene::PhysicsScene(Scene& scene)
 	: _scene(&scene)

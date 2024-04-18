@@ -1,9 +1,11 @@
 ﻿#include "pch.h"
-#include "Systems.h"
+#include "CoreSystems.h"
 
 #include "Scene.h"
-#include "Components.h"
+#include "CoreTags.h"
 #include "PhysicsScene.h"
+#include "CoreComponents.h"
+#include "CorePhysicsComponents.h"
 
 #pragma region TransformSystem
 void core::TransformSystem::operator()(entt::registry& registry, float tick)
@@ -78,7 +80,7 @@ void core::AnimationSystem::operator()(entt::registry& registry, Graphics& graph
 }
 #pragma endregion
 
-#pragma region EventTestSystem
+#pragma region CollisionTesterSystem
 core::CollisionTesterSystem::CollisionTesterSystem(entt::dispatcher& dispatcher)
 	: ISystem(dispatcher)
 {
@@ -91,7 +93,7 @@ void core::CollisionTesterSystem::startSystem(const core::OnStartSystem& event)
 	auto dispatcher = event.scene->GetDispatcher();
 
 	// 시작시 충돌을 관리할 컴포넌트 타입에 대해 
-	dispatcher->trigger<OnRegisterCollisionHandler>({entt::type_hash<TestObject>(), this});
+	dispatcher->trigger<OnRegisterCollisionHandler>({ tag::Untagged::id, this});
 }
 
 void core::CollisionTesterSystem::finishSystem(const core::OnFinishSystem& event)

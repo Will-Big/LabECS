@@ -1,5 +1,6 @@
 ﻿#pragma once
-#include "Components.h"
+#include "CoreComponents.h"
+#include "CorePhysicsComponents.h"
 
 namespace cereal
 {
@@ -117,6 +118,12 @@ namespace cereal
 			CEREAL_NVP(meshCollider.sharedMesh),
 			CEREAL_NVP(meshCollider.cookingOptions)
 		);
+	}
+
+	template <typename Archive>
+	void serialize(Archive& archive, core::Tag& tag)
+	{
+		archive(CEREAL_NVP(tag.id));
 	}
 }
 

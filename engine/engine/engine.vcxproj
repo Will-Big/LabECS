@@ -145,20 +145,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CollisionCallback.h" />
-    <ClInclude Include="ComponentInlines.h" />
-    <ClInclude Include="Components.h" />
+    <ClInclude Include="CoreComponentInlines.h" />
+    <ClInclude Include="CoreComponents.h" />
     <ClInclude Include="ComponentTemplates.h" />
+    <ClInclude Include="CoreTags.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="MetaCtxs.h" />
+    <ClInclude Include="CorePhysicsComponents.h" />
     <ClInclude Include="PhysicsScene.h" />
-    <ClInclude Include="SystemEvents.h" />
+    <ClInclude Include="CoreSystemEvents.h" />
     <ClInclude Include="SystemInterface.h" />
     <ClInclude Include="SystemTemplates.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="MainProcess.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Scene.h" />
-    <ClInclude Include="Systems.h" />
+    <ClInclude Include="CoreSystems.h" />
     <ClInclude Include="SystemTraits.h" />
   </ItemGroup>
   <ItemGroup>
@@ -174,7 +176,7 @@
     </ClCompile>
     <ClCompile Include="PhysicsScene.cpp" />
     <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="Systems.cpp" />
+    <ClCompile Include="CoreSystems.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

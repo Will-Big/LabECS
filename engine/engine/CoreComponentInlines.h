@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Components.h"
+#include "CorePhysicsComponents.h"
 
 namespace core
 {
