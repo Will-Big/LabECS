@@ -148,7 +148,7 @@
     <ClInclude Include="CoreComponentInlines.h" />
     <ClInclude Include="CoreComponents.h" />
     <ClInclude Include="ComponentTemplates.h" />
-    <ClInclude Include="CoreTags.h" />
+    <ClInclude Include="CoreTagsAndLayers.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="MetaCtxs.h" />
     <ClInclude Include="CorePhysicsComponents.h" />

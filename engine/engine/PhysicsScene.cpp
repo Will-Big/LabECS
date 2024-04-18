@@ -4,8 +4,9 @@
 #include "Entity.h"
 #include "CoreComponents.h"
 #include "CollisionCallback.h"
-#include "CorePhysicsComponents.h"
 #include "CoreComponentInlines.h"
+#include "CorePhysicsComponents.h"
+#include "CoreTagsAndLayers.h"
 
 core::PhysicsScene::PhysicsScene(Scene& scene)
 	: _scene(&scene)

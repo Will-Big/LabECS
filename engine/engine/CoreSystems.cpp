@@ -2,7 +2,7 @@
 #include "CoreSystems.h"
 
 #include "Scene.h"
-#include "CoreTags.h"
+#include "CoreTagsAndLayers.h"
 #include "PhysicsScene.h"
 #include "CoreComponents.h"
 #include "CorePhysicsComponents.h"
@@ -84,20 +84,12 @@ void core::AnimationSystem::operator()(entt::registry& registry, Graphics& graph
 core::CollisionTesterSystem::CollisionTesterSystem(entt::dispatcher& dispatcher)
 	: ISystem(dispatcher)
 {
-	_dispatcher->sink<OnStartSystem>().connect<&CollisionTesterSystem::startSystem>(this);
-	_dispatcher->sink<OnFinishSystem>().connect<&CollisionTesterSystem::finishSystem>(this);
+	_dispatcher->trigger<OnRegisterCollisionHandler>({ tag::Untagged::id, this });
 }
 
-void core::CollisionTesterSystem::startSystem(const core::OnStartSystem& event)
+core::CollisionTesterSystem::~CollisionTesterSystem()
 {
-	auto dispatcher = event.scene->GetDispatcher();
-
-	// 시작시 충돌을 관리할 컴포넌트 타입에 대해 
-	dispatcher->trigger<OnRegisterCollisionHandler>({ tag::Untagged::id, this});
-}
-
-void core::CollisionTesterSystem::finishSystem(const core::OnFinishSystem& event)
-{
+	_dispatcher->trigger<OnRemoveCollisionHandler>({ tag::Untagged::id, this });
 }
 
 void core::CollisionTesterSystem::OnCollisionEnter(const Entity& self, const Entity& other)

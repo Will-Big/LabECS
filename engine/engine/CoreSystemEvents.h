@@ -43,8 +43,9 @@ namespace core
 
 
 	/*!
-	 * 시스템 시작(OnStartSystem)시 실행 필요, 예시)
-	 * @code{cpp}
+	 * @code
+	 * 충돌을 처리하는 시스템이 CollisionCallback 클래스에게 발행하는 이벤트
+	 * 시스템 생성자나 OnStartSystem 시점에서 사용, ex)
 	 * entt::dispatcher->trigger<core::OnRegisterCollisionHandler>({ entt::type_hash<ComponentClass>(), this });
 	 * @endcode
 	 * id(타입) 와 관련된 모든 충돌을 이 구조체로 이벤트를 연결한 클래스가 받음, CollisionCallback 클래스 참조
@@ -55,6 +56,19 @@ namespace core
 		ICollisionHandler* handler;
 
 		OnRegisterCollisionHandler(const entt::id_type& id, ICollisionHandler* handler)
+			: id(id), handler(handler) {}
+	};
+
+
+	/*!
+	 * OnRegisterCollisionHandler 와 사용법은 같음
+	 */
+	struct OnRemoveCollisionHandler
+	{
+		entt::id_type id;
+		ICollisionHandler* handler;
+
+		OnRemoveCollisionHandler(const entt::id_type& id, ICollisionHandler* handler)
 			: id(id), handler(handler) {}
 	};
 }

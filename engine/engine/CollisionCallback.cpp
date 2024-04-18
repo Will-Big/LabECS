@@ -2,7 +2,7 @@
 #include "CollisionCallback.h"
 
 #include "Scene.h"
-#include "CoreTags.h"
+#include "CoreTagsAndLayers.h"
 #include "SystemInterface.h"
 #include "CoreSystemEvents.h"
 
@@ -13,10 +13,11 @@
 core::CollisionCallback::CollisionCallback(Scene& scene)
 	: _scene(&scene)
 {
-	auto dispatcher = _scene->GetDispatcher();
+	const auto dispatcher = _scene->GetDispatcher();
 
-	// 콜리전 핸들러 시스템 등록 이벤트 연결
+	// 콜리전 핸들러 시스템 등록/해제 이벤트 연결
 	dispatcher->sink<OnRegisterCollisionHandler>().connect<&CollisionCallback::registerCollisionHandler>(this);
+	dispatcher->sink<OnRemoveCollisionHandler>().connect<&CollisionCallback::removeCollisionHandler>(this);
 }
 
 void core::CollisionCallback::onContact(const physx::PxContactPairHeader& pairHeader, const physx::PxContactPair* pairs, physx::PxU32 nbPairs)
@@ -88,6 +89,24 @@ void core::CollisionCallback::processCollisionEvent(const physx::PxContactPair& 
 
 void core::CollisionCallback::registerCollisionHandler(const OnRegisterCollisionHandler& event)
 {
-	// 특정 타입의 충돌을 관리하는 핸들러 등록 (중첩 가능)
+	// 특정 태그의 충돌을 관리하는 핸들러 등록 (중첩 가능)
 	_handlers.insert({ event.id, event.handler });
+}
+
+void core::CollisionCallback::removeCollisionHandler(const OnRemoveCollisionHandler& event)
+{
+	// 핸들러 등록 취소
+	const auto range = _handlers.equal_range(event.id);
+
+	for (auto it = range.first; it != range.second; )
+	{
+		if (it->second == event.handler)
+		{
+			it = _handlers.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
 }

@@ -56,14 +56,10 @@ namespace core
 	{
 	public:
 		CollisionTesterSystem(entt::dispatcher& dispatcher);
+		~CollisionTesterSystem() override;
 
 		void operator()(entt::registry& registry, float tick) override {}
 
-	private:
-		void startSystem(const OnStartSystem& event);
-		void finishSystem(const OnFinishSystem& event);
-
-	public:
 		void OnCollisionEnter(const Entity& self, const Entity& other) override;
 		void OnCollisionStay(const Entity& self, const Entity& other) override;
 		void OnCollisionExit(const Entity& self, const Entity& other) override;

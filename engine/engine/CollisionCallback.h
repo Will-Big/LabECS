@@ -7,6 +7,7 @@ namespace core
 	class Entity;
 	class ICollisionHandler;
 	struct OnRegisterCollisionHandler;
+	struct OnRemoveCollisionHandler;
 
 	class CollisionCallback : public physx::PxSimulationEventCallback
 	{
@@ -26,7 +27,9 @@ namespace core
 		                           const physx::PxContactPairHeader& pairHeader,
 		                           physx::PxPairFlag::Enum eventFlag,
 		                           void (ICollisionHandler::*callback)(const Entity&, const Entity&));
+
 		void registerCollisionHandler(const OnRegisterCollisionHandler& event);
+		void removeCollisionHandler(const OnRemoveCollisionHandler& event);
 
 		Scene* _scene = nullptr;
 		std::multimap<entt::id_type, ICollisionHandler*> _handlers;

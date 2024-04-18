@@ -73,7 +73,7 @@
     <ClInclude Include="SystemInterface.h">
       <Filter>소스 파일\Core\Built-in\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="CoreTags.h">
+    <ClInclude Include="CoreTagsAndLayers.h">
       <Filter>소스 파일\Core\Built-in\Components</Filter>
     </ClInclude>
     <ClInclude Include="CorePhysicsComponents.h">
