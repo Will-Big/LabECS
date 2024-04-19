@@ -187,6 +187,8 @@ bool core::PhysicsScene::CreatePhysicsActor(const core::Entity& entity)
 		setLockFlag(Rigidbody::Constraints::FreezeRotationY, PxRigidDynamicLockFlag::eLOCK_ANGULAR_Y);
 		setLockFlag(Rigidbody::Constraints::FreezeRotationZ, PxRigidDynamicLockFlag::eLOCK_ANGULAR_Z);
 
+		// todo: 필터 데이터 설정
+
 		actor = dynamicActor;
 	}
 	else
@@ -200,6 +202,9 @@ bool core::PhysicsScene::CreatePhysicsActor(const core::Entity& entity)
 		);
 
 		staticActor->attachShape(*shape);
+
+		// todo: 필터 데이터 설정
+		
 
 		actor = staticActor;
 	}
