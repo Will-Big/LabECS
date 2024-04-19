@@ -1,6 +1,6 @@
 {
-    "value0": 14,
-    "value1": 14,
+    "value0": 7,
+    "value1": 7,
     "value2": 0,
     "value3": 1,
     "value4": 2,
@@ -8,16 +8,9 @@
     "value6": 4,
     "value7": 5,
     "value8": 6,
-    "value9": 7,
-    "value10": 8,
-    "value11": 9,
-    "value12": 10,
-    "value13": 11,
-    "value14": 12,
-    "value15": 13,
-    "value16": 13,
-    "value17": 0,
-    "value18": {
+    "value9": 6,
+    "value10": 0,
+    "value11": {
         "transform.position": {
             "vector.x": 0.0,
             "vector.y": 0.0,
@@ -35,8 +28,8 @@
             "vector.z": 0.0
         }
     },
-    "value19": 1,
-    "value20": {
+    "value12": 1,
+    "value13": {
         "transform.position": {
             "vector.x": 0.0,
             "vector.y": 0.0,
@@ -54,8 +47,8 @@
             "vector.z": 0.0
         }
     },
-    "value21": 2,
-    "value22": {
+    "value14": 2,
+    "value15": {
         "transform.position": {
             "vector.x": 0.0,
             "vector.y": 0.0,
@@ -73,8 +66,8 @@
             "vector.z": 0.0
         }
     },
-    "value23": 4,
-    "value24": {
+    "value16": 4,
+    "value17": {
         "transform.position": {
             "vector.x": 0.0,
             "vector.y": 0.0,
@@ -92,8 +85,8 @@
             "vector.z": 0.0
         }
     },
-    "value25": 5,
-    "value26": {
+    "value18": 5,
+    "value19": {
         "transform.position": {
             "vector.x": 2.0,
             "vector.y": 2.0,
@@ -111,8 +104,8 @@
             "vector.z": 0.0
         }
     },
-    "value27": 6,
-    "value28": {
+    "value20": 6,
+    "value21": {
         "transform.position": {
             "vector.x": 4.0,
             "vector.y": 4.0,
@@ -130,152 +123,19 @@
             "vector.z": 0.0
         }
     },
-    "value29": 7,
-    "value30": {
-        "transform.position": {
-            "vector.x": 6.0,
-            "vector.y": 6.0,
-            "vector.z": 6.0
-        },
-        "transform.rotation": {
-            "quaternion.x": 0.0,
-            "quaternion.y": 0.0,
-            "quaternion.z": 0.0,
-            "quaternion.w": 1.0
-        },
-        "transform.scale": {
-            "vector.x": 0.0,
-            "vector.y": 0.0,
-            "vector.z": 0.0
-        }
-    },
-    "value31": 8,
-    "value32": {
-        "transform.position": {
-            "vector.x": 8.0,
-            "vector.y": 8.0,
-            "vector.z": 8.0
-        },
-        "transform.rotation": {
-            "quaternion.x": 0.0,
-            "quaternion.y": 0.0,
-            "quaternion.z": 0.0,
-            "quaternion.w": 1.0
-        },
-        "transform.scale": {
-            "vector.x": 0.0,
-            "vector.y": 0.0,
-            "vector.z": 0.0
-        }
-    },
-    "value33": 9,
-    "value34": {
-        "transform.position": {
-            "vector.x": 10.0,
-            "vector.y": 10.0,
-            "vector.z": 10.0
-        },
-        "transform.rotation": {
-            "quaternion.x": 0.0,
-            "quaternion.y": 0.0,
-            "quaternion.z": 0.0,
-            "quaternion.w": 1.0
-        },
-        "transform.scale": {
-            "vector.x": 0.0,
-            "vector.y": 0.0,
-            "vector.z": 0.0
-        }
-    },
-    "value35": 10,
-    "value36": {
-        "transform.position": {
-            "vector.x": 12.0,
-            "vector.y": 12.0,
-            "vector.z": 12.0
-        },
-        "transform.rotation": {
-            "quaternion.x": 0.0,
-            "quaternion.y": 0.0,
-            "quaternion.z": 0.0,
-            "quaternion.w": 1.0
-        },
-        "transform.scale": {
-            "vector.x": 0.0,
-            "vector.y": 0.0,
-            "vector.z": 0.0
-        }
-    },
-    "value37": 11,
-    "value38": {
-        "transform.position": {
-            "vector.x": 14.0,
-            "vector.y": 14.0,
-            "vector.z": 14.0
-        },
-        "transform.rotation": {
-            "quaternion.x": 0.0,
-            "quaternion.y": 0.0,
-            "quaternion.z": 0.0,
-            "quaternion.w": 1.0
-        },
-        "transform.scale": {
-            "vector.x": 0.0,
-            "vector.y": 0.0,
-            "vector.z": 0.0
-        }
-    },
-    "value39": 12,
-    "value40": {
-        "transform.position": {
-            "vector.x": 16.0,
-            "vector.y": 16.0,
-            "vector.z": 16.0
-        },
-        "transform.rotation": {
-            "quaternion.x": 0.0,
-            "quaternion.y": 0.0,
-            "quaternion.z": 0.0,
-            "quaternion.w": 1.0
-        },
-        "transform.scale": {
-            "vector.x": 0.0,
-            "vector.y": 0.0,
-            "vector.z": 0.0
-        }
-    },
-    "value41": 13,
-    "value42": {
-        "transform.position": {
-            "vector.x": 18.0,
-            "vector.y": 18.0,
-            "vector.z": 18.0
-        },
-        "transform.rotation": {
-            "quaternion.x": 0.0,
-            "quaternion.y": 0.0,
-            "quaternion.z": 0.0,
-            "quaternion.w": 1.0
-        },
-        "transform.scale": {
-            "vector.x": 0.0,
-            "vector.y": 0.0,
-            "vector.z": 0.0
-        }
-    },
-    "value43": 2,
-    "value44": 0,
-    "value45": {
+    "value22": 2,
+    "value23": 0,
+    "value24": {
         "relationship.parent": 1
     },
-    "value46": 1,
-    "value47": {
+    "value25": 1,
+    "value26": {
         "relationship.parent": 2
     },
-    "value48": 0,
-    "value49": 10,
-    "value50": 4,
-    "value51": {
+    "value27": 0,
+    "value28": 3,
+    "value29": 4,
+    "value30": {
         "rigidbody.mass": 3.0,
         "rigidbody.drag": 0.0,
         "rigidbody.angularDrag": 0.0,
@@ -284,330 +144,113 @@
         "rigidbody.interpolation": 0,
         "rigidbody.constraints": 0
     },
-    "value52": 5,
+    "value31": 5,
+    "value32": {
+        "rigidbody.mass": 3.0,
+        "rigidbody.drag": 0.0,
+        "rigidbody.angularDrag": 0.0,
+        "rigidbody.useGravity": true,
+        "rigidbody.isKinematic": false,
+        "rigidbody.interpolation": 0,
+        "rigidbody.constraints": 0
+    },
+    "value33": 6,
+    "value34": {
+        "rigidbody.mass": 3.0,
+        "rigidbody.drag": 0.0,
+        "rigidbody.angularDrag": 0.0,
+        "rigidbody.useGravity": true,
+        "rigidbody.isKinematic": false,
+        "rigidbody.interpolation": 0,
+        "rigidbody.constraints": 0
+    },
+    "value35": 3,
+    "value36": 4,
+    "value37": {
+        "collider.isTrigger": false,
+        "collider.material": {
+            "material.dynamicFriction": 0.0,
+            "material.staticFriction": 0.0,
+            "material.bounciness": 0.0
+        },
+        "collider.sharedMaterial": ""
+    },
+    "value38": 5,
+    "value39": {
+        "collider.isTrigger": false,
+        "collider.material": {
+            "material.dynamicFriction": 0.0,
+            "material.staticFriction": 0.0,
+            "material.bounciness": 0.0
+        },
+        "collider.sharedMaterial": ""
+    },
+    "value40": 6,
+    "value41": {
+        "collider.isTrigger": false,
+        "collider.material": {
+            "material.dynamicFriction": 0.0,
+            "material.staticFriction": 0.0,
+            "material.bounciness": 0.0
+        },
+        "collider.sharedMaterial": ""
+    },
+    "value42": 3,
+    "value43": 4,
+    "value44": {
+        "boxCollider.center": {
+            "vector.x": 0.0,
+            "vector.y": 0.0,
+            "vector.z": 0.0
+        },
+        "boxCollider.size": {
+            "vector.x": 4.0,
+            "vector.y": 4.0,
+            "vector.z": 4.0
+        }
+    },
+    "value45": 5,
+    "value46": {
+        "boxCollider.center": {
+            "vector.x": 0.0,
+            "vector.y": 0.0,
+            "vector.z": 0.0
+        },
+        "boxCollider.size": {
+            "vector.x": 4.0,
+            "vector.y": 4.0,
+            "vector.z": 4.0
+        }
+    },
+    "value47": 6,
+    "value48": {
+        "boxCollider.center": {
+            "vector.x": 0.0,
+            "vector.y": 0.0,
+            "vector.z": 0.0
+        },
+        "boxCollider.size": {
+            "vector.x": 4.0,
+            "vector.y": 4.0,
+            "vector.z": 4.0
+        }
+    },
+    "value49": 0,
+    "value50": 0,
+    "value51": 3,
+    "value52": 4,
     "value53": {
-        "rigidbody.mass": 3.0,
-        "rigidbody.drag": 0.0,
-        "rigidbody.angularDrag": 0.0,
-        "rigidbody.useGravity": true,
-        "rigidbody.isKinematic": false,
-        "rigidbody.interpolation": 0,
-        "rigidbody.constraints": 0
+        "tag.id": 2084999735
     },
-    "value54": 6,
+    "value54": 5,
     "value55": {
-        "rigidbody.mass": 3.0,
-        "rigidbody.drag": 0.0,
-        "rigidbody.angularDrag": 0.0,
-        "rigidbody.useGravity": true,
-        "rigidbody.isKinematic": false,
-        "rigidbody.interpolation": 0,
-        "rigidbody.constraints": 0
+        "tag.id": 2084999735
     },
-    "value56": 7,
+    "value56": 6,
     "value57": {
-        "rigidbody.mass": 3.0,
-        "rigidbody.drag": 0.0,
-        "rigidbody.angularDrag": 0.0,
-        "rigidbody.useGravity": true,
-        "rigidbody.isKinematic": false,
-        "rigidbody.interpolation": 0,
-        "rigidbody.constraints": 0
+        "tag.id": 2084999735
     },
-    "value58": 8,
-    "value59": {
-        "rigidbody.mass": 3.0,
-        "rigidbody.drag": 0.0,
-        "rigidbody.angularDrag": 0.0,
-        "rigidbody.useGravity": true,
-        "rigidbody.isKinematic": false,
-        "rigidbody.interpolation": 0,
-        "rigidbody.constraints": 0
-    },
-    "value60": 9,
-    "value61": {
-        "rigidbody.mass": 3.0,
-        "rigidbody.drag": 0.0,
-        "rigidbody.angularDrag": 0.0,
-        "rigidbody.useGravity": true,
-        "rigidbody.isKinematic": false,
-        "rigidbody.interpolation": 0,
-        "rigidbody.constraints": 0
-    },
-    "value62": 10,
-    "value63": {
-        "rigidbody.mass": 3.0,
-        "rigidbody.drag": 0.0,
-        "rigidbody.angularDrag": 0.0,
-        "rigidbody.useGravity": true,
-        "rigidbody.isKinematic": false,
-        "rigidbody.interpolation": 0,
-        "rigidbody.constraints": 0
-    },
-    "value64": 11,
-    "value65": {
-        "rigidbody.mass": 3.0,
-        "rigidbody.drag": 0.0,
-        "rigidbody.angularDrag": 0.0,
-        "rigidbody.useGravity": true,
-        "rigidbody.isKinematic": false,
-        "rigidbody.interpolation": 0,
-        "rigidbody.constraints": 0
-    },
-    "value66": 12,
-    "value67": {
-        "rigidbody.mass": 3.0,
-        "rigidbody.drag": 0.0,
-        "rigidbody.angularDrag": 0.0,
-        "rigidbody.useGravity": true,
-        "rigidbody.isKinematic": false,
-        "rigidbody.interpolation": 0,
-        "rigidbody.constraints": 0
-    },
-    "value68": 13,
-    "value69": {
-        "rigidbody.mass": 3.0,
-        "rigidbody.drag": 0.0,
-        "rigidbody.angularDrag": 0.0,
-        "rigidbody.useGravity": true,
-        "rigidbody.isKinematic": false,
-        "rigidbody.interpolation": 0,
-        "rigidbody.constraints": 0
-    },
-    "value70": 10,
-    "value71": 4,
-    "value72": {
-        "collider.isTrigger": false,
-        "collider.material": {
-            "material.dynamicFriction": 0.0,
-            "material.staticFriction": 0.0,
-            "material.bounciness": 0.0
-        },
-        "collider.sharedMaterial": ""
-    },
-    "value73": 5,
-    "value74": {
-        "collider.isTrigger": false,
-        "collider.material": {
-            "material.dynamicFriction": 0.0,
-            "material.staticFriction": 0.0,
-            "material.bounciness": 0.0
-        },
-        "collider.sharedMaterial": ""
-    },
-    "value75": 6,
-    "value76": {
-        "collider.isTrigger": false,
-        "collider.material": {
-            "material.dynamicFriction": 0.0,
-            "material.staticFriction": 0.0,
-            "material.bounciness": 0.0
-        },
-        "collider.sharedMaterial": ""
-    },
-    "value77": 7,
-    "value78": {
-        "collider.isTrigger": false,
-        "collider.material": {
-            "material.dynamicFriction": 0.0,
-            "material.staticFriction": 0.0,
-            "material.bounciness": 0.0
-        },
-        "collider.sharedMaterial": ""
-    },
-    "value79": 8,
-    "value80": {
-        "collider.isTrigger": false,
-        "collider.material": {
-            "material.dynamicFriction": 0.0,
-            "material.staticFriction": 0.0,
-            "material.bounciness": 0.0
-        },
-        "collider.sharedMaterial": ""
-    },
-    "value81": 9,
-    "value82": {
-        "collider.isTrigger": false,
-        "collider.material": {
-            "material.dynamicFriction": 0.0,
-            "material.staticFriction": 0.0,
-            "material.bounciness": 0.0
-        },
-        "collider.sharedMaterial": ""
-    },
-    "value83": 10,
-    "value84": {
-        "collider.isTrigger": false,
-        "collider.material": {
-            "material.dynamicFriction": 0.0,
-            "material.staticFriction": 0.0,
-            "material.bounciness": 0.0
-        },
-        "collider.sharedMaterial": ""
-    },
-    "value85": 11,
-    "value86": {
-        "collider.isTrigger": false,
-        "collider.material": {
-            "material.dynamicFriction": 0.0,
-            "material.staticFriction": 0.0,
-            "material.bounciness": 0.0
-        },
-        "collider.sharedMaterial": ""
-    },
-    "value87": 12,
-    "value88": {
-        "collider.isTrigger": false,
-        "collider.material": {
-            "material.dynamicFriction": 0.0,
-            "material.staticFriction": 0.0,
-            "material.bounciness": 0.0
-        },
-        "collider.sharedMaterial": ""
-    },
-    "value89": 13,
-    "value90": {
-        "collider.isTrigger": false,
-        "collider.material": {
-            "material.dynamicFriction": 0.0,
-            "material.staticFriction": 0.0,
-            "material.bounciness": 0.0
-        },
-        "collider.sharedMaterial": ""
-    },
-    "value91": 10,
-    "value92": 4,
-    "value93": {
-        "boxCollider.center": {
-            "vector.x": 0.0,
-            "vector.y": 0.0,
-            "vector.z": 0.0
-        },
-        "boxCollider.size": {
-            "vector.x": 4.0,
-            "vector.y": 4.0,
-            "vector.z": 4.0
-        }
-    },
-    "value94": 5,
-    "value95": {
-        "boxCollider.center": {
-            "vector.x": 0.0,
-            "vector.y": 0.0,
-            "vector.z": 0.0
-        },
-        "boxCollider.size": {
-            "vector.x": 4.0,
-            "vector.y": 4.0,
-            "vector.z": 4.0
-        }
-    },
-    "value96": 6,
-    "value97": {
-        "boxCollider.center": {
-            "vector.x": 0.0,
-            "vector.y": 0.0,
-            "vector.z": 0.0
-        },
-        "boxCollider.size": {
-            "vector.x": 4.0,
-            "vector.y": 4.0,
-            "vector.z": 4.0
-        }
-    },
-    "value98": 7,
-    "value99": {
-        "boxCollider.center": {
-            "vector.x": 0.0,
-            "vector.y": 0.0,
-            "vector.z": 0.0
-        },
-        "boxCollider.size": {
-            "vector.x": 4.0,
-            "vector.y": 4.0,
-            "vector.z": 4.0
-        }
-    },
-    "value100": 8,
-    "value101": {
-        "boxCollider.center": {
-            "vector.x": 0.0,
-            "vector.y": 0.0,
-            "vector.z": 0.0
-        },
-        "boxCollider.size": {
-            "vector.x": 4.0,
-            "vector.y": 4.0,
-            "vector.z": 4.0
-        }
-    },
-    "value102": 9,
-    "value103": {
-        "boxCollider.center": {
-            "vector.x": 0.0,
-            "vector.y": 0.0,
-            "vector.z": 0.0
-        },
-        "boxCollider.size": {
-            "vector.x": 4.0,
-            "vector.y": 4.0,
-            "vector.z": 4.0
-        }
-    },
-    "value104": 10,
-    "value105": {
-        "boxCollider.center": {
-            "vector.x": 0.0,
-            "vector.y": 0.0,
-            "vector.z": 0.0
-        },
-        "boxCollider.size": {
-            "vector.x": 4.0,
-            "vector.y": 4.0,
-            "vector.z": 4.0
-        }
-    },
-    "value106": 11,
-    "value107": {
-        "boxCollider.center": {
-            "vector.x": 0.0,
-            "vector.y": 0.0,
-            "vector.z": 0.0
-        },
-        "boxCollider.size": {
-            "vector.x": 4.0,
-            "vector.y": 4.0,
-            "vector.z": 4.0
-        }
-    },
-    "value108": 12,
-    "value109": {
-        "boxCollider.center": {
-            "vector.x": 0.0,
-            "vector.y": 0.0,
-            "vector.z": 0.0
-        },
-        "boxCollider.size": {
-            "vector.x": 4.0,
-            "vector.y": 4.0,
-            "vector.z": 4.0
-        }
-    },
-    "value110": 13,
-    "value111": {
-        "boxCollider.center": {
-            "vector.x": 0.0,
-            "vector.y": 0.0,
-            "vector.z": 0.0
-        },
-        "boxCollider.size": {
-            "vector.x": 4.0,
-            "vector.y": 4.0,
-            "vector.z": 4.0
-        }
-    },
-    "value112": 0,
-    "value113": 0,
+    "value58": 0,
     "systems": [
         "AnimationSystem",
         "CollisionTesterSystem",

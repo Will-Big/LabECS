@@ -21,22 +21,28 @@ namespace core
 		bool CreatePhysicsActor(const Entity& entity);
 		bool DestroyPhysicsActor(const Entity& entity);
 
+		static void AddLayer(entt::id_type layerId);
+		static void SetLayerCollision(entt::id_type layerAId, entt::id_type layerBId, bool canCollide);
+		static bool CanLayersCollide(entt::id_type layerAId, entt::id_type layerBId);
+
 		void Clear();
 
 	private:
-		void Fetch(const Entity& entity);
+		void sceneFetch(const Entity& entity);
 
 		template <typename ToType, typename FromType>
-		ToType Convert(const FromType& fromType);
+		ToType convert(const FromType& fromType);
 
 		// 좌표계 변환
-		physx::PxTransform RightToLeft(const physx::PxTransform& rightHandTransform);
-		physx::PxTransform LeftToRight(const physx::PxTransform& leftHandTransform);
+		physx::PxTransform rightToLeft(const physx::PxTransform& rightHandTransform);
+		physx::PxTransform leftToRight(const physx::PxTransform& leftHandTransform);
 
-		static physx::PxFilterFlags CustomFilterShader(
+		static physx::PxFilterFlags customFilterShader(
 			physx::PxFilterObjectAttributes attributes0, physx::PxFilterData filterData0,
 			physx::PxFilterObjectAttributes attributes1, physx::PxFilterData filterData1,
 			physx::PxPairFlags& pairFlags, const void* constantBlock, physx::PxU32 constantBlockSize);
+
+
 
 	private:
 		Scene* _scene = nullptr;
@@ -48,11 +54,14 @@ namespace core
 		inline static physx::PxDefaultAllocator _allocator;
 		inline static physx::PxDefaultErrorCallback _errorCallback;
 
+		inline static std::map<entt::id_type, uint32_t> _layerToIndexMap;
+		inline static std::vector<uint32_t> _collisionMatrix{ 32, 0 }; // 충돌 매트릭스 (32 * 32)
+
 		std::unordered_map<entt::entity, physx::PxActor*> _entityToPxActorMap;
 	};
 
 	template <typename ToType, typename FromType>
-	ToType PhysicsScene::Convert(const FromType& fromType)
+	ToType PhysicsScene::convert(const FromType& fromType)
 	{
 		using namespace physx;
 

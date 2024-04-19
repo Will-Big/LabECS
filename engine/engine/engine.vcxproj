@@ -156,7 +156,7 @@
     <ClInclude Include="CoreSystemEvents.h" />
     <ClInclude Include="SystemInterface.h" />
     <ClInclude Include="SystemTemplates.h" />
-    <ClInclude Include="Utils.h" />
+    <ClInclude Include="MetaFuncs.h" />
     <ClInclude Include="MainProcess.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Scene.h" />

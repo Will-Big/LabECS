@@ -1,7 +1,7 @@
 ﻿#include "pch.h"
 
 #include "Scene.h"
-#include "Utils.h"
+#include "MetaFuncs.h"
 
 /*
  * 생각 해야할 것
@@ -47,12 +47,15 @@ int main()
 	e3.Emplace<core::Transform>();
 
 
-	for (auto i = 0; i < 10; i++)
+	for (auto i = 0; i < 3; i++)
 	{
 		auto entity = scene1.CreateEntity();
 
 		auto& tag = entity.Emplace<Tag>();
 		tag.id = tag::Untagged::id;
+
+		auto& layer = entity.Emplace<Layer>();
+		layer.id = layer::Default::id;
 
 		auto& transform = entity.Emplace<Transform>();
 		transform.position = Vector3{ (2.f * i), (2.f * i), (2.f * i) };
@@ -70,7 +73,7 @@ int main()
 	//{
 	//	int number = 0;
 
-	//	for (auto&& [id, meta] : entt::resolve(componentMetaCtx))
+	//	for (auto&& [id, meta] : entt::resolve(global::componentMetaCtx))
 	//	{
 	//		std::cout << ++number << ": ";
 	//		std::cout << meta.info().name() << std::endl;
@@ -82,7 +85,7 @@ int main()
 	//	if (input > 0)
 	//	{
 	//		int counter = 0;
-	//		for (auto&& [id, meta] : entt::resolve(componentMetaCtx))
+	//		for (auto&& [id, meta] : entt::resolve(global::componentMetaCtx))
 	//		{
 	//			++counter;
 	//			if(counter == input)

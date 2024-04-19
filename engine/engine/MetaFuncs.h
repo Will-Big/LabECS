@@ -5,6 +5,7 @@
 #include "SystemTemplates.h"
 #include "CorePhysicsComponents.h"
 #include "ComponentTemplates.h"
+#include "PhysicsScene.h"
 
 #define META_TYPE_HELPER(class) \
 	.type(entt::type_hash<class>::value())
@@ -22,6 +23,12 @@
 
 #define META_SYSTEM_FUNC_HELPER(class) \
 	.func<&core::LoadSystem<class>>("LoadSystem"_hs) \
+
+#define META_LAYER_MEMBER_HELPER(class) \
+	.prop("index"_hs, class::index) \
+
+#define ADD_PHYSICS_LAYER(class) \
+	PhysicsScene::AddLayer(class::id)
 
 namespace core
 {
@@ -119,12 +126,42 @@ namespace core
 				META_COMPONENT_MEMBER_HELPER(CapsuleCollider::radius, "radius")
 				META_COMPONENT_MEMBER_HELPER(CapsuleCollider::height, "height")
 				META_COMPONENT_MEMBER_HELPER(CapsuleCollider::direction, "direction");
+
+			entt::meta<Tag>(global::componentMetaCtx)
+				META_TYPE_HELPER(Tag)
+				META_COMPONENT_FUNC_HELPER(Tag)
+				META_COMPONENT_MEMBER_HELPER(Tag::id, "id");
+
+			entt::meta<Layer>(global::componentMetaCtx)
+				META_TYPE_HELPER(Layer)
+				META_COMPONENT_FUNC_HELPER(Layer)
+				META_COMPONENT_MEMBER_HELPER(Layer::id, "id");
 		}
 
 		// 태그 메타 데이터 등록
 		{
-			entt::meta<tag::Untagged>(global::tagTypeMetaCtx)
+			entt::meta<tag::Untagged>(global::tagMetaCtx)
 				META_TYPE_HELPER(tag::Untagged);
+
+			entt::meta<tag::Respawn>(global::tagMetaCtx)
+				META_TYPE_HELPER(tag::Respawn);
+
+			entt::meta<tag::Finish>(global::tagMetaCtx)
+				META_TYPE_HELPER(tag::Finish);
+
+			entt::meta<tag::MainCamera>(global::tagMetaCtx)
+				META_TYPE_HELPER(tag::MainCamera);
+
+			entt::meta<tag::Player>(global::tagMetaCtx)
+				META_TYPE_HELPER(tag::Player);
+		}
+
+		// 레이어 메타 데이터 등록 및 물리 레이어 추가
+		{
+			entt::meta<layer::Default>(global::layerMetaCtx)
+				META_TYPE_HELPER(layer::Default)
+				META_LAYER_MEMBER_HELPER(layer::Default);
+			ADD_PHYSICS_LAYER(layer::Default);
 		}
 	}
 }

@@ -66,6 +66,7 @@ void core::CollisionCallback::processCollisionEvent(const physx::PxContactPair& 
 	{
 		auto registry = _scene->GetRegistry();
 
+		// 모든 액터는 userData 로 entt::entity 를 가지고 있다고 가정
 		entt::entity entityA = { *static_cast<entt::entity*>(pairHeader.actors[0]->userData) };
 		entt::entity entityB = { *static_cast<entt::entity*>(pairHeader.actors[1]->userData) };
 

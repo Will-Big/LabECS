@@ -1,12 +1,14 @@
 ﻿#include "pch.h"
 #include "PhysicsScene.h"
 
+#include "Scene.h"
 #include "Entity.h"
+#include "MetaCtxs.h"
 #include "CoreComponents.h"
 #include "CollisionCallback.h"
+#include "CoreTagsAndLayers.h"
 #include "CoreComponentInlines.h"
 #include "CorePhysicsComponents.h"
-#include "CoreTagsAndLayers.h"
 
 core::PhysicsScene::PhysicsScene(Scene& scene)
 	: _scene(&scene)
@@ -37,7 +39,7 @@ core::PhysicsScene::PhysicsScene(Scene& scene)
 	PxDefaultCpuDispatcher* pxDispatcher = PxDefaultCpuDispatcherCreate(2);
 	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
 	sceneDesc.cpuDispatcher = pxDispatcher;
-	sceneDesc.filterShader = CustomFilterShader;
+	sceneDesc.filterShader = customFilterShader;
 	_pxScene = _physics->createScene(sceneDesc);
 	_pxScene->setSimulationEventCallback(new CollisionCallback(*_scene));
 
@@ -53,6 +55,10 @@ core::PhysicsScene::PhysicsScene(Scene& scene)
 	//auto gMaterial = _physics->createMaterial(0.5f, 0.5f, 0.6f);
 	//PxRigidStatic* groundPlane = PxCreatePlane(*_physics, PxPlane(0, 1, 0, 0), *gMaterial);
 	//_pxScene->addActor(*groundPlane);
+
+	// 이벤트 연결
+
+	// 콜리전 레이어 매트릭스 초기화
 }
 
 core::PhysicsScene::~PhysicsScene()
@@ -156,8 +162,8 @@ bool core::PhysicsScene::CreatePhysicsActor(const core::Entity& entity)
 		// 동적 액터 생성
 		PxRigidDynamic* dynamicActor = _physics->createRigidDynamic(
 			PxTransform(
-				Convert<PxVec3>(transform.position),
-				Convert<PxQuat>(transform.rotation)
+				convert<PxVec3>(transform.position),
+				convert<PxQuat>(transform.rotation)
 			)
 		);
 
@@ -188,8 +194,8 @@ bool core::PhysicsScene::CreatePhysicsActor(const core::Entity& entity)
 		// 정적 액터 생성
 		PxRigidStatic* staticActor = _physics->createRigidStatic(
 			PxTransform(
-				Convert<PxVec3>(transform.position),
-				Convert<PxQuat>(transform.rotation)
+				convert<PxVec3>(transform.position),
+				convert<PxQuat>(transform.rotation)
 			)
 		);
 
@@ -201,7 +207,7 @@ bool core::PhysicsScene::CreatePhysicsActor(const core::Entity& entity)
 	shape->release();
 	material->release();
 
-	if(!actor)
+	if (!actor)
 		return false;
 
 	// userData 할당
@@ -247,7 +253,72 @@ bool core::PhysicsScene::DestroyPhysicsActor(const Entity& entity)
 	return false;
 }
 
-void core::PhysicsScene::Fetch(const Entity& entity)
+void core::PhysicsScene::AddLayer(entt::id_type layerId)
+{
+	if (!_layerToIndexMap.contains(layerId))
+	{
+		uint32_t layerIndex = 0;
+
+		// 메타데이터에서 layerId에 해당하는 레이어 정보 추출
+		for (auto&& [id, type] : entt::resolve(global::layerMetaCtx))
+		{
+			if (id == layerId) {
+
+				if (auto prop = type.prop("index"_hs))
+				{
+					layerIndex = prop.value().cast<uint32_t>();
+					if (layerIndex < _collisionMatrix.size())
+					{
+						_layerToIndexMap[layerIndex] = layerIndex;
+						_collisionMatrix[layerIndex] = 0xFFFFFFFF; // 모든 충돌을 허용하도록 초기화
+						return;
+					}
+				}
+				break;
+			}
+		}
+
+		// 적절한 인덱스가 제공되지 않았거나 범위를 벗어난 경우 예외 처리
+		throw std::runtime_error("Invalid layer index or layer index out of range");
+	}
+}
+
+bool core::PhysicsScene::CanLayersCollide(entt::id_type layerAId, entt::id_type layerBId)
+{
+	if (!_layerToIndexMap.contains(layerAId) || !_layerToIndexMap.contains(layerBId))
+	{
+		throw std::runtime_error("One of the layer IDs does not exist.");
+	}
+
+	uint32_t index1 = _layerToIndexMap[layerAId];
+	uint32_t index2 = _layerToIndexMap[layerBId];
+
+	return (_collisionMatrix[index1] & (1 << index2)) != 0;
+}
+
+void core::PhysicsScene::SetLayerCollision(entt::id_type layerAId, entt::id_type layerBId, bool canCollide)
+{
+	if (!_layerToIndexMap.contains(layerAId) || !_layerToIndexMap.contains(layerBId)) 
+	{
+		throw std::runtime_error("One of the layer IDs does not exist.");
+	}
+
+	uint32_t indexA = _layerToIndexMap[layerAId];
+	uint32_t indexB = _layerToIndexMap[layerBId];
+
+	if (canCollide)
+	{
+		_collisionMatrix[indexA] |= (1 << indexB);
+		_collisionMatrix[indexB] |= (1 << indexA);
+	}
+	else
+	{
+		_collisionMatrix[indexA] &= ~(1 << indexB);
+		_collisionMatrix[indexB] &= ~(1 << indexA);
+	}
+}
+
+void core::PhysicsScene::sceneFetch(const Entity& entity)
 {
 	using namespace physx;
 
@@ -266,7 +337,7 @@ void core::PhysicsScene::Fetch(const Entity& entity)
 		const PxVec3 pxVec3 = dynamicActor->getLinearVelocity();
 
 		auto& rigidbody = entity.Get<Rigidbody>();
-		rigidbody.velocity = Convert<Vector3>(pxVec3);
+		rigidbody.velocity = convert<Vector3>(pxVec3);
 	}
 	else if (auto staticActor = it->second->is<PxRigidStatic>())
 	{
@@ -274,58 +345,64 @@ void core::PhysicsScene::Fetch(const Entity& entity)
 	}
 
 	// PhysX의 오른손 좌표계에서 왼손 좌표계로 변환
-	pxTransform = RightToLeft(pxTransform);
+	pxTransform = rightToLeft(pxTransform);
 
 	// Transform 컴포넌트 업데이트
-	transform.position = Convert<Vector3>(pxTransform.p);
-	transform.rotation = Convert<Quaternion>(pxTransform.q);
+	transform.position = convert<Vector3>(pxTransform.p);
+	transform.rotation = convert<Quaternion>(pxTransform.q);
 }
 
-physx::PxFilterFlags core::PhysicsScene::CustomFilterShader(
+physx::PxFilterFlags core::PhysicsScene::customFilterShader(
 	physx::PxFilterObjectAttributes attributes0, physx::PxFilterData filterData0,
 	physx::PxFilterObjectAttributes attributes1, physx::PxFilterData filterData1,
 	physx::PxPairFlags& pairFlags, const void* constantBlock, physx::PxU32 constantBlockSize)
 {
+	using namespace physx;
+
 	// Default processing
-	if (physx::PxFilterObjectIsTrigger(attributes0) || physx::PxFilterObjectIsTrigger(attributes1))
+	if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
 	{
-		pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT;
-		return physx::PxFilterFlag::eDEFAULT;
+		pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+		return PxFilterFlag::eDEFAULT;
 	}
 
 	// Enable contact callbacks for these two objects
-	pairFlags = physx::PxPairFlag::eSOLVE_CONTACT | physx::PxPairFlag::eDETECT_DISCRETE_CONTACT;
-	pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_FOUND | physx::PxPairFlag::eNOTIFY_TOUCH_PERSISTS | physx::PxPairFlag::eNOTIFY_TOUCH_LOST;
+	pairFlags = PxPairFlag::eSOLVE_CONTACT | PxPairFlag::eDETECT_DISCRETE_CONTACT;
+	pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eNOTIFY_TOUCH_LOST;
 
-	return physx::PxFilterFlag::eDEFAULT;
+	return PxFilterFlag::eDEFAULT;
 }
 
-physx::PxTransform core::PhysicsScene::RightToLeft(const physx::PxTransform& rightHandTransform)
+physx::PxTransform core::PhysicsScene::rightToLeft(const physx::PxTransform& rightHandTransform)
 {
+	using namespace physx;
+
 	// 위치의 z 좌표를 반전
-	physx::PxVec3 position = rightHandTransform.p;
+	PxVec3 position = rightHandTransform.p;
 	position.z = -position.z;
 
 	// 회전의 z축 반전을 위해 적절한 회전 조정
-	physx::PxQuat rotation = rightHandTransform.q;
-	physx::PxQuat zFlip(0, 0, 1, 0); // 180도 z축 회전
+	PxQuat rotation = rightHandTransform.q;
+	PxQuat zFlip(0, 0, 1, 0); // 180도 z축 회전
 	rotation = rotation * zFlip;
 
-	return physx::PxTransform(position, rotation);
+	return PxTransform(position, rotation);
 }
 
-physx::PxTransform core::PhysicsScene::LeftToRight(const physx::PxTransform& leftHandTransform)
+physx::PxTransform core::PhysicsScene::leftToRight(const physx::PxTransform& leftHandTransform)
 {
+	using namespace physx;
+
 	// 위치의 z 좌표를 반전
-	physx::PxVec3 position = leftHandTransform.p;
+	PxVec3 position = leftHandTransform.p;
 	position.z = -position.z;
 
 	// 회전의 z축 반전을 위해 적절한 회전 조정
-	physx::PxQuat rotation = leftHandTransform.q;
-	physx::PxQuat zFlip(0, 0, 1, 0); // 180도 z축 회전
+	PxQuat rotation = leftHandTransform.q;
+	PxQuat zFlip(0, 0, 1, 0); // 180도 z축 회전
 	rotation = rotation * zFlip;
 
-	return physx::PxTransform(position, rotation);
+	return PxTransform(position, rotation);
 }
 
 void core::PhysicsScene::Clear()

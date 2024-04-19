@@ -125,6 +125,12 @@ namespace cereal
 	{
 		archive(CEREAL_NVP(tag.id));
 	}
+
+	template <typename Archive>
+	void serialize(Archive& archive, core::Layer& layer)
+	{
+		archive(CEREAL_NVP(layer.id));
+	}
 }
 
 namespace core
