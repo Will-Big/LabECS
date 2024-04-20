@@ -139,7 +139,7 @@ void core::PhysicsScene::CreatePhysicsActor(const core::Entity& entity)
 	else
 	{
 		material->release();
-		throw std::runtime_error("Entity must contain at least one collider");
+		throw std::runtime_error("Entity must contain one collider");
 	}
 
 	if (!shape)
