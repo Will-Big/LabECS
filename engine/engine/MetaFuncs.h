@@ -158,6 +158,8 @@ namespace core
 
 		// 레이어 메타 데이터 등록 및 물리 레이어 추가
 		{
+			PhysicsScene::InitializeCollisionMatrix();
+
 			entt::meta<layer::Default>(global::layerMetaCtx)
 				META_TYPE_HELPER(layer::Default)
 				META_LAYER_MEMBER_HELPER(layer::Default);

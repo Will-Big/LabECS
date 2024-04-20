@@ -250,7 +250,19 @@
     "value57": {
         "tag.id": 2084999735
     },
-    "value58": 0,
+    "value58": 3,
+    "value59": 4,
+    "value60": {
+        "layer.id": 3971324494
+    },
+    "value61": 5,
+    "value62": {
+        "layer.id": 3971324494
+    },
+    "value63": 6,
+    "value64": {
+        "layer.id": 3971324494
+    },
     "systems": [
         "AnimationSystem",
         "CollisionTesterSystem",

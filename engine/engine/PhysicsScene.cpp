@@ -55,10 +55,6 @@ core::PhysicsScene::PhysicsScene(Scene& scene)
 	//auto gMaterial = _physics->createMaterial(0.5f, 0.5f, 0.6f);
 	//PxRigidStatic* groundPlane = PxCreatePlane(*_physics, PxPlane(0, 1, 0, 0), *gMaterial);
 	//_pxScene->addActor(*groundPlane);
-
-	// 이벤트 연결
-
-	// 콜리전 레이어 매트릭스 초기화
 }
 
 core::PhysicsScene::~PhysicsScene()
@@ -83,17 +79,17 @@ void core::PhysicsScene::Update(float tick)
 	_pxScene->fetchResults(true);
 }
 
-bool core::PhysicsScene::CreatePhysicsActor(const core::Entity& entity)
+void core::PhysicsScene::CreatePhysicsActor(const core::Entity& entity)
 {
 	using namespace physx;
 
 	// 필수 컴포넌트 검사
 	if (!entity.HasAllOf<Transform, ColliderCommon>())
-		return false;
+		return;
 
 	// 중복 검사
 	if (_entityToPxActorMap.contains(entity))
-		return false;
+		return;
 
 	const auto& collider = entity.Get<ColliderCommon>();
 	const auto& transform = entity.Get<Transform>();
@@ -143,13 +139,13 @@ bool core::PhysicsScene::CreatePhysicsActor(const core::Entity& entity)
 	else
 	{
 		material->release();
-		return false;
+		throw std::runtime_error("Entity must contain at least one collider");
 	}
 
 	if (!shape)
 	{
 		material->release();
-		return false;
+		throw std::runtime_error("Failed to assign Shape");
 	}
 
 	shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, !collider.isTrigger);
@@ -187,8 +183,6 @@ bool core::PhysicsScene::CreatePhysicsActor(const core::Entity& entity)
 		setLockFlag(Rigidbody::Constraints::FreezeRotationY, PxRigidDynamicLockFlag::eLOCK_ANGULAR_Y);
 		setLockFlag(Rigidbody::Constraints::FreezeRotationZ, PxRigidDynamicLockFlag::eLOCK_ANGULAR_Z);
 
-		// todo: 필터 데이터 설정
-
 		actor = dynamicActor;
 	}
 	else
@@ -203,9 +197,6 @@ bool core::PhysicsScene::CreatePhysicsActor(const core::Entity& entity)
 
 		staticActor->attachShape(*shape);
 
-		// todo: 필터 데이터 설정
-		
-
 		actor = staticActor;
 	}
 
@@ -213,7 +204,40 @@ bool core::PhysicsScene::CreatePhysicsActor(const core::Entity& entity)
 	material->release();
 
 	if (!actor)
-		return false;
+		throw std::runtime_error("Failed to assign Actor");
+
+	// 레이어 컴포넌트를 사용하여 레이어 ID를 확인
+	if (entity.HasAllOf<Layer>())
+	{
+		const auto& layerComponent = entity.Get<Layer>();
+		uint32_t layerId = layerComponent.id; // 레이어 ID 가져오기
+
+		if (_layerIdToIndexMap.contains(layerId))
+		{
+			uint32_t layerIndex = _layerIdToIndexMap[layerId];		// 레이어 인덱스 조회
+			uint32_t collisionGroup = 1u << layerIndex;				// 충돌 그룹: 레이어 인덱스에 해당하는 비트 위치
+			uint32_t collisionMask = _collisionMatrix[layerIndex];	// 충돌 마스크: 해당 레이어에 대한 충돌 가능한 레이어 마스크
+
+			physx::PxFilterData filterData;
+			filterData.word0 = collisionGroup;	// 충돌 그룹 설정
+			filterData.word1 = collisionMask;	// 충돌 마스크 설정
+
+			shape->setSimulationFilterData(filterData); // 필터 데이터 설정
+		}
+		else
+		{
+			actor->release();
+			throw std::runtime_error("Layer ID does not exist in the layer map.");
+		}
+	}
+	else
+	{
+		// Layer 컴포넌트가 없는 경우, 기본 필터 데이터 설정
+		physx::PxFilterData filterData;
+		filterData.word0 = 1u;			// 기본 충돌 그룹 (layer::Default)
+		filterData.word1 = 0xFFFFFFFF;	// 모든 충돌을 허용
+		shape->setSimulationFilterData(filterData);
+	}
 
 	// userData 할당
 	entt::entity* entityPtr = new entt::entity(entity.GetHandle());
@@ -222,16 +246,13 @@ bool core::PhysicsScene::CreatePhysicsActor(const core::Entity& entity)
 	// 매핑 테이블에 액터 추가 및 물리 씬에 추가
 	_entityToPxActorMap[entity] = actor;
 	_pxScene->addActor(*actor);
-
-	return true;
 }
 
-bool core::PhysicsScene::DestroyPhysicsActor(const Entity& entity)
+void core::PhysicsScene::DestroyPhysicsActor(const Entity& entity)
 {
 	using namespace physx;
 
 	// 엔티티와 매핑된 액터 찾기
-
 	if (const auto it = _entityToPxActorMap.find(entity); it != _entityToPxActorMap.end())
 	{
 		// 액터를 물리 씬에서 제거
@@ -251,16 +272,15 @@ bool core::PhysicsScene::DestroyPhysicsActor(const Entity& entity)
 
 		// 매핑에서 엔티티 제거
 		_entityToPxActorMap.erase(it);
-
-		return true;
 	}
 
-	return false;
+	// 존재하지 않는 액터의 경우 에러 처리
+	throw std::runtime_error("Entity does not exist in Physics Scene");
 }
 
 void core::PhysicsScene::AddLayer(entt::id_type layerId)
 {
-	if (!_layerToIndexMap.contains(layerId))
+	if (!_layerIdToIndexMap.contains(layerId))
 	{
 		uint32_t layerIndex = 0;
 
@@ -274,7 +294,7 @@ void core::PhysicsScene::AddLayer(entt::id_type layerId)
 					layerIndex = prop.value().cast<uint32_t>();
 					if (layerIndex < _collisionMatrix.size())
 					{
-						_layerToIndexMap[layerIndex] = layerIndex;
+						_layerIdToIndexMap[layerId] = layerIndex;
 						_collisionMatrix[layerIndex] = 0xFFFFFFFF; // 모든 충돌을 허용하도록 초기화
 						return;
 					}
@@ -288,38 +308,25 @@ void core::PhysicsScene::AddLayer(entt::id_type layerId)
 	}
 }
 
-bool core::PhysicsScene::CanLayersCollide(entt::id_type layerAId, entt::id_type layerBId)
+void core::PhysicsScene::SetLayerCollision(entt::id_type layerId1, entt::id_type layerId2, bool canCollide)
 {
-	if (!_layerToIndexMap.contains(layerAId) || !_layerToIndexMap.contains(layerBId))
+	if (!_layerIdToIndexMap.contains(layerId1) || !_layerIdToIndexMap.contains(layerId2)) 
 	{
 		throw std::runtime_error("One of the layer IDs does not exist.");
 	}
 
-	uint32_t index1 = _layerToIndexMap[layerAId];
-	uint32_t index2 = _layerToIndexMap[layerBId];
-
-	return (_collisionMatrix[index1] & (1 << index2)) != 0;
-}
-
-void core::PhysicsScene::SetLayerCollision(entt::id_type layerAId, entt::id_type layerBId, bool canCollide)
-{
-	if (!_layerToIndexMap.contains(layerAId) || !_layerToIndexMap.contains(layerBId)) 
-	{
-		throw std::runtime_error("One of the layer IDs does not exist.");
-	}
-
-	uint32_t indexA = _layerToIndexMap[layerAId];
-	uint32_t indexB = _layerToIndexMap[layerBId];
+	uint32_t index1 = _layerIdToIndexMap[layerId1];
+	uint32_t index2 = _layerIdToIndexMap[layerId2];
 
 	if (canCollide)
 	{
-		_collisionMatrix[indexA] |= (1 << indexB);
-		_collisionMatrix[indexB] |= (1 << indexA);
+		_collisionMatrix[index1] |= (1 << index2);
+		_collisionMatrix[index2] |= (1 << index1);
 	}
 	else
 	{
-		_collisionMatrix[indexA] &= ~(1 << indexB);
-		_collisionMatrix[indexB] &= ~(1 << indexA);
+		_collisionMatrix[index1] &= ~(1 << index2);
+		_collisionMatrix[index2] &= ~(1 << index1);
 	}
 }
 
@@ -364,14 +371,24 @@ physx::PxFilterFlags core::PhysicsScene::customFilterShader(
 {
 	using namespace physx;
 
-	// Default processing
+	// 트리거(충돌 감지 전용) 확인
 	if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
 	{
 		pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
 		return PxFilterFlag::eDEFAULT;
 	}
 
-	// Enable contact callbacks for these two objects
+	// 가장 낮은 비트의 위치 반환
+	uint32_t layerIndex0 = std::countr_zero(filterData0.word0);
+	uint32_t layerIndex1 = std::countr_zero(filterData1.word0);
+
+	// 비트 연산으로 충돌 여부 확인
+	if (!(_collisionMatrix[layerIndex0] & (1 << layerIndex1))) 
+	{
+		return PxFilterFlag::eSUPPRESS;  // 충돌을 발생시키지 않을 경우
+	}
+
+	// 콜백 설정
 	pairFlags = PxPairFlag::eSOLVE_CONTACT | PxPairFlag::eDETECT_DISCRETE_CONTACT;
 	pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eNOTIFY_TOUCH_LOST;
 

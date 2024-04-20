@@ -18,12 +18,14 @@ namespace core
 
 		void Update(float tick);
 
-		bool CreatePhysicsActor(const Entity& entity);
-		bool DestroyPhysicsActor(const Entity& entity);
+		// 액터 생성/삭제
+		void CreatePhysicsActor(const Entity& entity);
+		void DestroyPhysicsActor(const Entity& entity);
 
+		// 충돌 매트릭스 설정
+		static void InitializeCollisionMatrix() { _collisionMatrix.resize(32); }
 		static void AddLayer(entt::id_type layerId);
-		static void SetLayerCollision(entt::id_type layerAId, entt::id_type layerBId, bool canCollide);
-		static bool CanLayersCollide(entt::id_type layerAId, entt::id_type layerBId);
+		static void SetLayerCollision(entt::id_type layerId1, entt::id_type layerId2, bool canCollide);
 
 		void Clear();
 
@@ -54,7 +56,7 @@ namespace core
 		inline static physx::PxDefaultAllocator _allocator;
 		inline static physx::PxDefaultErrorCallback _errorCallback;
 
-		inline static std::map<entt::id_type, uint32_t> _layerToIndexMap;
+		inline static std::map<entt::id_type, uint32_t> _layerIdToIndexMap;
 		inline static std::vector<uint32_t> _collisionMatrix{ 32, 0 }; // 충돌 매트릭스 (32 * 32)
 
 		std::unordered_map<entt::entity, physx::PxActor*> _entityToPxActorMap;
