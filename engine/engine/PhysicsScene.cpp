@@ -77,6 +77,13 @@ void core::PhysicsScene::Update(float tick)
 	// 시뮬레이션 업데이트
 	_pxScene->simulate(tick);
 	_pxScene->fetchResults(true);
+
+	// 실제 씬 적용
+	auto registry = _scene->GetRegistry();
+	for (auto&& [entity, actor] : _entityToPxActorMap)
+	{
+		sceneFetch({ entity, *registry }, actor);
+	}
 }
 
 void core::PhysicsScene::CreatePhysicsActor(const core::Entity& entity)
@@ -310,7 +317,7 @@ void core::PhysicsScene::AddLayer(entt::id_type layerId)
 
 void core::PhysicsScene::SetLayerCollision(entt::id_type layerId1, entt::id_type layerId2, bool canCollide)
 {
-	if (!_layerIdToIndexMap.contains(layerId1) || !_layerIdToIndexMap.contains(layerId2)) 
+	if (!_layerIdToIndexMap.contains(layerId1) || !_layerIdToIndexMap.contains(layerId2))
 	{
 		throw std::runtime_error("One of the layer IDs does not exist.");
 	}
@@ -330,7 +337,7 @@ void core::PhysicsScene::SetLayerCollision(entt::id_type layerId1, entt::id_type
 	}
 }
 
-void core::PhysicsScene::sceneFetch(const Entity& entity)
+void core::PhysicsScene::sceneFetch(const Entity& entity, const physx::PxActor* actor)
 {
 	using namespace physx;
 
@@ -338,12 +345,7 @@ void core::PhysicsScene::sceneFetch(const Entity& entity)
 
 	PxTransform pxTransform;
 
-	auto it = _entityToPxActorMap.find(entity);
-
-	if (it == _entityToPxActorMap.end())
-		return;
-
-	if (auto dynamicActor = it->second->is<PxRigidDynamic>())
+	if (auto dynamicActor = actor->is<PxRigidDynamic>())
 	{
 		pxTransform = dynamicActor->getGlobalPose();
 		const PxVec3 pxVec3 = dynamicActor->getLinearVelocity();
@@ -351,7 +353,7 @@ void core::PhysicsScene::sceneFetch(const Entity& entity)
 		auto& rigidbody = entity.Get<Rigidbody>();
 		rigidbody.velocity = convert<Vector3>(pxVec3);
 	}
-	else if (auto staticActor = it->second->is<PxRigidStatic>())
+	else if (auto staticActor = actor->is<PxRigidStatic>())
 	{
 		pxTransform = staticActor->getGlobalPose();
 	}
@@ -383,7 +385,7 @@ physx::PxFilterFlags core::PhysicsScene::customFilterShader(
 	uint32_t layerIndex1 = std::countr_zero(filterData1.word0);
 
 	// 비트 연산으로 충돌 여부 확인
-	if (!(_collisionMatrix[layerIndex0] & (1 << layerIndex1))) 
+	if (!(_collisionMatrix[layerIndex0] & (1 << layerIndex1)))
 	{
 		return PxFilterFlag::eSUPPRESS;  // 충돌을 발생시키지 않을 경우
 	}

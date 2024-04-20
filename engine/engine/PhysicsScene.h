@@ -30,7 +30,7 @@ namespace core
 		void Clear();
 
 	private:
-		void sceneFetch(const Entity& entity);
+		void sceneFetch(const Entity& entity, const physx::PxActor* actor);
 
 		template <typename ToType, typename FromType>
 		ToType convert(const FromType& fromType);
