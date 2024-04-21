@@ -341,8 +341,6 @@ void core::PhysicsScene::sceneFetch(const Entity& entity, const physx::PxActor* 
 {
 	using namespace physx;
 
-	auto& transform = entity.Get<Transform>();
-
 	PxTransform pxTransform;
 
 	if (auto dynamicActor = actor->is<PxRigidDynamic>())
@@ -352,11 +350,14 @@ void core::PhysicsScene::sceneFetch(const Entity& entity, const physx::PxActor* 
 
 		auto& rigidbody = entity.Get<Rigidbody>();
 		rigidbody.velocity = convert<Vector3>(pxVec3);
+		dynamicActor->isSleeping()
 	}
 	else if (auto staticActor = actor->is<PxRigidStatic>())
 	{
 		pxTransform = staticActor->getGlobalPose();
 	}
+
+	auto& transform = entity.Get<Transform>();
 
 	// PhysX의 오른손 좌표계에서 왼손 좌표계로 변환
 	pxTransform = rightToLeft(pxTransform);
@@ -380,7 +381,7 @@ physx::PxFilterFlags core::PhysicsScene::customFilterShader(
 		return PxFilterFlag::eDEFAULT;
 	}
 
-	// 가장 낮은 비트의 위치 반환
+	// 가장 낮은 비트의 위치 반환 (중복 Layer 가능시 변경 필요)
 	uint32_t layerIndex0 = std::countr_zero(filterData0.word0);
 	uint32_t layerIndex1 = std::countr_zero(filterData1.word0);
 

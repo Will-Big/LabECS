@@ -80,10 +80,11 @@ namespace core
 		enum class MeshColliderCookingOptions
 		{
 			None,
-			CookForFasterSimulation,
-			EnableMeshCleaning,
-			WeldColocatedVertices,
-			UseFastMidphase,
+			CookForFasterSimulation = (1 << 0),
+			EnableMeshCleaning = (1 << 1),
+			WeldColocatedVertices = (1 << 2),
+			UseFastMidphase = (1 << 3),
+			Everything = CookForFasterSimulation | EnableMeshCleaning | WeldColocatedVertices | UseFastMidphase
 		};
 
 		bool convex = false;

@@ -10,6 +10,18 @@ namespace core
 	struct ColliderCommon;
 	struct Rigidbody;
 
+	/**
+	 * \brief
+	 * PhysicsScene 에서 정상적으로 엔티티가 동작하기 위한 조건
+	 *	- 필수: Transform, ColliderCommon, ~Collider(Box, Sphere, Capsule, Mesh)
+	 *	- 옵션: Rigidbody
+	 *
+	 * 사용 시 세부 설정 가능 (미사용 시 기본으로 사용됨)
+	 *	- Tag: 충돌을 처리하는 시스템 정의 가능
+	 *		- 기본: 충돌을 처리하는 시스템 없음(tag::Untagged)
+	 *	- Layer: 특정 레이어 간 충돌 판정 여부를 설정 가능
+	 *		- 기본: 모든 레이어와 충돌(layer::Default)
+	 */
 	class PhysicsScene
 	{
 	public:
