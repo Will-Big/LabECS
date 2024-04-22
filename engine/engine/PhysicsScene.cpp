@@ -52,6 +52,7 @@ core::PhysicsScene::PhysicsScene(Scene& scene)
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 	}
 
+	// temp
 	//auto gMaterial = _physics->createMaterial(0.5f, 0.5f, 0.6f);
 	//PxRigidStatic* groundPlane = PxCreatePlane(*_physics, PxPlane(0, 1, 0, 0), *gMaterial);
 	//_pxScene->addActor(*groundPlane);
@@ -80,7 +81,7 @@ void core::PhysicsScene::Update(float tick)
 
 	// 실제 씬 적용
 	auto registry = _scene->GetRegistry();
-	for (auto&& [entity, actor] : _entityToPxActorMap)
+	for (auto&& [entity, actor] : _entityToPxDynamicMap)
 	{
 		sceneFetch({ entity, *registry }, actor);
 	}
@@ -95,7 +96,7 @@ void core::PhysicsScene::CreatePhysicsActor(const core::Entity& entity)
 		return;
 
 	// 중복 검사
-	if (_entityToPxActorMap.contains(entity))
+	if (_entityToPxDynamicMap.contains(entity) or _entityToPxStaticMap.contains(entity))
 		return;
 
 	const auto& collider = entity.Get<ColliderCommon>();
@@ -191,6 +192,7 @@ void core::PhysicsScene::CreatePhysicsActor(const core::Entity& entity)
 		setLockFlag(Rigidbody::Constraints::FreezeRotationZ, PxRigidDynamicLockFlag::eLOCK_ANGULAR_Z);
 
 		actor = dynamicActor;
+		_entityToPxDynamicMap[entity] = dynamicActor;
 	}
 	else
 	{
@@ -205,6 +207,7 @@ void core::PhysicsScene::CreatePhysicsActor(const core::Entity& entity)
 		staticActor->attachShape(*shape);
 
 		actor = staticActor;
+		_entityToPxStaticMap[entity] = staticActor;
 	}
 
 	shape->release();
@@ -251,7 +254,6 @@ void core::PhysicsScene::CreatePhysicsActor(const core::Entity& entity)
 	actor->userData = static_cast<void*>(entityPtr);
 
 	// 매핑 테이블에 액터 추가 및 물리 씬에 추가
-	_entityToPxActorMap[entity] = actor;
 	_pxScene->addActor(*actor);
 }
 
@@ -259,26 +261,43 @@ void core::PhysicsScene::DestroyPhysicsActor(const Entity& entity)
 {
 	using namespace physx;
 
-	// 엔티티와 매핑된 액터 찾기
-	if (const auto it = _entityToPxActorMap.find(entity); it != _entityToPxActorMap.end())
+	if (entity.HasAllOf<Rigidbody>())
 	{
-		// 액터를 물리 씬에서 제거
-		PxActor* actor = it->second;
-		_pxScene->removeActor(*actor);
-		delete static_cast<entt::entity*>(actor->userData);
-
-		// 액터 메모리 해제
-		if (actor->is<PxRigidDynamic>())
+		// 엔티티와 매핑된 액터 찾기
+		if (const auto it = _entityToPxDynamicMap.find(entity); it != _entityToPxDynamicMap.end())
 		{
-			actor->is<PxRigidDynamic>()->release();
-		}
-		else if (actor->is<PxRigidStatic>())
-		{
-			actor->is<PxRigidStatic>()->release();
-		}
+			// 액터를 물리 씬에서 제거
+			PxRigidDynamic* actor = it->second;
+			_pxScene->removeActor(*actor);
 
-		// 매핑에서 엔티티 제거
-		_entityToPxActorMap.erase(it);
+			// 액터 메모리 해제
+			delete static_cast<entt::entity*>(actor->userData);
+			actor->release();
+
+			// 매핑에서 엔티티 제거
+			_entityToPxDynamicMap.erase(it);
+
+			return;
+		}
+	}
+	else
+	{
+		// 엔티티와 매핑된 액터 찾기
+		if (const auto it = _entityToPxStaticMap.find(entity); it != _entityToPxStaticMap.end())
+		{
+			// 액터를 물리 씬에서 제거
+			PxRigidStatic* actor = it->second;
+			_pxScene->removeActor(*actor);
+
+			// 액터 메모리 해제
+			delete static_cast<entt::entity*>(actor->userData);
+			actor->release();
+
+			// 매핑에서 엔티티 제거
+			_entityToPxStaticMap.erase(it);
+
+			return;
+		}
 	}
 
 	// 존재하지 않는 액터의 경우 에러 처리
@@ -337,32 +356,24 @@ void core::PhysicsScene::SetLayerCollision(entt::id_type layerId1, entt::id_type
 	}
 }
 
-void core::PhysicsScene::sceneFetch(const Entity& entity, const physx::PxActor* actor)
+void core::PhysicsScene::sceneFetch(const Entity& entity, const physx::PxRigidDynamic* actor)
 {
 	using namespace physx;
 
-	PxTransform pxTransform;
+	if (actor->isSleeping())
+		return;
 
-	if (auto dynamicActor = actor->is<PxRigidDynamic>())
-	{
-		pxTransform = dynamicActor->getGlobalPose();
-		const PxVec3 pxVec3 = dynamicActor->getLinearVelocity();
+	PxTransform pxTransform = actor->getGlobalPose();
+	const PxVec3 pxVec3 = actor->getLinearVelocity();
 
-		auto& rigidbody = entity.Get<Rigidbody>();
-		rigidbody.velocity = convert<Vector3>(pxVec3);
-		dynamicActor->isSleeping()
-	}
-	else if (auto staticActor = actor->is<PxRigidStatic>())
-	{
-		pxTransform = staticActor->getGlobalPose();
-	}
-
+	auto& rigidbody = entity.Get<Rigidbody>();
 	auto& transform = entity.Get<Transform>();
 
 	// PhysX의 오른손 좌표계에서 왼손 좌표계로 변환
 	pxTransform = rightToLeft(pxTransform);
 
-	// Transform 컴포넌트 업데이트
+	// 컴포넌트 업데이트
+	rigidbody.velocity = convert<Vector3>(pxVec3);
 	transform.position = convert<Vector3>(pxTransform.p);
 	transform.rotation = convert<Quaternion>(pxTransform.q);
 }
@@ -434,26 +445,29 @@ void core::PhysicsScene::Clear()
 {
 	using namespace physx;
 
-	for (const auto& actor : _entityToPxActorMap | std::views::values)
+	// 동적 액터 제거
+	for (const auto& actor : std::views::values(_entityToPxDynamicMap))
 	{
-		if (actor != nullptr)
-		{
-			// 액터를 물리 씬에서 제거
-			_pxScene->removeActor(*actor, true);
-			delete static_cast<entt::entity*>(actor->userData);
+		// 액터를 물리 씬에서 제거
+		_pxScene->removeActor(*actor, true);
 
-			// 액터 메모리 해제
-			if (actor->is<PxRigidDynamic>())
-			{
-				actor->is<PxRigidDynamic>()->release();
-			}
-			else if (actor->is<PxRigidStatic>())
-			{
-				actor->is<PxRigidStatic>()->release();
-			}
-		}
+		// 액터 메모리 해제
+		delete static_cast<entt::entity*>(actor->userData);
+		actor->release();
+	}
+
+	// 정적 액터 제거
+	for (const auto& actor : std::views::values(_entityToPxStaticMap))
+	{
+		// 액터를 물리 씬에서 제거
+		_pxScene->removeActor(*actor, true);
+
+		// 액터 메모리 해제
+		delete static_cast<entt::entity*>(actor->userData);
+		actor->release();
 	}
 
 	// 매핑 정보 클리어
-	_entityToPxActorMap.clear();
+	_entityToPxDynamicMap.clear();
+	_entityToPxStaticMap.clear();
 }

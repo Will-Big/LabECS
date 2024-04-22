@@ -42,7 +42,7 @@ namespace core
 		void Clear();
 
 	private:
-		void sceneFetch(const Entity& entity, const physx::PxActor* actor);
+		void sceneFetch(const Entity& entity, const physx::PxRigidDynamic* actor);
 
 		template <typename ToType, typename FromType>
 		ToType convert(const FromType& fromType);
@@ -71,7 +71,8 @@ namespace core
 		inline static std::map<entt::id_type, uint32_t> _layerIdToIndexMap;
 		inline static std::vector<uint32_t> _collisionMatrix{ 32, 0 }; // 충돌 매트릭스 (32 * 32)
 
-		std::unordered_map<entt::entity, physx::PxActor*> _entityToPxActorMap;
+		std::unordered_map<entt::entity, physx::PxRigidDynamic*> _entityToPxDynamicMap;
+		std::unordered_map<entt::entity, physx::PxRigidStatic*> _entityToPxStaticMap;
 	};
 
 	template <typename ToType, typename FromType>
